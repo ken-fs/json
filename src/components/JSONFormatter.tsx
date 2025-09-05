@@ -228,28 +228,28 @@ export default function JSONFormatter() {
       tooltip: "添加示例JSON数据",
       action: handleAddExample,
     },
-    {
-      icon: ArrowUturnLeftIcon,
-      text: "Undo",
-      tooltip: "撤销操作",
-      action: () => {},
-    },
-    {
-      icon: ArrowUturnRightIcon,
-      text: "Redo",
-      tooltip: "重做操作",
-      action: () => {},
-    },
-    {
-      icon: QuestionMarkCircleIcon,
-      text: "Help",
-      tooltip: "查看使用帮助",
-      action: () =>
-        showMessage(
-          "JSON Formatter Help: Paste or type JSON on the left, see formatted result on the right",
-          "success"
-        ),
-    },
+    // {
+    //   icon: ArrowUturnLeftIcon,
+    //   text: "Undo",
+    //   tooltip: "撤销操作",
+    //   action: () => {},
+    // },
+    // {
+    //   icon: ArrowUturnRightIcon,
+    //   text: "Redo",
+    //   tooltip: "重做操作",
+    //   action: () => {},
+    // },
+    // {
+    //   icon: QuestionMarkCircleIcon,
+    //   text: "Help",
+    //   tooltip: "查看使用帮助",
+    //   action: () =>
+    //     showMessage(
+    //       "JSON Formatter Help: Paste or type JSON on the left, see formatted result on the right",
+    //       "success"
+    //     ),
+    // },
   ];
 
   const handlePaste = async () => {
@@ -312,7 +312,7 @@ export default function JSONFormatter() {
         <div className="h-full flex gap-4">
           {/* Left pane - Input area */}
           <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[88px]">
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   输入JSON数据
@@ -365,19 +365,19 @@ export default function JSONFormatter() {
 
           {/* Right pane - JSON Viewer with syntax highlighting */}
           <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
+            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[88px]">
               <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {/* <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   格式化结果
-                </span>
+                </span> */}
                 {formattedOutput && !formattedOutput.startsWith("//") && (
                   <span className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900 px-2 py-1 rounded">
-                    ✓ 有效JSON
+                    ✓ 有效
                   </span>
                 )}
                 {formattedOutput.startsWith("//") && (
                   <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
-                    ✗ 解析错误
+                    ✗ 错误
                   </span>
                 )}
               </div>
