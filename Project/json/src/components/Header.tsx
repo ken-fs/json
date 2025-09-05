@@ -26,7 +26,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-teal-500">JSONTools.io</h1>
+            <h1 className="text-2xl font-bold text-blue-500">JSON1</h1>
           </div>
 
           {/* Navigation */}

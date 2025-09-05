@@ -289,31 +289,7 @@ export default function JSONFormatter() {
           </div>
 
           {/* Right toolbar - Action buttons */}
-          <div className="flex items-center space-x-1">
-            {rightToolbar.map((tool, index) => {
-              const IconComponent = tool.icon;
-              return (
-                <div key={index} className="relative group">
-                  <button
-                    className={`p-2 text-sm rounded transition-colors ${
-                      tool.active 
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                    }`}
-                    onClick={tool.action}
-                  >
-                    <IconComponent className="w-5 h-5" />
-                  </button>
-                  
-                  {/* Tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {tool.tooltip}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+     
         </div>
       </div>
 
@@ -388,7 +364,36 @@ export default function JSONFormatter() {
                   </span>
                 )}
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
+                {/* 工具栏图标按钮 */}
+                {rightToolbar.map((tool, index) => {
+                  const IconComponent = tool.icon;
+                  return (
+                    <div key={index} className="relative group">
+                      <button
+                        className={`p-2 text-sm rounded transition-colors ${
+                          tool.active 
+                            ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
+                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        }`}
+                        onClick={tool.action}
+                      >
+                        <IconComponent className="w-4 h-4" />
+                      </button>
+                      
+                      {/* Tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        {tool.tooltip}
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                {/* 分隔线 */}
+                <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-2"></div>
+                
+                {/* 复制结果按钮 */}
                 <div className="relative group">
                   <button 
                     onClick={() => handleCopy(formattedOutput)}
@@ -403,6 +408,8 @@ export default function JSONFormatter() {
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>
+                
+                {/* 下载文件按钮 */}
                 <div className="relative group">
                   <button 
                     onClick={() => handleDownload(formattedOutput)}
