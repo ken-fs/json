@@ -68,15 +68,16 @@ export default function JSONEditor({
     return colors[type as keyof typeof colors] || 'text-gray-800 dark:text-gray-200';
   };
 
-  const renderValue = (data: any, path: string = '', level: number = 0, key?: string): JSX.Element[] => {
+  const renderValue = (data: any, path: string = '', level: number = 0, key?: string, isLastItem: boolean = false): JSX.Element[] => {
     const elements: JSX.Element[] = [];
     const indent = '  '.repeat(level);
     const isCollapsed = collapsedPaths.has(path);
 
-    const createLine = (content: React.ReactNode, className = '') => (
-      <div className={`flex items-center font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded ${className}`}>
+    const createLine = (content: React.ReactNode, showComma: boolean = false) => (
+      <div className="flex items-center font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded">
         <span className="whitespace-pre">{indent}</span>
         {content}
+        {showComma && <span className={getTypeColor('comma')}>,</span>}
       </div>
     );
 
@@ -92,7 +93,8 @@ export default function JSONEditor({
                 </>
               )}
               <span className={getTypeColor('null')}>null</span>
-            </>
+            </>,
+            !isLastItem
           )}
         </div>
       );
@@ -108,7 +110,8 @@ export default function JSONEditor({
                 </>
               )}
               <span className={getTypeColor('string')}>"{data}"</span>
-            </>
+            </>,
+            !isLastItem
           )}
         </div>
       );
@@ -124,7 +127,8 @@ export default function JSONEditor({
                 </>
               )}
               <span className={getTypeColor('number')}>{data}</span>
-            </>
+            </>,
+            !isLastItem
           )}
         </div>
       );
@@ -140,7 +144,8 @@ export default function JSONEditor({
                 </>
               )}
               <span className={getTypeColor('boolean')}>{data.toString()}</span>
-            </>
+            </>,
+            !isLastItem
           )}
         </div>
       );
@@ -174,7 +179,8 @@ export default function JSONEditor({
               {(isCollapsed || !hasItems) && (
                 <span className={getTypeColor('bracket')}>]</span>
               )}
-            </>
+            </>,
+            (isCollapsed || !hasItems) ? !isLastItem : false
           )}
         </div>
       );
@@ -183,23 +189,14 @@ export default function JSONEditor({
       if (!isCollapsed && hasItems) {
         data.forEach((item, index) => {
           const itemPath = `${currentPath}[${index}]`;
-          elements.push(...renderValue(item, itemPath, level + 1));
-          
-          // Add comma except for last item
-          if (index < data.length - 1) {
-            elements.push(
-              <div key={`${itemPath}_comma`} className="flex items-center font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded">
-                <span className="whitespace-pre">{'  '.repeat(level + 1)}</span>
-                <span className={getTypeColor('comma')}>,</span>
-              </div>
-            );
-          }
+          const isLastArrayItem = index === data.length - 1;
+          elements.push(...renderValue(item, itemPath, level + 1, undefined, isLastArrayItem));
         });
 
         // Array closing bracket
         elements.push(
           <div key={`${path}_close`}>
-            {createLine(<span className={getTypeColor('bracket')}>]</span>)}
+            {createLine(<span className={getTypeColor('bracket')}>]</span>, !isLastItem)}
           </div>
         );
       }
@@ -234,7 +231,8 @@ export default function JSONEditor({
               {(isCollapsed || !hasKeys) && (
                 <span className={getTypeColor('bracket')}>{'}'}</span>
               )}
-            </>
+            </>,
+            (isCollapsed || !hasKeys) ? !isLastItem : false
           )}
         </div>
       );
@@ -243,23 +241,14 @@ export default function JSONEditor({
       if (!isCollapsed && hasKeys) {
         keys.forEach((objKey, index) => {
           const keyPath = `${currentPath}.${objKey}`;
-          elements.push(...renderValue(data[objKey], keyPath, level + 1, objKey));
-          
-          // Add comma except for last property
-          if (index < keys.length - 1) {
-            elements.push(
-              <div key={`${keyPath}_comma`} className="flex items-center font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded">
-                <span className="whitespace-pre">{'  '.repeat(level + 1)}</span>
-                <span className={getTypeColor('comma')}>,</span>
-              </div>
-            );
-          }
+          const isLastObjectProperty = index === keys.length - 1;
+          elements.push(...renderValue(data[objKey], keyPath, level + 1, objKey, isLastObjectProperty));
         });
 
         // Object closing brace
         elements.push(
           <div key={`${path}_close`}>
-            {createLine(<span className={getTypeColor('bracket')}>{'}'}</span>)}
+            {createLine(<span className={getTypeColor('bracket')}>{'}'}</span>, !isLastItem)}
           </div>
         );
       }
@@ -291,7 +280,7 @@ export default function JSONEditor({
       style={{ minHeight: '200px' }}
     >
       <div className="space-y-0">
-        {parsedData && renderValue(parsedData)}
+        {parsedData && renderValue(parsedData, '', 0, undefined, true)}
       </div>
     </div>
   );
