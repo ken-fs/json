@@ -4,6 +4,22 @@ import { useState, useRef, useEffect } from 'react';
 import { formatJSON, validateJSON, minifyJSON, jsonToXML, jsonToCSV } from '@/lib/utils';
 import { useLanguageStore } from '@/stores/uiStore';
 import JSONEditor from './JSONEditor';
+import {
+  ArrowDownTrayIcon,
+  ClipboardDocumentIcon,
+  ClipboardIcon,
+  ChevronDownIcon,
+  TrashIcon,
+  ArrowPathIcon,
+  ListBulletIcon,
+  DocumentIcon,
+  LockClosedIcon,
+  DocumentTextIcon,
+  ArrowUturnLeftIcon,
+  ArrowUturnRightIcon,
+  QuestionMarkCircleIcon,
+  FolderOpenIcon
+} from '@heroicons/react/24/outline';
 
 export default function JSONFormatter() {
   const [input, setInput] = useState('');
@@ -138,19 +154,87 @@ export default function JSONFormatter() {
   ];
 
   const rightToolbar = [
-    { icon: '💾', text: 'Download', action: () => handleDownload(formattedOutput || input) },
-    { icon: '📋', text: 'Copy Output', action: () => handleCopy(formattedOutput) },
-    { icon: '📋', text: 'Copy Input', action: () => handleCopy(input) },
-    { icon: '🗂', text: 'Compress/Expand', action: handleCompress, active: collapsed },
-    { icon: '🗑', text: 'Clear', action: () => { setInput(''); setFormattedOutput(''); } },
-    { icon: '🔄', text: 'Format', action: () => setCollapsed(false) },
-    { icon: '📊', text: 'Line Numbers', action: () => setShowLineNumbers(!showLineNumbers), active: showLineNumbers },
-    { icon: '📄', text: 'To XML', action: handleToXML },
-    { icon: '🔒', text: 'Escape Mode', action: () => setEscapeMode(!escapeMode), active: escapeMode },
-    { icon: '📝', text: 'Add Example', action: handleAddExample },
-    { icon: '⬅', text: 'Undo', action: () => {} },
-    { icon: '➡', text: 'Redo', action: () => {} },
-    { icon: '❓', text: 'Help', action: () => showMessage('JSON Formatter Help: Paste or type JSON on the left, see formatted result on the right', 'success') }
+    // { 
+    //   icon: ArrowDownTrayIcon, 
+    //   text: 'Download JSON', 
+    //   tooltip: '下载JSON文件到本地',
+    //   action: () => handleDownload(formattedOutput || input) 
+    // },
+    // { 
+    //   icon: ClipboardDocumentIcon, 
+    //   text: 'Copy Output', 
+    //   tooltip: '复制格式化后的结果',
+    //   action: () => handleCopy(formattedOutput) 
+    // },
+    { 
+      icon: ClipboardIcon, 
+      text: 'Copy Input', 
+      tooltip: '复制原始输入内容',
+      action: () => handleCopy(input) 
+    },
+    { 
+      icon: ChevronDownIcon, 
+      text: 'Compress/Expand', 
+      tooltip: collapsed ? '展开JSON结构' : '压缩JSON结构',
+      action: handleCompress, 
+      active: collapsed 
+    },
+    { 
+      icon: TrashIcon, 
+      text: 'Clear', 
+      tooltip: '清空所有内容',
+      action: () => { setInput(''); setFormattedOutput(''); } 
+    },
+    { 
+      icon: ArrowPathIcon, 
+      text: 'Format', 
+      tooltip: '重新格式化JSON',
+      action: () => setCollapsed(false) 
+    },
+    { 
+      icon: ListBulletIcon, 
+      text: 'Line Numbers', 
+      tooltip: showLineNumbers ? '隐藏行号' : '显示行号',
+      action: () => setShowLineNumbers(!showLineNumbers), 
+      active: showLineNumbers 
+    },
+    { 
+      icon: DocumentIcon, 
+      text: 'To XML', 
+      tooltip: '将JSON转换为XML格式',
+      action: handleToXML 
+    },
+    { 
+      icon: LockClosedIcon, 
+      text: 'Escape Mode', 
+      tooltip: escapeMode ? '关闭转义模式' : '开启转义模式',
+      action: () => setEscapeMode(!escapeMode), 
+      active: escapeMode 
+    },
+    { 
+      icon: DocumentTextIcon, 
+      text: 'Add Example', 
+      tooltip: '添加示例JSON数据',
+      action: handleAddExample 
+    },
+    { 
+      icon: ArrowUturnLeftIcon, 
+      text: 'Undo', 
+      tooltip: '撤销操作',
+      action: () => {} 
+    },
+    { 
+      icon: ArrowUturnRightIcon, 
+      text: 'Redo', 
+      tooltip: '重做操作',
+      action: () => {} 
+    },
+    { 
+      icon: QuestionMarkCircleIcon, 
+      text: 'Help', 
+      tooltip: '查看使用帮助',
+      action: () => showMessage('JSON Formatter Help: Paste or type JSON on the left, see formatted result on the right', 'success') 
+    }
   ];
 
   const handlePaste = async () => {
@@ -206,20 +290,29 @@ export default function JSONFormatter() {
 
           {/* Right toolbar - Action buttons */}
           <div className="flex items-center space-x-1">
-            {rightToolbar.map((tool, index) => (
-              <button
-                key={index}
-                className={`p-2 text-sm rounded transition-colors ${
-                  tool.active 
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
-                title={tool.text}
-                onClick={tool.action}
-              >
-                {tool.icon}
-              </button>
-            ))}
+            {rightToolbar.map((tool, index) => {
+              const IconComponent = tool.icon;
+              return (
+                <div key={index} className="relative group">
+                  <button
+                    className={`p-2 text-sm rounded transition-colors ${
+                      tool.active 
+                        ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
+                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                    onClick={tool.action}
+                  >
+                    <IconComponent className="w-5 h-5" />
+                  </button>
+                  
+                  {/* Tooltip */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    {tool.tooltip}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -235,23 +328,37 @@ export default function JSONFormatter() {
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">输入JSON数据</span>
               </div>
               <div className="flex items-center space-x-2">
-                <button 
-                  onClick={handlePaste}
-                  className="text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                >
-                  粘贴
-                </button>
-                <label className="cursor-pointer">
-                  <span className="text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
-                    上传文件
-                  </span>
-                  <input 
-                    type="file" 
-                    accept=".json,.txt" 
-                    onChange={handleFileUpload} 
-                    className="hidden" 
-                  />
-                </label>
+                <div className="relative group">
+                  <button 
+                    onClick={handlePaste}
+                    className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                  >
+                    <ClipboardIcon className="w-3 h-3" />
+                    <span>粘贴</span>
+                  </button>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    从剪贴板粘贴JSON数据
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                  </div>
+                </div>
+                <div className="relative group">
+                  <label className="cursor-pointer">
+                    <span className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
+                      <FolderOpenIcon className="w-3 h-3" />
+                      <span>上传文件</span>
+                    </span>
+                    <input 
+                      type="file" 
+                      accept=".json,.txt" 
+                      onChange={handleFileUpload} 
+                      className="hidden" 
+                    />
+                  </label>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    上传本地JSON文件
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -282,20 +389,34 @@ export default function JSONFormatter() {
                 )}
               </div>
               <div className="flex items-center space-x-2">
-                <button 
-                  onClick={() => handleCopy(formattedOutput)}
-                  disabled={!formattedOutput}
-                  className="text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
-                >
-                  复制结果
-                </button>
-                <button 
-                  onClick={() => handleDownload(formattedOutput)}
-                  disabled={!formattedOutput || formattedOutput.startsWith('//')}
-                  className="text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
-                >
-                  下载文件
-                </button>
+                <div className="relative group">
+                  <button 
+                    onClick={() => handleCopy(formattedOutput)}
+                    disabled={!formattedOutput}
+                    className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
+                  >
+                    <ClipboardDocumentIcon className="w-3 h-3" />
+                    <span>复制结果</span>
+                  </button>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    复制格式化后的JSON到剪贴板
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                  </div>
+                </div>
+                <div className="relative group">
+                  <button 
+                    onClick={() => handleDownload(formattedOutput)}
+                    disabled={!formattedOutput || formattedOutput.startsWith('//')}
+                    className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
+                  >
+                    <ArrowDownTrayIcon className="w-3 h-3" />
+                    <span>下载文件</span>
+                  </button>
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    将JSON文件下载到本地
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -330,14 +451,6 @@ export default function JSONFormatter() {
             {message}
           </div>
         )}
-      </div>
-
-      {/* Bottom promotional banner */}
-      <div className="bg-red-500 text-white text-center py-2 text-sm">
-        <span className="font-medium">🎯 限时优惠：高级域名 .COM 仅需 $12/年</span>
-        <span className="mx-4">🔒 免费SSL证书</span>
-        <span className="mx-4">🤖 AI驱动的JSON工具套件</span>
-        <span className="mx-4">⚡ 专业API访问权限</span>
       </div>
     </div>
   );
