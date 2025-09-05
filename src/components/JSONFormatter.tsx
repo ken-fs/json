@@ -418,7 +418,7 @@ export default function JSONFormatter() {
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
                   >
                     <ClipboardDocumentIcon className="w-3 h-3" />
-                    <span>复制结果</span>
+                    <span>copy</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                     复制格式化后的JSON到剪贴板
@@ -436,7 +436,7 @@ export default function JSONFormatter() {
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
                   >
                     <ArrowDownTrayIcon className="w-3 h-3" />
-                    <span>下载文件</span>
+                    <span>download</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                     将JSON文件下载到本地
