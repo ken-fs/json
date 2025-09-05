@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { formatJSON, validateJSON, minifyJSON, jsonToXML, jsonToCSV } from '@/lib/utils';
-import { useLanguageStore } from '@/stores/uiStore';
-import JSONEditor from './JSONEditor';
+import { useState, useRef, useEffect } from "react";
+import {
+  formatJSON,
+  validateJSON,
+  minifyJSON,
+  jsonToXML,
+  jsonToCSV,
+} from "@/lib/utils";
+import { useLanguageStore } from "@/stores/uiStore";
+import JSONEditor from "./JSONEditor";
 import {
   ArrowDownTrayIcon,
   ClipboardDocumentIcon,
@@ -18,14 +24,16 @@ import {
   ArrowUturnLeftIcon,
   ArrowUturnRightIcon,
   QuestionMarkCircleIcon,
-  FolderOpenIcon
-} from '@heroicons/react/24/outline';
+  FolderOpenIcon,
+} from "@heroicons/react/24/outline";
 
 export default function JSONFormatter() {
-  const [input, setInput] = useState('');
-  const [formattedOutput, setFormattedOutput] = useState('');
-  const [message, setMessage] = useState('');
-  const [messageType, setMessageType] = useState<'success' | 'error'>('success');
+  const [input, setInput] = useState("");
+  const [formattedOutput, setFormattedOutput] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<"success" | "error">(
+    "success"
+  );
   const [showLineNumbers, setShowLineNumbers] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
   const [escapeMode, setEscapeMode] = useState(false);
@@ -33,24 +41,24 @@ export default function JSONFormatter() {
   const outputRef = useRef<HTMLTextAreaElement>(null);
   const { language } = useLanguageStore();
 
-  const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
+  const showMessage = (text: string, type: "success" | "error" = "success") => {
     setMessage(text);
     setMessageType(type);
-    setTimeout(() => setMessage(''), 3000);
+    setTimeout(() => setMessage(""), 3000);
   };
 
   // 实时格式化JSON
   useEffect(() => {
     if (!input.trim()) {
-      setFormattedOutput('');
+      setFormattedOutput("");
       return;
     }
-    
+
     try {
       const parsed = JSON.parse(input);
       const formatted = JSON.stringify(parsed, null, collapsed ? 0 : 2);
       setFormattedOutput(formatted);
-      setMessage('');
+      setMessage("");
     } catch (error: any) {
       setFormattedOutput(`// JSON Parse Error: ${error.message}`);
     }
@@ -59,182 +67,189 @@ export default function JSONFormatter() {
   // 工具栏功能函数
   const handleCompress = () => {
     setCollapsed(!collapsed);
-    showMessage(collapsed ? 'Expanded JSON' : 'Compressed JSON', 'success');
+    showMessage(collapsed ? "Expanded JSON" : "Compressed JSON", "success");
   };
 
   const handleCopy = async (content: string) => {
     try {
       await navigator.clipboard.writeText(content);
-      showMessage('Copied to clipboard', 'success');
+      showMessage("Copied to clipboard", "success");
     } catch (error) {
-      showMessage('Copy failed', 'error');
+      showMessage("Copy failed", "error");
     }
   };
 
-  const handleDownload = (content: string, filename: string = 'data.json') => {
-    const blob = new Blob([content], { type: 'application/json' });
+  const handleDownload = (content: string, filename: string = "data.json") => {
+    const blob = new Blob([content], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showMessage('File downloaded', 'success');
+    showMessage("File downloaded", "success");
   };
 
   const handleToXML = () => {
     try {
       if (!input.trim()) {
-        showMessage('Please enter JSON data first', 'error');
+        showMessage("Please enter JSON data first", "error");
         return;
       }
       const xml = jsonToXML(input);
       setFormattedOutput(xml);
-      showMessage('Converted to XML', 'success');
+      showMessage("Converted to XML", "success");
     } catch (error: any) {
-      showMessage(`XML conversion failed: ${error.message}`, 'error');
+      showMessage(`XML conversion failed: ${error.message}`, "error");
     }
   };
 
   const handleAddExample = () => {
     const example = {
-      "name": "John Doe",
-      "age": 30,
-      "city": "New York",
-      "hobbies": ["reading", "coding", "traveling"],
-      "address": {
-        "street": "123 Main St",
-        "zipCode": "10001"
-      }
+      name: "John Doe",
+      age: 30,
+      city: "New York",
+      hobbies: ["reading", "coding", "traveling"],
+      address: {
+        street: "123 Main St",
+        zipCode: "10001",
+      },
     };
     setInput(JSON.stringify(example, null, 2));
-    showMessage('Example JSON added', 'success');
+    showMessage("Example JSON added", "success");
   };
 
   const toolCategories = [
     {
-      name: 'JSON Tools',
-      icon: '🛠',
-      active: true
+      name: "JSON Tools",
+      icon: "🛠",
+      active: true,
     },
-    {
-      name: 'Formatter',
-      icon: '📝'
-    },
-    {
-      name: 'Online Run',
-      icon: '▶'
-    },
-    {
-      name: 'Common Tools',
-      icon: '🔧'
-    },
-    {
-      name: 'Image Tools',
-      icon: '🖼'
-    },
-    {
-      name: 'Network Tools',
-      icon: '🌐'
-    },
-    {
-      name: 'Text Tools',
-      icon: '📄'
-    },
-    {
-      name: 'Encode & Encrypt',
-      icon: '🔒'
-    },
-    {
-      name: 'App Store',
-      icon: '🏪'
-    }
+    // {
+    //   name: 'Formatter',
+    //   icon: '📝'
+    // },
+    // {
+    //   name: 'Online Run',
+    //   icon: '▶'
+    // },
+    // {
+    //   name: 'Common Tools',
+    //   icon: '🔧'
+    // },
+    // {
+    //   name: 'Image Tools',
+    //   icon: '🖼'
+    // },
+    // {
+    //   name: 'Network Tools',
+    //   icon: '🌐'
+    // },
+    // {
+    //   name: 'Text Tools',
+    //   icon: '📄'
+    // },
+    // {
+    //   name: 'Encode & Encrypt',
+    //   icon: '🔒'
+    // },
+    // {
+    //   name: 'App Store',
+    //   icon: '🏪'
+    // }
   ];
 
   const rightToolbar = [
-    // { 
-    //   icon: ArrowDownTrayIcon, 
-    //   text: 'Download JSON', 
+    // {
+    //   icon: ArrowDownTrayIcon,
+    //   text: 'Download JSON',
     //   tooltip: '下载JSON文件到本地',
-    //   action: () => handleDownload(formattedOutput || input) 
+    //   action: () => handleDownload(formattedOutput || input)
     // },
-    // { 
-    //   icon: ClipboardDocumentIcon, 
-    //   text: 'Copy Output', 
+    // {
+    //   icon: ClipboardDocumentIcon,
+    //   text: 'Copy Output',
     //   tooltip: '复制格式化后的结果',
-    //   action: () => handleCopy(formattedOutput) 
+    //   action: () => handleCopy(formattedOutput)
     // },
-    { 
-      icon: ClipboardIcon, 
-      text: 'Copy Input', 
-      tooltip: '复制原始输入内容',
-      action: () => handleCopy(input) 
+    {
+      icon: ClipboardIcon,
+      text: "Copy Input",
+      tooltip: "复制原始输入内容",
+      action: () => handleCopy(input),
     },
-    { 
-      icon: ChevronDownIcon, 
-      text: 'Compress/Expand', 
-      tooltip: collapsed ? '展开JSON结构' : '压缩JSON结构',
-      action: handleCompress, 
-      active: collapsed 
+    {
+      icon: ChevronDownIcon,
+      text: "Compress/Expand",
+      tooltip: collapsed ? "展开JSON结构" : "压缩JSON结构",
+      action: handleCompress,
+      active: collapsed,
     },
-    { 
-      icon: TrashIcon, 
-      text: 'Clear', 
-      tooltip: '清空所有内容',
-      action: () => { setInput(''); setFormattedOutput(''); } 
+    {
+      icon: TrashIcon,
+      text: "Clear",
+      tooltip: "清空所有内容",
+      action: () => {
+        setInput("");
+        setFormattedOutput("");
+      },
     },
-    { 
-      icon: ArrowPathIcon, 
-      text: 'Format', 
-      tooltip: '重新格式化JSON',
-      action: () => setCollapsed(false) 
+    {
+      icon: ArrowPathIcon,
+      text: "Format",
+      tooltip: "重新格式化JSON",
+      action: () => setCollapsed(false),
     },
-    { 
-      icon: ListBulletIcon, 
-      text: 'Line Numbers', 
-      tooltip: showLineNumbers ? '隐藏行号' : '显示行号',
-      action: () => setShowLineNumbers(!showLineNumbers), 
-      active: showLineNumbers 
+    {
+      icon: ListBulletIcon,
+      text: "Line Numbers",
+      tooltip: showLineNumbers ? "隐藏行号" : "显示行号",
+      action: () => setShowLineNumbers(!showLineNumbers),
+      active: showLineNumbers,
     },
-    { 
-      icon: DocumentIcon, 
-      text: 'To XML', 
-      tooltip: '将JSON转换为XML格式',
-      action: handleToXML 
+    {
+      icon: DocumentIcon,
+      text: "To XML",
+      tooltip: "将JSON转换为XML格式",
+      action: handleToXML,
     },
-    { 
-      icon: LockClosedIcon, 
-      text: 'Escape Mode', 
-      tooltip: escapeMode ? '关闭转义模式' : '开启转义模式',
-      action: () => setEscapeMode(!escapeMode), 
-      active: escapeMode 
+    {
+      icon: LockClosedIcon,
+      text: "Escape Mode",
+      tooltip: escapeMode ? "关闭转义模式" : "开启转义模式",
+      action: () => setEscapeMode(!escapeMode),
+      active: escapeMode,
     },
-    { 
-      icon: DocumentTextIcon, 
-      text: 'Add Example', 
-      tooltip: '添加示例JSON数据',
-      action: handleAddExample 
+    {
+      icon: DocumentTextIcon,
+      text: "Add Example",
+      tooltip: "添加示例JSON数据",
+      action: handleAddExample,
     },
-    { 
-      icon: ArrowUturnLeftIcon, 
-      text: 'Undo', 
-      tooltip: '撤销操作',
-      action: () => {} 
+    {
+      icon: ArrowUturnLeftIcon,
+      text: "Undo",
+      tooltip: "撤销操作",
+      action: () => {},
     },
-    { 
-      icon: ArrowUturnRightIcon, 
-      text: 'Redo', 
-      tooltip: '重做操作',
-      action: () => {} 
+    {
+      icon: ArrowUturnRightIcon,
+      text: "Redo",
+      tooltip: "重做操作",
+      action: () => {},
     },
-    { 
-      icon: QuestionMarkCircleIcon, 
-      text: 'Help', 
-      tooltip: '查看使用帮助',
-      action: () => showMessage('JSON Formatter Help: Paste or type JSON on the left, see formatted result on the right', 'success') 
-    }
+    {
+      icon: QuestionMarkCircleIcon,
+      text: "Help",
+      tooltip: "查看使用帮助",
+      action: () =>
+        showMessage(
+          "JSON Formatter Help: Paste or type JSON on the left, see formatted result on the right",
+          "success"
+        ),
+    },
   ];
 
   const handlePaste = async () => {
@@ -242,7 +257,7 @@ export default function JSONFormatter() {
       const text = await navigator.clipboard.readText();
       setInput(text);
     } catch (error) {
-      showMessage('Paste failed', 'error');
+      showMessage("Paste failed", "error");
     }
   };
 
@@ -259,11 +274,11 @@ export default function JSONFormatter() {
 
   const renderWithLineNumbers = (content: string) => {
     if (!showLineNumbers) return content;
-    
-    const lines = content.split('\n');
-    return lines.map((line, index) => 
-      `${String(index + 1).padStart(3, ' ')} | ${line}`
-    ).join('\n');
+
+    const lines = content.split("\n");
+    return lines
+      .map((line, index) => `${String(index + 1).padStart(3, " ")} | ${line}`)
+      .join("\n");
   };
 
   return (
@@ -277,9 +292,9 @@ export default function JSONFormatter() {
               <button
                 key={index}
                 className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  tool.active 
-                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  tool.active
+                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
                 <span className="mr-1">{tool.icon}</span>
@@ -289,23 +304,23 @@ export default function JSONFormatter() {
           </div>
 
           {/* Right toolbar - Action buttons */}
-     
         </div>
       </div>
 
       {/* Main content area - Split panes */}
-      <div className="h-[calc(100vh-140px)] p-4">
+      <div className="h-[calc(100vh-178px)] p-4">
         <div className="h-full flex gap-4">
-          
           {/* Left pane - Input area */}
           <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
               <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">输入JSON数据</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  输入JSON数据
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="relative group">
-                  <button 
+                  <button
                     onClick={handlePaste}
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                   >
@@ -323,11 +338,11 @@ export default function JSONFormatter() {
                       <FolderOpenIcon className="w-3 h-3" />
                       <span>上传文件</span>
                     </span>
-                    <input 
-                      type="file" 
-                      accept=".json,.txt" 
-                      onChange={handleFileUpload} 
-                      className="hidden" 
+                    <input
+                      type="file"
+                      accept=".json,.txt"
+                      onChange={handleFileUpload}
+                      className="hidden"
                     />
                   </label>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
@@ -337,7 +352,7 @@ export default function JSONFormatter() {
                 </div>
               </div>
             </div>
-            
+
             <textarea
               ref={textareaRef}
               value={input}
@@ -352,13 +367,15 @@ export default function JSONFormatter() {
           <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
               <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">格式化结果</span>
-                {formattedOutput && !formattedOutput.startsWith('//') && (
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  格式化结果
+                </span>
+                {formattedOutput && !formattedOutput.startsWith("//") && (
                   <span className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900 px-2 py-1 rounded">
                     ✓ 有效JSON
                   </span>
                 )}
-                {formattedOutput.startsWith('//') && (
+                {formattedOutput.startsWith("//") && (
                   <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
                     ✗ 解析错误
                   </span>
@@ -372,15 +389,15 @@ export default function JSONFormatter() {
                     <div key={index} className="relative group">
                       <button
                         className={`p-2 text-sm rounded transition-colors ${
-                          tool.active 
-                            ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
-                            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                          tool.active
+                            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                         }`}
                         onClick={tool.action}
                       >
                         <IconComponent className="w-4 h-4" />
                       </button>
-                      
+
                       {/* Tooltip */}
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                         {tool.tooltip}
@@ -389,13 +406,13 @@ export default function JSONFormatter() {
                     </div>
                   );
                 })}
-                
+
                 {/* 分隔线 */}
                 <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-2"></div>
-                
+
                 {/* 复制结果按钮 */}
                 <div className="relative group">
-                  <button 
+                  <button
                     onClick={() => handleCopy(formattedOutput)}
                     disabled={!formattedOutput}
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
@@ -408,12 +425,14 @@ export default function JSONFormatter() {
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>
-                
+
                 {/* 下载文件按钮 */}
                 <div className="relative group">
-                  <button 
+                  <button
                     onClick={() => handleDownload(formattedOutput)}
-                    disabled={!formattedOutput || formattedOutput.startsWith('//')}
+                    disabled={
+                      !formattedOutput || formattedOutput.startsWith("//")
+                    }
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
                   >
                     <ArrowDownTrayIcon className="w-3 h-3" />
@@ -426,8 +445,8 @@ export default function JSONFormatter() {
                 </div>
               </div>
             </div>
-            
-            <div className="h-[calc(100%-50px)] bg-gray-50 dark:bg-gray-900">
+
+            <div className="h-[calc(100%-188px)] border-radius-lg  dark:bg-gray-900">
               <JSONEditor
                 value={formattedOutput}
                 showLineNumbers={showLineNumbers}
@@ -450,11 +469,13 @@ export default function JSONFormatter() {
 
         {/* Status message */}
         {message && (
-          <div className={`mt-2 p-3 rounded-lg text-sm ${
-            messageType === 'success' 
-              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
-              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-          }`}>
+          <div
+            className={`mt-2 p-3 rounded-lg text-sm ${
+              messageType === "success"
+                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+            }`}
+          >
             {message}
           </div>
         )}
