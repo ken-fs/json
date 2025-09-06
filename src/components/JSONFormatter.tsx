@@ -1,30 +1,25 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import {
-  formatJSON,
-  validateJSON,
-  minifyJSON,
-  jsonToXML,
-  jsonToCSV,
-} from "@/lib/utils";
-import { useLanguageStore } from "@/stores/uiStore";
+import { jsonToXML } from "@/lib/utils";
+// import { useLanguageStore } from "@/stores/uiStore";
 import JSONEditor from "./JSONEditor";
+import { Alert, AlertDescription } from "./ui/alert";
 import {
   ArrowDownTrayIcon,
   ClipboardDocumentIcon,
   ClipboardIcon,
   ChevronDownIcon,
+  ChevronRightIcon,
   TrashIcon,
   ArrowPathIcon,
   ListBulletIcon,
   DocumentIcon,
   LockClosedIcon,
   DocumentTextIcon,
-  ArrowUturnLeftIcon,
-  ArrowUturnRightIcon,
-  QuestionMarkCircleIcon,
   FolderOpenIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 
 export default function JSONFormatter() {
@@ -37,9 +32,9 @@ export default function JSONFormatter() {
   const [showLineNumbers, setShowLineNumbers] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
   const [escapeMode, setEscapeMode] = useState(false);
+  const [overrideOutput, setOverrideOutput] = useState<string>(""); // 手动设置的输出，为空时使用自动格式化
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const outputRef = useRef<HTMLTextAreaElement>(null);
-  const { language } = useLanguageStore();
+  // const { language } = useLanguageStore(); // 保留用于未来的国际化功能
 
   const showMessage = (text: string, type: "success" | "error" = "success") => {
     setMessage(text);
@@ -47,34 +42,71 @@ export default function JSONFormatter() {
     setTimeout(() => setMessage(""), 3000);
   };
 
-  // 实时格式化JSON
+  // 实时格式化JSON和手动输出处理
   useEffect(() => {
     if (!input.trim()) {
       setFormattedOutput("");
+      setOverrideOutput(""); // 清空手动输出
+      setCollapsed(false);
+      return;
+    }
+
+    // 如果有手动设置的输出，使用它
+    if (overrideOutput) {
+      setFormattedOutput(overrideOutput);
+      return;
+    }
+
+    // 否则进行自动格式化
+    try {
+      const parsed = JSON.parse(input);
+      const formatted = JSON.stringify(parsed, null, 2);
+      setFormattedOutput(formatted);
+      setCollapsed(false);
+      setMessage("");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      setFormattedOutput(`// JSON Parse Error: ${errorMessage}`);
+      setCollapsed(false);
+    }
+  }, [input, overrideOutput]);
+
+  // 工具栏功能函数
+  const handleCompress = () => {
+    if (!formattedOutput || formattedOutput.startsWith('//')) {
+      showMessage("Please enter valid JSON data first", "error");
       return;
     }
 
     try {
-      const parsed = JSON.parse(input);
-      const formatted = JSON.stringify(parsed, null, collapsed ? 0 : 2);
-      setFormattedOutput(formatted);
-      setMessage("");
-    } catch (error: any) {
-      setFormattedOutput(`// JSON Parse Error: ${error.message}`);
+      // 使用右侧格式化的输出数据进行压缩/展开操作
+      const parsed = JSON.parse(formattedOutput);
+      
+      if (collapsed) {
+        // 展开：格式化为带缩进的 JSON
+        const formatted = JSON.stringify(parsed, null, 2);
+        setOverrideOutput(formatted); // useEffect会自动设置formattedOutput
+        setCollapsed(false);
+        showMessage("Expanded JSON", "success");
+      } else {
+        // 压缩：压缩为单行 JSON
+        const compressed = JSON.stringify(parsed);
+        setOverrideOutput(compressed); // useEffect会自动设置formattedOutput
+        setCollapsed(true);
+        showMessage("Compressed JSON", "success");
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      showMessage(`Compress failed: ${errorMessage}`, "error");
     }
-  }, [input, collapsed]);
-
-  // 工具栏功能函数
-  const handleCompress = () => {
-    setCollapsed(!collapsed);
-    showMessage(collapsed ? "Expanded JSON" : "Compressed JSON", "success");
   };
+
 
   const handleCopy = async (content: string) => {
     try {
       await navigator.clipboard.writeText(content);
       showMessage("Copied to clipboard", "success");
-    } catch (error) {
+    } catch {
       showMessage("Copy failed", "error");
     }
   };
@@ -99,10 +131,63 @@ export default function JSONFormatter() {
         return;
       }
       const xml = jsonToXML(input);
-      setFormattedOutput(xml);
+      // 格式化 XML 输出，添加适当的缩进
+      const formattedXml = formatXML(xml);
+      setFormattedOutput(formattedXml);
       showMessage("Converted to XML", "success");
-    } catch (error: any) {
-      showMessage(`XML conversion failed: ${error.message}`, "error");
+    } catch (error: unknown) {
+      showMessage(`XML conversion failed: ${error instanceof Error ? error.message : 'Unknown error'}`, "error");
+    }
+  };
+
+  // XML 格式化辅助函数
+  const formatXML = (xml: string): string => {
+    let formatted = '';
+    let indent = 0;
+    const tab = '  ';
+    
+    xml.split(/(<[^>]*>)/g).forEach(node => {
+      if (node.match(/^<\/?\w/)) {
+        if (node.match(/^<\//)) {
+          indent--;
+        }
+        formatted += tab.repeat(indent) + node + '\n';
+        if (node.match(/^<\w/) && !node.match(/\/>$/)) {
+          indent++;
+        }
+      } else if (node.trim()) {
+        formatted += tab.repeat(indent) + node.trim() + '\n';
+      }
+    });
+    
+    return formatted.trim();
+  };
+
+  const handleEscapeMode = () => {
+    if (!input.trim()) {
+      showMessage("Please enter JSON data first", "error");
+      return;
+    }
+
+    try {
+      if (escapeMode) {
+        // 关闭转义模式：将转义的 JSON 字符串解析为普通 JSON
+        const unescaped = JSON.parse(input);
+        const formatted = JSON.stringify(unescaped, null, 2);
+        setInput(formatted);
+        setEscapeMode(false);
+        showMessage("Escape mode disabled", "success");
+      } else {
+        // 开启转义模式：将 JSON 转换为转义的字符串格式
+        const parsed = JSON.parse(input);
+        const jsonString = JSON.stringify(parsed);
+        const escaped = JSON.stringify(jsonString, null, 2);
+        setInput(escaped);
+        setEscapeMode(true);
+        showMessage("Escape mode enabled", "success");
+      }
+    } catch (error: unknown) {
+      showMessage(`Escape mode failed: ${error instanceof Error ? error.message : 'Unknown error'}`, "error");
     }
   };
 
@@ -118,6 +203,8 @@ export default function JSONFormatter() {
       },
     };
     setInput(JSON.stringify(example, null, 2));
+    setCollapsed(false);
+    setOverrideOutput(""); // 重置手动输出
     showMessage("Example JSON added", "success");
   };
 
@@ -181,7 +268,7 @@ export default function JSONFormatter() {
       action: () => handleCopy(input),
     },
     {
-      icon: ChevronDownIcon,
+      icon: collapsed ? ChevronRightIcon : ChevronDownIcon,
       text: "Compress/Expand",
       tooltip: collapsed ? "展开JSON结构" : "压缩JSON结构",
       action: handleCompress,
@@ -194,14 +281,11 @@ export default function JSONFormatter() {
       action: () => {
         setInput("");
         setFormattedOutput("");
+        setCollapsed(false);
+        setOverrideOutput("");
       },
     },
-    {
-      icon: ArrowPathIcon,
-      text: "Format",
-      tooltip: "重新格式化JSON",
-      action: () => setCollapsed(false),
-    },
+
     {
       icon: ListBulletIcon,
       text: "Line Numbers",
@@ -219,7 +303,7 @@ export default function JSONFormatter() {
       icon: LockClosedIcon,
       text: "Escape Mode",
       tooltip: escapeMode ? "关闭转义模式" : "开启转义模式",
-      action: () => setEscapeMode(!escapeMode),
+      action: handleEscapeMode,
       active: escapeMode,
     },
     {
@@ -256,7 +340,7 @@ export default function JSONFormatter() {
     try {
       const text = await navigator.clipboard.readText();
       setInput(text);
-    } catch (error) {
+    } catch {
       showMessage("Paste failed", "error");
     }
   };
@@ -272,17 +356,9 @@ export default function JSONFormatter() {
     }
   };
 
-  const renderWithLineNumbers = (content: string) => {
-    if (!showLineNumbers) return content;
-
-    const lines = content.split("\n");
-    return lines
-      .map((line, index) => `${String(index + 1).padStart(3, " ")} | ${line}`)
-      .join("\n");
-  };
 
   return (
-    <div className="flex-1 bg-gray-50 dark:bg-gray-900">
+    <div className="flex-1 bg-gray-50 dark:bg-gray-900 relative">
       {/* Toolbar */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between px-4 py-2">
@@ -446,40 +522,60 @@ export default function JSONFormatter() {
               </div>
             </div>
 
-            <div className="h-[calc(100%-188px)] border-radius-lg  dark:bg-gray-900">
-              <JSONEditor
-                value={formattedOutput}
-                showLineNumbers={showLineNumbers}
-                readOnly={false}
-                onChange={(newValue) => {
-                  setFormattedOutput(newValue);
-                  // 当右侧编辑时，也更新左侧输入
-                  try {
-                    const parsed = JSON.parse(newValue);
-                    const formatted = JSON.stringify(parsed, null, 2);
-                    setInput(formatted);
-                  } catch (error) {
-                    // 如果解析失败，不更新左侧
-                  }
-                }}
-              />
+            <div className="h-[calc(100%-188px)] border-radius-lg dark:bg-gray-900">
+              {collapsed && formattedOutput && !formattedOutput.startsWith('//') ? (
+                // 压缩模式：显示原始文本
+                <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
+                  {showLineNumbers && (
+                    <div className="flex items-start">
+                      <span className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none" style={{minWidth: '3ch', textAlign: 'right'}}>
+                        1
+                      </span>
+                      <div className="flex-1">
+                        <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
+                          {formattedOutput}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+                  {!showLineNumbers && (
+                    <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
+                      {formattedOutput}
+                    </pre>
+                  )}
+                </div>
+              ) : (
+                // 展开模式：使用JSONEditor
+                <JSONEditor
+                  value={formattedOutput}
+                  showLineNumbers={showLineNumbers}
+                  readOnly={false}
+                />
+              )}
             </div>
           </div>
         </div>
 
-        {/* Status message */}
-        {message && (
-          <div
-            className={`mt-2 p-3 rounded-lg text-sm ${
-              messageType === "success"
-                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-            }`}
-          >
-            {message}
-          </div>
-        )}
       </div>
+
+      {/* Fixed Alert at bottom */}
+      {message && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
+          <Alert 
+            variant={messageType === "success" ? "success" : "destructive"}
+            className="shadow-lg border animate-in slide-in-from-bottom-2 duration-300"
+          >
+            {messageType === "success" ? (
+              <CheckCircleIcon className="h-4 w-4" />
+            ) : (
+              <ExclamationCircleIcon className="h-4 w-4" />
+            )}
+            <AlertDescription className="font-medium">
+              {message}
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
     </div>
   );
 }

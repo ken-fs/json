@@ -4,29 +4,20 @@ import React, { useState, useEffect, useRef } from 'react';
 
 interface JSONEditorProps {
   value: string;
-  onChange?: (value: string) => void;
   readOnly?: boolean;
   showLineNumbers?: boolean;
 }
 
-interface JSONNode {
-  key?: string;
-  value: any;
-  type: 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null';
-  collapsed?: boolean;
-  path: string;
-}
-
 export default function JSONEditor({ 
   value, 
-  onChange, 
   readOnly = false, 
   showLineNumbers = true 
 }: JSONEditorProps) {
-  const [parsedData, setParsedData] = useState<any>(null);
+  const [parsedData, setParsedData] = useState<unknown>(null);
   const [collapsedPaths, setCollapsedPaths] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string>('');
   const editorRef = useRef<HTMLDivElement>(null);
+  const lineNumberRef = useRef<{ current: number }>({ current: 1 });
 
   useEffect(() => {
     try {
@@ -37,8 +28,8 @@ export default function JSONEditor({
       } else {
         setParsedData(null);
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
       setParsedData(null);
     }
   }, [value]);
@@ -68,18 +59,28 @@ export default function JSONEditor({
     return colors[type as keyof typeof colors] || 'text-gray-800 dark:text-gray-200';
   };
 
-  const renderValue = (data: any, path: string = '', level: number = 0, key?: string, isLastItem: boolean = false): JSX.Element[] => {
+  const renderValue = (data: unknown, path: string = '', level: number = 0, key?: string, isLastItem: boolean = false): JSX.Element[] => {
     const elements: JSX.Element[] = [];
     const indent = '  '.repeat(level);
     const isCollapsed = collapsedPaths.has(path);
 
-    const createLine = (content: React.ReactNode, showComma: boolean = false) => (
-      <div className="flex items-center font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded">
-        <span className="whitespace-pre">{indent}</span>
-        {content}
-        {showComma && <span className={getTypeColor('comma')}>,</span>}
-      </div>
-    );
+    const createLine = (content: React.ReactNode, showComma: boolean = false) => {
+      const lineNumber = showLineNumbers ? lineNumberRef.current.current++ : undefined;
+      return (
+        <div className="flex items-start font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded">
+          {showLineNumbers && lineNumber !== undefined && (
+            <span className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none" style={{minWidth: '3ch', textAlign: 'right'}}>
+              {lineNumber}
+            </span>
+          )}
+          <div className="flex-1">
+            <span className="whitespace-pre">{indent}</span>
+            {content}
+            {showComma && <span className={getTypeColor('comma')}>,</span>}
+          </div>
+        </div>
+      );
+    };
 
     if (data === null) {
       elements.push(
@@ -88,7 +89,7 @@ export default function JSONEditor({
             <>
               {key && (
                 <>
-                  <span className={`${getTypeColor('key')} font-semibold`}>"{key}"</span>
+                  <span className={`${getTypeColor('key')} font-semibold`}>&quot;{key}&quot;</span>
                   <span className={getTypeColor('comma')}>: </span>
                 </>
               )}
@@ -105,11 +106,11 @@ export default function JSONEditor({
             <>
               {key && (
                 <>
-                  <span className={`${getTypeColor('key')} font-semibold`}>"{key}"</span>
+                  <span className={`${getTypeColor('key')} font-semibold`}>&quot;{key}&quot;</span>
                   <span className={getTypeColor('comma')}>: </span>
                 </>
               )}
-              <span className={getTypeColor('string')}>"{data}"</span>
+              <span className={getTypeColor('string')}>&quot;{data}&quot;</span>
             </>,
             !isLastItem
           )}
@@ -122,7 +123,7 @@ export default function JSONEditor({
             <>
               {key && (
                 <>
-                  <span className={`${getTypeColor('key')} font-semibold`}>"{key}"</span>
+                  <span className={`${getTypeColor('key')} font-semibold`}>&quot;{key}&quot;</span>
                   <span className={getTypeColor('comma')}>: </span>
                 </>
               )}
@@ -139,7 +140,7 @@ export default function JSONEditor({
             <>
               {key && (
                 <>
-                  <span className={`${getTypeColor('key')} font-semibold`}>"{key}"</span>
+                  <span className={`${getTypeColor('key')} font-semibold`}>&quot;{key}&quot;</span>
                   <span className={getTypeColor('comma')}>: </span>
                 </>
               )}
@@ -160,7 +161,7 @@ export default function JSONEditor({
             <>
               {key && (
                 <>
-                  <span className={`${getTypeColor('key')} font-semibold`}>"{key}"</span>
+                  <span className={`${getTypeColor('key')} font-semibold`}>&quot;{key}&quot;</span>
                   <span className={getTypeColor('comma')}>: </span>
                 </>
               )}
@@ -202,7 +203,7 @@ export default function JSONEditor({
       }
     } else if (typeof data === 'object' && data !== null) {
       const currentPath = path;
-      const keys = Object.keys(data);
+      const keys = Object.keys(data as Record<string, unknown>);
       const hasKeys = keys.length > 0;
       
       // Object opening brace with collapse button
@@ -212,7 +213,7 @@ export default function JSONEditor({
             <>
               {key && (
                 <>
-                  <span className={`${getTypeColor('key')} font-semibold`}>"{key}"</span>
+                  <span className={`${getTypeColor('key')} font-semibold`}>&quot;{key}&quot;</span>
                   <span className={getTypeColor('comma')}>: </span>
                 </>
               )}
@@ -242,7 +243,8 @@ export default function JSONEditor({
         keys.forEach((objKey, index) => {
           const keyPath = `${currentPath}.${objKey}`;
           const isLastObjectProperty = index === keys.length - 1;
-          elements.push(...renderValue(data[objKey], keyPath, level + 1, objKey, isLastObjectProperty));
+          const objData = data as Record<string, unknown>;
+          elements.push(...renderValue(objData[objKey], keyPath, level + 1, objKey, isLastObjectProperty));
         });
 
         // Object closing brace
@@ -272,6 +274,9 @@ export default function JSONEditor({
       </div>
     );
   }
+
+  // Reset line number counter before rendering
+  lineNumberRef.current.current = 1;
 
   return (
     <div 
