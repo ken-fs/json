@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import {
   jsonToXML,
   escapeJSON,
-  unescapeJSON,
   isEscapedJSON,
 } from "@/lib/utils";
-// import { useLanguageStore } from "@/stores/uiStore";
 import JSONEditor from "./JSONEditor";
 import { Alert, AlertDescription } from "./ui/alert";
 import {
@@ -28,6 +27,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 export default function JSONFormatter() {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
   const [formattedOutput, setFormattedOutput] = useState("");
   const [message, setMessage] = useState("");
@@ -110,7 +110,7 @@ export default function JSONFormatter() {
 
       // 自动检测转义的JSON并提示
       if (!escapeMode && isEscapedJSON(input)) {
-        showMessage("💡 检测到转义JSON，点击转义按钮可以取消转义", "success");
+        showMessage(t('detectedEscapedJson'), "success");
       }
     } catch (error: unknown) {
       const errorMessage =
@@ -120,28 +120,27 @@ export default function JSONFormatter() {
       let friendlyMessage = errorMessage;
       if (errorMessage.includes("Unexpected token")) {
         if (errorMessage.includes("'/'")) {
-          friendlyMessage =
-            "检测到未转义的反斜杠。请将单个 \\ 替换为 \\\\ 或使用转义功能";
+          friendlyMessage = t('unexpectedBackslash');
         } else if (errorMessage.includes("in JSON")) {
-          friendlyMessage = "JSON格式错误，请检查引号、括号和逗号是否正确";
+          friendlyMessage = t('jsonFormatError');
         }
       } else if (errorMessage.includes("Unterminated string")) {
-        friendlyMessage = "字符串未正确闭合，请检查引号是否配对";
+        friendlyMessage = t('unterminatedString');
       } else if (errorMessage.includes("Expected property name")) {
-        friendlyMessage = "缺少属性名，请确保对象属性用引号包围";
+        friendlyMessage = t('expectedPropertyName');
       }
 
       setFormattedOutput(
-        `// JSON解析错误: ${friendlyMessage}\n// 原始错误: ${errorMessage}`
+        `// ${t('jsonParseError')}: ${friendlyMessage}\n// ${t('originalError')}: ${errorMessage}`
       );
       setCollapsed(false);
     }
-  }, [input, overrideOutput, escapeMode]);
+  }, [input, overrideOutput, escapeMode, t]);
 
   // 工具栏功能函数
   const handleCompress = () => {
     if (!formattedOutput || formattedOutput.startsWith("//")) {
-      showMessage("Please enter valid JSON data first", "error");
+      showMessage(t('enterJsonDataFirst'), "error");
       return;
     }
 
@@ -154,27 +153,27 @@ export default function JSONFormatter() {
         const formatted = JSON.stringify(parsed, null, 2);
         setOverrideOutput(formatted); // useEffect会自动设置formattedOutput
         setCollapsed(false);
-        showMessage("Expanded JSON", "success");
+        showMessage(t('jsonExpanded'), "success");
       } else {
         // 压缩：压缩为单行 JSON
         const compressed = JSON.stringify(parsed);
         setOverrideOutput(compressed); // useEffect会自动设置formattedOutput
         setCollapsed(true);
-        showMessage("Compressed JSON", "success");
+        showMessage(t('jsonCompressed'), "success");
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      showMessage(`Compress failed: ${errorMessage}`, "error");
+      showMessage(`${t('compressionFailed')}: ${errorMessage}`, "error");
     }
   };
 
   const handleCopy = async (content: string) => {
     try {
       await navigator.clipboard.writeText(content);
-      showMessage("Copied to clipboard", "success");
+      showMessage(t('copiedToClipboard'), "success");
     } catch {
-      showMessage("Copy failed", "error");
+      showMessage(t('copyFailed'), "error");
     }
   };
 
@@ -188,36 +187,36 @@ export default function JSONFormatter() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showMessage("File downloaded", "success");
+    showMessage(t('fileDownloaded'), "success");
   };
 
   const handleToXML = () => {
     try {
       // 如果处于转义模式，不允许XML转换
       if (escapeMode) {
-        showMessage("请先取消转义模式再转换为XML", "error");
+        showMessage(t('xmlModeActive'), "error");
         return;
       }
 
       if (overrideOutput) {
         // 如果当前是XML模式，取消XML转换，回到JSON模式
         setOverrideOutput("");
-        showMessage("Returned to JSON view", "success");
+        showMessage(t('returnToJsonView'), "success");
         return;
       }
 
       if (!input.trim()) {
-        showMessage("Please enter JSON data first", "error");
+        showMessage(t('enterJsonDataFirst'), "error");
         return;
       }
       const xml = jsonToXML(input);
       // 格式化 XML 输出，添加适当的缩进
       const formattedXml = formatXML(xml);
       setOverrideOutput(formattedXml);
-      showMessage("Converted to XML", "success");
+      showMessage(t('convertedToXml'), "success");
     } catch (error: unknown) {
       showMessage(
-        `XML conversion failed: ${
+        `${t('xmlConversionFailed')}: ${
           error instanceof Error ? error.message : "Unknown error"
         }`,
         "error"
@@ -250,7 +249,7 @@ export default function JSONFormatter() {
 
   const handleEscapeMode = async () => {
     if (!input.trim()) {
-      showMessage("请先输入JSON数据", "error");
+      showMessage(t('enterJsonDataFirst'), "error");
       return;
     }
 
@@ -261,7 +260,7 @@ export default function JSONFormatter() {
         // 取消转义模式：清除右侧的转义输出，恢复正常JSON格式化
         setOverrideOutput("");
         setEscapeMode(false);
-        showMessage("✓ 已取消转义", "success");
+        showMessage(t('unescapeCompleted'), "success");
       } else {
         // 如果处于XML模式，先取消XML模式
         if (overrideOutput && !escapeMode) {
@@ -272,12 +271,12 @@ export default function JSONFormatter() {
         const escaped = escapeJSON(input);
         setOverrideOutput(escaped);
         setEscapeMode(true);
-        showMessage("✓ 已转义JSON", "success");
+        showMessage(t('escapeCompleted'), "success");
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      showMessage(`转义操作失败: ${errorMessage}`, "error");
+      showMessage(`${t('escapeOperationFailed')}: ${errorMessage}`, "error");
     } finally {
       setIsProcessing(false);
     }
@@ -297,13 +296,13 @@ export default function JSONFormatter() {
     setInput(JSON.stringify(example, null, 2));
     setCollapsed(false);
     setOverrideOutput(""); // 重置手动输出
-    showMessage("Example JSON added", "success");
+    showMessage(t('exampleAdded'), "success");
   };
 
 
   const toolCategories = [
     {
-      name: "JSON Tools",
+      name: t('jsonTools'),
       icon: "🛠",
       active: true,
     },
@@ -356,20 +355,20 @@ export default function JSONFormatter() {
     // },
     {
       icon: ClipboardIcon,
-      text: "Copy Input",
-      tooltip: "复制原始输入内容",
+      text: t('copyInput'),
+      tooltip: t('pasteFromClipboard'),
       action: () => handleCopy(input),
     },
     {
       icon: collapsed ? ChevronRightIcon : ChevronDownIcon,
-      text: "Compress/Expand",
-      tooltip: collapsed ? "展开JSON结构" : "压缩JSON结构",
+      text: collapsed ? t('expand') : t('compress'),
+      tooltip: collapsed ? t('expandJson') : t('compressJson'),
       action: handleCompress,
       active: collapsed,
     },
     {
       icon: TrashIcon,
-      text: "Clear",
+      text: t('clear'),
       tooltip: "清空所有内容",
       action: () => {
         setInput("");
@@ -381,37 +380,37 @@ export default function JSONFormatter() {
 
     {
       icon: ListBulletIcon,
-      text: "Line Numbers",
-      tooltip: showLineNumbers ? "隐藏行号" : "显示行号",
+      text: t('lineNumbers'),
+      tooltip: showLineNumbers ? t('hideLineNumbers') : t('showLineNumbers'),
       action: () => setShowLineNumbers(!showLineNumbers),
       active: showLineNumbers,
     },
     {
       icon: DocumentIcon,
-      text: overrideOutput && !escapeMode ? "Cancel XML" : "To XML",
+      text: overrideOutput && !escapeMode ? t('cancelXmlConversion') : t('toXML'),
       tooltip: escapeMode 
-        ? "转义模式下无法转换为XML" 
+        ? t('xmlModeActive')
         : overrideOutput && !escapeMode
-        ? "取消XML转换，返回JSON视图"
-        : "将JSON转换为XML格式",
+        ? t('cancelXmlConversion')
+        : t('convertToXml'),
       action: handleToXML,
       active: !!(overrideOutput && !escapeMode),
       disabled: escapeMode,
     },
     {
       icon: LockClosedIcon,
-      text: escapeMode ? "取消转义" : "转义",
+      text: escapeMode ? t('unescape') : t('escape'),
       tooltip: escapeMode
-        ? "取消转义模式，将转义的JSON字符串还原为普通JSON"
-        : "开启转义模式，将JSON转换为转义字符串格式",
+        ? t('unescapeJsonString')
+        : t('escapeJsonString'),
       action: handleEscapeMode,
       active: escapeMode,
       processing: isProcessing,
     },
     {
       icon: DocumentTextIcon,
-      text: "Add Example",
-      tooltip: "添加示例JSON数据",
+      text: t('addExample'),
+      tooltip: t('addExampleData'),
       action: handleAddExample,
     },
     // {
@@ -498,12 +497,12 @@ export default function JSONFormatter() {
             <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[88px]">
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  输入JSON数据
+                  {t('input')}
                 </span>
                 {escapeMode && (
                   <span className="inline-flex items-center px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full border border-green-200 dark:border-green-700">
                     <LockClosedIcon className="w-3 h-3 mr-1" />
-                    转义模式
+                    {t('escapeMode')}
                   </span>
                 )}
               </div>
@@ -514,10 +513,10 @@ export default function JSONFormatter() {
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                   >
                     <ClipboardIcon className="w-3 h-3" />
-                    <span>粘贴</span>
+                    <span>{t('paste')}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    从剪贴板粘贴JSON数据
+                    {t('pasteFromClipboard')}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>
@@ -525,7 +524,7 @@ export default function JSONFormatter() {
                   <label className="cursor-pointer">
                     <span className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
                       <FolderOpenIcon className="w-3 h-3" />
-                      <span>上传文件</span>
+                      <span>{t('upload')}</span>
                     </span>
                     <input
                       type="file"
@@ -535,7 +534,7 @@ export default function JSONFormatter() {
                     />
                   </label>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    上传本地JSON文件
+                    {t('uploadLocalFile')}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>
@@ -547,7 +546,7 @@ export default function JSONFormatter() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="w-full h-[calc(100%-50px)] p-4 border-none outline-none font-mono text-sm bg-transparent text-gray-900 dark:text-white resize-none"
-              placeholder="请输入JSON数据..."
+              placeholder={t('enterJsonData')}
               spellCheck={false}
             />
           </div>
@@ -566,21 +565,21 @@ export default function JSONFormatter() {
                 )}
                 {escapeMode && overrideOutput && (
                   <span className="text-xs text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded">
-                    ✓ 转义
+                    ✓ {t('escapeMode')}
                   </span>
                 )}
                 {!overrideOutput &&
                   formattedOutput &&
                   !formattedOutput.startsWith("//") && (
                     <span className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900 px-2 py-1 rounded">
-                      ✓ 有效
+                      ✓ {t('valid')}
                     </span>
                   )}
                 {!overrideOutput &&
                   formattedOutput &&
                   formattedOutput.startsWith("//") && (
                     <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
-                      ✗ 格式错误
+                      ✗ {t('formatError')}
                     </span>
                   )}
               </div>
@@ -649,10 +648,10 @@ export default function JSONFormatter() {
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
                   >
                     <ClipboardDocumentIcon className="w-3 h-3" />
-                    <span>copy</span>
+                    <span>{t('copy')}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    复制格式化后的JSON到剪贴板
+                    {t('copyToClipboard')}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>
@@ -673,10 +672,10 @@ export default function JSONFormatter() {
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
                   >
                     <ArrowDownTrayIcon className="w-3 h-3" />
-                    <span>download</span>
+                    <span>{t('download')}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    将JSON文件下载到本地
+                    {t('downloadToLocal')}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>

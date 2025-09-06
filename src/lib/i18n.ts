@@ -1,15 +1,35 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
 import en from '../locales/en.json';
 import zh from '../locales/zh.json';
+import pt from '../locales/pt.json';
+import es from '../locales/es.json';
 
-const translations = {
-  en,
-  zh,
-} as const;
+const resources = {
+  en: { translation: en },
+  zh: { translation: zh },
+  pt: { translation: pt },
+  es: { translation: es },
+};
 
-export type Language = 'en' | 'zh';
-export type TranslationKey = keyof typeof en;
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    resources,
+    fallbackLng: 'en',
+    debug: false,
+    
+    detection: {
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage'],
+    },
 
-export function t(key: TranslationKey, language: Language = 'en'): string {
-  const translation = translations[language] as unknown as Record<string, string>;
-  return translation[key] || key;
-}
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+
+export default i18n;

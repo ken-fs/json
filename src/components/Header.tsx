@@ -1,24 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useLanguageStore, useThemeStore } from "@/stores/uiStore";
+// import { useEffect } from "react";
+import { useTranslation } from 'react-i18next';
+// import { useThemeStore } from "@/stores/uiStore";
+import { LanguageSelector } from "./LanguageSelector";
 
 export default function Header() {
-  const { language, setLanguage } = useLanguageStore();
-  const { theme, setTheme } = useThemeStore();
+  const { t } = useTranslation();
+  // const { theme, setTheme } = useThemeStore();
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
-
-  const navItems = [
-    { label: "Tools", href: "#" },
-    { label: "Tutorials", href: "#" },
-    { label: "Reviews", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Dictionary", href: "#" },
-    { label: "AI Hub", href: "#" },
-  ];
+  // useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", theme === "dark");
+  // }, [theme]);
 
   return (
     <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -26,7 +19,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-blue-500">JSON1</h1>
+            <h1 className="text-2xl font-bold text-blue-500">{t('title')}</h1>
           </div>
 
           {/* Navigation */}
@@ -166,14 +159,7 @@ export default function Header() {
             </button> */}
 
             {/* Language selector */}
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as "en" | "zh")}
-              className="bg-transparent border-none text-gray-700 dark:text-gray-300 text-sm focus:outline-none"
-            >
-              <option value="en">EN</option>
-              <option value="zh">中</option>
-            </select>
+            <LanguageSelector />
           </div>
         </div>
       </div>
