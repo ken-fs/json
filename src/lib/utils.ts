@@ -10,7 +10,7 @@ export function formatJSON(jsonString: string, indent: number = 2): string {
   try {
     const parsed = JSON.parse(jsonString);
     return JSON.stringify(parsed, null, indent);
-  } catch (error) {
+  } catch {
     throw new Error("Invalid JSON format");
   }
 }
@@ -20,7 +20,7 @@ export function minifyJSON(jsonString: string): string {
   try {
     const parsed = JSON.parse(jsonString);
     return JSON.stringify(parsed, null, 0);
-  } catch (error) {
+  } catch {
     throw new Error("Invalid JSON format");
   }
 }
@@ -30,8 +30,8 @@ export function validateJSON(jsonString: string): { valid: boolean; error?: stri
   try {
     JSON.parse(jsonString);
     return { valid: true };
-  } catch (error: any) {
-    return { valid: false, error: error.message };
+  } catch (error: unknown) {
+    return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
 
@@ -39,14 +39,14 @@ export function validateJSON(jsonString: string): { valid: boolean; error?: stri
 export function jsonToXML(jsonString: string): string {
   try {
     const parsed = JSON.parse(jsonString);
-    function convert(obj: any, rootName: string = "root"): string {
+    function convert(obj: unknown, rootName: string = "root"): string {
       if (obj === null) return `<${rootName} null="true"/>`;
       if (typeof obj === "boolean") return `<${rootName}>${obj}</${rootName}>`;
       if (typeof obj === "number") return `<${rootName}>${obj}</${rootName}>`;
       if (typeof obj === "string") return `<${rootName}>${obj}</${rootName}>`;
       if (Array.isArray(obj)) {
         let result = `<${rootName}>`;
-        obj.forEach((item, index) => {
+        obj.forEach((item) => {
           result += convert(item, `item`);
         });
         result += `</${rootName}>`;
@@ -54,9 +54,10 @@ export function jsonToXML(jsonString: string): string {
       }
       if (typeof obj === "object") {
         let result = `<${rootName}>`;
-        for (const key in obj) {
-          if (obj.hasOwnProperty(key)) {
-            result += convert(obj[key], key);
+        const objRecord = obj as Record<string, unknown>;
+        for (const key in objRecord) {
+          if (objRecord.hasOwnProperty(key)) {
+            result += convert(objRecord[key], key);
           }
         }
         result += `</${rootName}>`;
@@ -64,8 +65,9 @@ export function jsonToXML(jsonString: string): string {
       }
       return `<${rootName}/>`;
     }
-    return convert(parsed);
-  } catch (error) {
+    const xmlContent = convert(parsed);
+    return `<?xml version="1.0" encoding="UTF-8"?>\n${xmlContent}`;
+  } catch {
     throw new Error("Invalid JSON format");
   }
 }
@@ -84,18 +86,18 @@ export function jsonToCSV(jsonString: string): string {
     
     // 获取所有可能的列名
     const allKeys = new Set<string>();
-    parsed.forEach(item => {
+    parsed.forEach((item: unknown) => {
       if (typeof item === "object" && item !== null) {
-        Object.keys(item).forEach(key => allKeys.add(key));
+        Object.keys(item as Record<string, unknown>).forEach(key => allKeys.add(key));
       }
     });
     
     const headers = Array.from(allKeys);
     const csvRows = [headers.join(",")];
     
-    parsed.forEach(item => {
+    parsed.forEach((item: unknown) => {
       const values = headers.map(header => {
-        const value = item[header];
+        const value = (item as Record<string, unknown>)[header];
         if (value === null || value === undefined) {
           return "";
         }
@@ -109,7 +111,57 @@ export function jsonToCSV(jsonString: string): string {
     });
     
     return csvRows.join("\n");
-  } catch (error) {
+  } catch {
     throw new Error("Invalid JSON format or structure for CSV conversion");
+  }
+}
+
+// JSON转义工具函数
+export function escapeJSON(jsonString: string): string {
+  try {
+    // 先解析确保是有效的JSON
+    const parsed = JSON.parse(jsonString);
+    // 将JSON对象转换为字符串
+    const jsonAsString = JSON.stringify(parsed);
+    // 再次转义，使其成为一个被转义的字符串
+    return JSON.stringify(jsonAsString);
+  } catch {
+    throw new Error("Invalid JSON format for escaping");
+  }
+}
+
+// JSON取消转义工具函数
+export function unescapeJSON(escapedJsonString: string): string {
+  try {
+    // 先尝试解析转义的字符串
+    let unescapedString: string;
+    try {
+      unescapedString = JSON.parse(escapedJsonString);
+    } catch {
+      // 如果解析失败，可能已经是普通JSON
+      unescapedString = escapedJsonString;
+    }
+    
+    // 确保结果是有效的JSON并格式化
+    const parsed = JSON.parse(unescapedString);
+    return JSON.stringify(parsed, null, 2);
+  } catch {
+    throw new Error("Invalid escaped JSON format");
+  }
+}
+
+// 检测是否为转义的JSON
+export function isEscapedJSON(str: string): boolean {
+  try {
+    // 尝试解析字符串
+    const parsed = JSON.parse(str);
+    // 如果解析结果是字符串，再次尝试解析这个字符串
+    if (typeof parsed === 'string') {
+      JSON.parse(parsed);
+      return true; // 如果两次解析都成功，那么这是一个转义的JSON
+    }
+    return false; // 如果第一次解析的结果不是字符串，那么这不是转义的JSON
+  } catch {
+    return false; // 解析失败，不是有效的JSON
   }
 }
