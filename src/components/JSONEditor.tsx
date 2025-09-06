@@ -59,8 +59,8 @@ export default function JSONEditor({
     return colors[type as keyof typeof colors] || 'text-gray-800 dark:text-gray-200';
   };
 
-  const renderValue = (data: unknown, path: string = '', level: number = 0, key?: string, isLastItem: boolean = false): JSX.Element[] => {
-    const elements: JSX.Element[] = [];
+  const renderValue = (data: unknown, path: string = '', level: number = 0, key?: string, isLastItem: boolean = false): React.ReactElement[] => {
+    const elements: React.ReactElement[] = [];
     const indent = '  '.repeat(level);
     const isCollapsed = collapsedPaths.has(path);
 
@@ -285,7 +285,9 @@ export default function JSONEditor({
       style={{ minHeight: '200px' }}
     >
       <div className="space-y-0">
-        {parsedData && renderValue(parsedData, '', 0, undefined, true)}
+        {parsedData ? renderValue(parsedData, '', 0, undefined, true).map((element, index) => (
+          <React.Fragment key={index}>{element}</React.Fragment>
+        )) : null}
       </div>
     </div>
   );

@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { jsonToXML, escapeJSON, unescapeJSON, isEscapedJSON } from "@/lib/utils";
+import {
+  jsonToXML,
+  escapeJSON,
+  unescapeJSON,
+  isEscapedJSON,
+} from "@/lib/utils";
 // import { useLanguageStore } from "@/stores/uiStore";
 import JSONEditor from "./JSONEditor";
 import { Alert, AlertDescription } from "./ui/alert";
@@ -59,26 +64,83 @@ export default function JSONFormatter() {
 
     // 否则进行自动格式化
     try {
-      const parsed = JSON.parse(input);
+      // 预处理输入，尝试修复常见的JSON格式问题
+      const processedInput = input.trim();
+
+      // 尝试解析原始输入
+      let parsed;
+      try {
+        parsed = JSON.parse(processedInput);
+      } catch (firstError) {
+        // 如果直接解析失败，尝试一些修复策略
+        try {
+          // 1. 尝试修复未转义的反斜杠（但保留有效的转义序列）
+          const fixedInput = processedInput.replace(
+            /\\(?!["\\/bfnrt]|u[0-9a-fA-F]{4})/g,
+            "\\\\"
+          );
+          parsed = JSON.parse(fixedInput);
+        } catch {
+          // 2. 尝试修复未闭合的字符串（添加缺失的引号）
+          try {
+            let quotedInput = processedInput;
+            if (
+              processedInput.startsWith('"') &&
+              !processedInput.endsWith('"')
+            ) {
+              quotedInput = processedInput + '"';
+            } else if (
+              !processedInput.startsWith('"') &&
+              processedInput.endsWith('"')
+            ) {
+              quotedInput = '"' + processedInput;
+            }
+            parsed = JSON.parse(quotedInput);
+          } catch {
+            // 3. 如果都失败了，抛出最原始的错误
+            throw firstError;
+          }
+        }
+      }
+
       const formatted = JSON.stringify(parsed, null, 2);
       setFormattedOutput(formatted);
       setCollapsed(false);
       setMessage("");
-      
+
       // 自动检测转义的JSON并提示
       if (!escapeMode && isEscapedJSON(input)) {
         showMessage("💡 检测到转义JSON，点击转义按钮可以取消转义", "success");
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setFormattedOutput(`// JSON Parse Error: ${errorMessage}`);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+
+      // 提供更友好的错误信息和修复建议
+      let friendlyMessage = errorMessage;
+      if (errorMessage.includes("Unexpected token")) {
+        if (errorMessage.includes("'/'")) {
+          friendlyMessage =
+            "检测到未转义的反斜杠。请将单个 \\ 替换为 \\\\ 或使用转义功能";
+        } else if (errorMessage.includes("in JSON")) {
+          friendlyMessage = "JSON格式错误，请检查引号、括号和逗号是否正确";
+        }
+      } else if (errorMessage.includes("Unterminated string")) {
+        friendlyMessage = "字符串未正确闭合，请检查引号是否配对";
+      } else if (errorMessage.includes("Expected property name")) {
+        friendlyMessage = "缺少属性名，请确保对象属性用引号包围";
+      }
+
+      setFormattedOutput(
+        `// JSON解析错误: ${friendlyMessage}\n// 原始错误: ${errorMessage}`
+      );
       setCollapsed(false);
     }
   }, [input, overrideOutput, escapeMode]);
 
   // 工具栏功能函数
   const handleCompress = () => {
-    if (!formattedOutput || formattedOutput.startsWith('//')) {
+    if (!formattedOutput || formattedOutput.startsWith("//")) {
       showMessage("Please enter valid JSON data first", "error");
       return;
     }
@@ -86,7 +148,7 @@ export default function JSONFormatter() {
     try {
       // 使用右侧格式化的输出数据进行压缩/展开操作
       const parsed = JSON.parse(formattedOutput);
-      
+
       if (collapsed) {
         // 展开：格式化为带缩进的 JSON
         const formatted = JSON.stringify(parsed, null, 2);
@@ -101,11 +163,11 @@ export default function JSONFormatter() {
         showMessage("Compressed JSON", "success");
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       showMessage(`Compress failed: ${errorMessage}`, "error");
     }
   };
-
 
   const handleCopy = async (content: string) => {
     try {
@@ -131,13 +193,19 @@ export default function JSONFormatter() {
 
   const handleToXML = () => {
     try {
+      // 如果处于转义模式，不允许XML转换
+      if (escapeMode) {
+        showMessage("请先取消转义模式再转换为XML", "error");
+        return;
+      }
+
       if (overrideOutput) {
         // 如果当前是XML模式，取消XML转换，回到JSON模式
         setOverrideOutput("");
         showMessage("Returned to JSON view", "success");
         return;
       }
-      
+
       if (!input.trim()) {
         showMessage("Please enter JSON data first", "error");
         return;
@@ -148,30 +216,35 @@ export default function JSONFormatter() {
       setOverrideOutput(formattedXml);
       showMessage("Converted to XML", "success");
     } catch (error: unknown) {
-      showMessage(`XML conversion failed: ${error instanceof Error ? error.message : 'Unknown error'}`, "error");
+      showMessage(
+        `XML conversion failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`,
+        "error"
+      );
     }
   };
 
   // XML 格式化辅助函数
   const formatXML = (xml: string): string => {
-    let formatted = '';
+    let formatted = "";
     let indent = 0;
-    const tab = '  ';
-    
-    xml.split(/(<[^>]*>)/g).forEach(node => {
+    const tab = "  ";
+
+    xml.split(/(<[^>]*>)/g).forEach((node) => {
       if (node.match(/^<\/?\w/)) {
         if (node.match(/^<\//)) {
           indent--;
         }
-        formatted += tab.repeat(indent) + node + '\n';
+        formatted += tab.repeat(indent) + node + "\n";
         if (node.match(/^<\w/) && !node.match(/\/>$/)) {
           indent++;
         }
       } else if (node.trim()) {
-        formatted += tab.repeat(indent) + node.trim() + '\n';
+        formatted += tab.repeat(indent) + node.trim() + "\n";
       }
     });
-    
+
     return formatted.trim();
   };
 
@@ -182,25 +255,28 @@ export default function JSONFormatter() {
     }
 
     setIsProcessing(true);
-    
+
     try {
       if (escapeMode) {
-        // 取消转义：将转义的JSON字符串还原为普通JSON
-        const unescaped = unescapeJSON(input);
-        setInput(unescaped);
+        // 取消转义模式：清除右侧的转义输出，恢复正常JSON格式化
         setOverrideOutput("");
         setEscapeMode(false);
         showMessage("✓ 已取消转义", "success");
       } else {
-        // 转义：将JSON转换为转义的字符串格式
+        // 如果处于XML模式，先取消XML模式
+        if (overrideOutput && !escapeMode) {
+          setOverrideOutput("");
+        }
+        
+        // 开启转义模式：将左侧JSON转义后显示在右侧
         const escaped = escapeJSON(input);
-        setInput(escaped);
-        setOverrideOutput("");
+        setOverrideOutput(escaped);
         setEscapeMode(true);
         showMessage("✓ 已转义JSON", "success");
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
       showMessage(`转义操作失败: ${errorMessage}`, "error");
     } finally {
       setIsProcessing(false);
@@ -223,6 +299,7 @@ export default function JSONFormatter() {
     setOverrideOutput(""); // 重置手动输出
     showMessage("Example JSON added", "success");
   };
+
 
   const toolCategories = [
     {
@@ -311,15 +388,22 @@ export default function JSONFormatter() {
     },
     {
       icon: DocumentIcon,
-      text: overrideOutput ? "Cancel XML" : "To XML",
-      tooltip: overrideOutput ? "取消XML转换，返回JSON视图" : "将JSON转换为XML格式",
+      text: overrideOutput && !escapeMode ? "Cancel XML" : "To XML",
+      tooltip: escapeMode 
+        ? "转义模式下无法转换为XML" 
+        : overrideOutput && !escapeMode
+        ? "取消XML转换，返回JSON视图"
+        : "将JSON转换为XML格式",
       action: handleToXML,
-      active: !!overrideOutput,
+      active: !!(overrideOutput && !escapeMode),
+      disabled: escapeMode,
     },
     {
       icon: LockClosedIcon,
       text: escapeMode ? "取消转义" : "转义",
-      tooltip: escapeMode ? "取消转义模式，将转义的JSON字符串还原为普通JSON" : "开启转义模式，将JSON转换为转义字符串格式",
+      tooltip: escapeMode
+        ? "取消转义模式，将转义的JSON字符串还原为普通JSON"
+        : "开启转义模式，将JSON转换为转义字符串格式",
       action: handleEscapeMode,
       active: escapeMode,
       processing: isProcessing,
@@ -330,6 +414,12 @@ export default function JSONFormatter() {
       tooltip: "添加示例JSON数据",
       action: handleAddExample,
     },
+    // {
+    //   icon: WrenchScrewdriverIcon,
+    //   text: "Fix JSON",
+    //   tooltip: "自动修复常见的JSON格式错误（转义字符、缺少引号、尾随逗号等）",
+    //   action: handleFixJSON,
+    // },
     // {
     //   icon: ArrowUturnLeftIcon,
     //   text: "Undo",
@@ -373,7 +463,6 @@ export default function JSONFormatter() {
       reader.readAsText(file);
     }
   };
-
 
   return (
     <div className="flex-1 bg-gray-50 dark:bg-gray-900 relative">
@@ -470,50 +559,65 @@ export default function JSONFormatter() {
                 {/* <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   格式化结果
                 </span> */}
-                {overrideOutput && (
+                {overrideOutput && !escapeMode && (
                   <span className="text-xs text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded">
                     ✓ XML
                   </span>
                 )}
-                {!overrideOutput && formattedOutput && !formattedOutput.startsWith("//") && (
-                  <span className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900 px-2 py-1 rounded">
-                    ✓ 有效
+                {escapeMode && overrideOutput && (
+                  <span className="text-xs text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded">
+                    ✓ 转义
                   </span>
                 )}
-                {!overrideOutput && formattedOutput.startsWith("//") && (
-                  <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
-                    ✗ 错误
-                  </span>
-                )}
+                {!overrideOutput &&
+                  formattedOutput &&
+                  !formattedOutput.startsWith("//") && (
+                    <span className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900 px-2 py-1 rounded">
+                      ✓ 有效
+                    </span>
+                  )}
+                {!overrideOutput &&
+                  formattedOutput &&
+                  formattedOutput.startsWith("//") && (
+                    <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
+                      ✗ 格式错误
+                    </span>
+                  )}
               </div>
               <div className="flex items-center space-x-1">
                 {/* 工具栏图标按钮 */}
                 {rightToolbar.map((tool, index) => {
                   const IconComponent = tool.icon;
-                  const isEscapeButton = tool.text && (tool.text === "转义" || tool.text === "取消转义");
-                  const isProcessing = (tool as { processing?: boolean }).processing;
-                  
+                  const isEscapeButton =
+                    tool.text &&
+                    (tool.text === "转义" || tool.text === "取消转义");
+                  const isProcessing = (tool as { processing?: boolean })
+                    .processing;
+                  const isDisabled = (tool as { disabled?: boolean }).disabled || isProcessing;
+
                   return (
                     <div key={index} className="relative group">
                       <button
                         className={`p-2 text-sm rounded transition-all duration-200 ${
-                          isEscapeButton && tool.active
+                          isDisabled
+                            ? "opacity-50 cursor-not-allowed text-gray-400 dark:text-gray-600"
+                            : isEscapeButton && tool.active
                             ? "bg-green-500 text-white shadow-lg transform scale-105 border-2 border-green-400"
                             : isEscapeButton
                             ? "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900 dark:hover:text-green-300 border-2 border-transparent hover:border-green-300"
                             : tool.active
                             ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        } ${isProcessing ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
-                        onClick={isProcessing ? undefined : tool.action}
-                        disabled={isProcessing}
+                        }`}
+                        onClick={isDisabled ? undefined : tool.action}
+                        disabled={isDisabled}
                       >
                         {isProcessing ? (
                           <ArrowPathIcon className="w-4 h-4 animate-spin" />
                         ) : (
                           <IconComponent className="w-4 h-4" />
                         )}
-                        {isEscapeButton && tool.active && (
+                        {isEscapeButton && tool.active && !isDisabled && (
                           <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                         )}
                       </button>
@@ -538,7 +642,9 @@ export default function JSONFormatter() {
                 {/* 复制结果按钮 */}
                 <div className="relative group">
                   <button
-                    onClick={() => handleCopy(overrideOutput || formattedOutput)}
+                    onClick={() =>
+                      handleCopy(overrideOutput || formattedOutput)
+                    }
                     disabled={!overrideOutput && !formattedOutput}
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
                   >
@@ -554,9 +660,15 @@ export default function JSONFormatter() {
                 {/* 下载文件按钮 */}
                 <div className="relative group">
                   <button
-                    onClick={() => handleDownload(overrideOutput || formattedOutput, overrideOutput ? "data.xml" : "data.json")}
+                    onClick={() =>
+                      handleDownload(
+                        overrideOutput || formattedOutput,
+                        overrideOutput ? "data.xml" : "data.json"
+                      )
+                    }
                     disabled={
-                      (!overrideOutput && !formattedOutput) || formattedOutput.startsWith("//")
+                      (!overrideOutput && !formattedOutput) ||
+                      formattedOutput.startsWith("//")
                     }
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
                   >
@@ -577,9 +689,12 @@ export default function JSONFormatter() {
                 <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
                   {showLineNumbers ? (
                     <div className="flex items-start">
-                      <div className="text-gray-400 dark:text-gray-500 text-xs mr-4 select-none" style={{minWidth: '3ch'}}>
-                        {overrideOutput.split('\n').map((_, i) => (
-                          <div key={i} style={{textAlign: 'right'}}>
+                      <div
+                        className="text-gray-400 dark:text-gray-500 text-xs mr-4 select-none"
+                        style={{ minWidth: "3ch" }}
+                      >
+                        {overrideOutput.split("\n").map((_, i) => (
+                          <div key={i} style={{ textAlign: "right" }}>
                             {i + 1}
                           </div>
                         ))}
@@ -596,12 +711,17 @@ export default function JSONFormatter() {
                     </pre>
                   )}
                 </div>
-              ) : collapsed && formattedOutput && !formattedOutput.startsWith('//') ? (
+              ) : collapsed &&
+                formattedOutput &&
+                !formattedOutput.startsWith("//") ? (
                 // 压缩模式：显示原始文本
                 <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
                   {showLineNumbers && (
                     <div className="flex items-start">
-                      <span className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none" style={{minWidth: '3ch', textAlign: 'right'}}>
+                      <span
+                        className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none"
+                        style={{ minWidth: "3ch", textAlign: "right" }}
+                      >
                         1
                       </span>
                       <div className="flex-1">
@@ -628,13 +748,12 @@ export default function JSONFormatter() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Fixed Alert at bottom */}
       {message && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
-          <Alert 
+          <Alert
             variant={messageType === "success" ? "success" : "destructive"}
             className="shadow-lg border animate-in slide-in-from-bottom-2 duration-300"
           >
