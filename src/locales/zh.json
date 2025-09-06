@@ -76,5 +76,9 @@
   "expectedPropertyName": "缺少属性名，请确保对象属性用引号包围",
   "escapeMode": "转义模式",
   "clickToCancel": "点击取消",
-  "clickToEnable": "点击启用"
+  "clickToEnable": "点击启用",
+  "formattedJsonDisplay": "格式化后的JSON数据将在这里显示...",
+  "jsonParseErrorShort": "JSON解析错误",
+  "items": "项",
+  "keys": "键"
 }

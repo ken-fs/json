@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface JSONEditorProps {
   value: string;
@@ -13,6 +14,7 @@ export default function JSONEditor({
   readOnly = false, 
   showLineNumbers = true 
 }: JSONEditorProps) {
+  const { t } = useTranslation();
   const [parsedData, setParsedData] = useState<unknown>(null);
   const [collapsedPaths, setCollapsedPaths] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string>('');
@@ -175,7 +177,7 @@ export default function JSONEditor({
               )}
               <span className={getTypeColor('bracket')}>[</span>
               {isCollapsed && hasItems && (
-                <span className="text-gray-500 ml-1">... {data.length} items</span>
+                <span className="text-gray-500 ml-1">... {data.length} {t('items')}</span>
               )}
               {(isCollapsed || !hasItems) && (
                 <span className={getTypeColor('bracket')}>]</span>
@@ -227,7 +229,7 @@ export default function JSONEditor({
               )}
               <span className={getTypeColor('bracket')}>{'{'}</span>
               {isCollapsed && hasKeys && (
-                <span className="text-gray-500 ml-1">... {keys.length} keys</span>
+                <span className="text-gray-500 ml-1">... {keys.length} {t('keys')}</span>
               )}
               {(isCollapsed || !hasKeys) && (
                 <span className={getTypeColor('bracket')}>{'}'}</span>
@@ -262,7 +264,7 @@ export default function JSONEditor({
   if (error) {
     return (
       <div className="p-4 text-red-600 dark:text-red-400 font-mono text-sm bg-red-50 dark:bg-red-900/10 rounded">
-        JSON Parse Error: {error}
+        {t('jsonParseErrorShort')}: {error}
       </div>
     );
   }
@@ -270,7 +272,7 @@ export default function JSONEditor({
   if (!parsedData && !value.trim()) {
     return (
       <div className="p-4 text-gray-500 italic text-sm">
-        格式化后的JSON数据将在这里显示...
+        {t('formattedJsonDisplay')}
       </div>
     );
   }

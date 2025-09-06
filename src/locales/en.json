@@ -76,5 +76,9 @@
   "expectedPropertyName": "Missing property name, please ensure object properties are quoted",
   "escapeMode": "Escape Mode",
   "clickToCancel": "Click to cancel",
-  "clickToEnable": "Click to enable"
+  "clickToEnable": "Click to enable",
+  "formattedJsonDisplay": "Formatted JSON data will be displayed here...",
+  "jsonParseErrorShort": "JSON Parse Error",
+  "items": "items",
+  "keys": "keys"
 }
