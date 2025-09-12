@@ -1,12 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useTranslation } from 'react-i18next';
-import {
-  jsonToXML,
-  escapeJSON,
-  isEscapedJSON,
-} from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+import { jsonToXML, escapeJSON, isEscapedJSON } from "@/lib/utils";
 import JSONEditor from "./JSONEditor";
 import { Alert, AlertDescription } from "./ui/alert";
 import {
@@ -110,7 +106,7 @@ export default function JSONFormatter() {
 
       // 自动检测转义的JSON并提示
       if (!escapeMode && isEscapedJSON(input)) {
-        showMessage(t('detectedEscapedJson'), "success");
+        showMessage(t("detectedEscapedJson"), "success");
       }
     } catch (error: unknown) {
       const errorMessage =
@@ -120,18 +116,20 @@ export default function JSONFormatter() {
       let friendlyMessage = errorMessage;
       if (errorMessage.includes("Unexpected token")) {
         if (errorMessage.includes("'/'")) {
-          friendlyMessage = t('unexpectedBackslash');
+          friendlyMessage = t("unexpectedBackslash");
         } else if (errorMessage.includes("in JSON")) {
-          friendlyMessage = t('jsonFormatError');
+          friendlyMessage = t("jsonFormatError");
         }
       } else if (errorMessage.includes("Unterminated string")) {
-        friendlyMessage = t('unterminatedString');
+        friendlyMessage = t("unterminatedString");
       } else if (errorMessage.includes("Expected property name")) {
-        friendlyMessage = t('expectedPropertyName');
+        friendlyMessage = t("expectedPropertyName");
       }
 
       setFormattedOutput(
-        `// ${t('jsonParseError')}: ${friendlyMessage}\n// ${t('originalError')}: ${errorMessage}`
+        `// ${t("jsonParseError")}: ${friendlyMessage}\n// ${t(
+          "originalError"
+        )}: ${errorMessage}`
       );
       setCollapsed(false);
     }
@@ -140,7 +138,7 @@ export default function JSONFormatter() {
   // 工具栏功能函数
   const handleCompress = () => {
     if (!formattedOutput || formattedOutput.startsWith("//")) {
-      showMessage(t('enterJsonDataFirst'), "error");
+      showMessage(t("enterJsonDataFirst"), "error");
       return;
     }
 
@@ -153,27 +151,27 @@ export default function JSONFormatter() {
         const formatted = JSON.stringify(parsed, null, 2);
         setOverrideOutput(formatted); // useEffect会自动设置formattedOutput
         setCollapsed(false);
-        showMessage(t('jsonExpanded'), "success");
+        showMessage(t("jsonExpanded"), "success");
       } else {
         // 压缩：压缩为单行 JSON
         const compressed = JSON.stringify(parsed);
         setOverrideOutput(compressed); // useEffect会自动设置formattedOutput
         setCollapsed(true);
-        showMessage(t('jsonCompressed'), "success");
+        showMessage(t("jsonCompressed"), "success");
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      showMessage(`${t('compressionFailed')}: ${errorMessage}`, "error");
+      showMessage(`${t("compressionFailed")}: ${errorMessage}`, "error");
     }
   };
 
   const handleCopy = async (content: string) => {
     try {
       await navigator.clipboard.writeText(content);
-      showMessage(t('copiedToClipboard'), "success");
+      showMessage(t("copiedToClipboard"), "success");
     } catch {
-      showMessage(t('copyFailed'), "error");
+      showMessage(t("copyFailed"), "error");
     }
   };
 
@@ -187,36 +185,36 @@ export default function JSONFormatter() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showMessage(t('fileDownloaded'), "success");
+    showMessage(t("fileDownloaded"), "success");
   };
 
   const handleToXML = () => {
     try {
       // 如果处于转义模式，不允许XML转换
       if (escapeMode) {
-        showMessage(t('xmlModeActive'), "error");
+        showMessage(t("xmlModeActive"), "error");
         return;
       }
 
       if (overrideOutput) {
         // 如果当前是XML模式，取消XML转换，回到JSON模式
         setOverrideOutput("");
-        showMessage(t('returnToJsonView'), "success");
+        showMessage(t("returnToJsonView"), "success");
         return;
       }
 
       if (!input.trim()) {
-        showMessage(t('enterJsonDataFirst'), "error");
+        showMessage(t("enterJsonDataFirst"), "error");
         return;
       }
       const xml = jsonToXML(input);
       // 格式化 XML 输出，添加适当的缩进
       const formattedXml = formatXML(xml);
       setOverrideOutput(formattedXml);
-      showMessage(t('convertedToXml'), "success");
+      showMessage(t("convertedToXml"), "success");
     } catch (error: unknown) {
       showMessage(
-        `${t('xmlConversionFailed')}: ${
+        `${t("xmlConversionFailed")}: ${
           error instanceof Error ? error.message : "Unknown error"
         }`,
         "error"
@@ -249,7 +247,7 @@ export default function JSONFormatter() {
 
   const handleEscapeMode = async () => {
     if (!input.trim()) {
-      showMessage(t('enterJsonDataFirst'), "error");
+      showMessage(t("enterJsonDataFirst"), "error");
       return;
     }
 
@@ -260,23 +258,23 @@ export default function JSONFormatter() {
         // 取消转义模式：清除右侧的转义输出，恢复正常JSON格式化
         setOverrideOutput("");
         setEscapeMode(false);
-        showMessage(t('unescapeCompleted'), "success");
+        showMessage(t("unescapeCompleted"), "success");
       } else {
         // 如果处于XML模式，先取消XML模式
         if (overrideOutput && !escapeMode) {
           setOverrideOutput("");
         }
-        
+
         // 开启转义模式：将左侧JSON转义后显示在右侧
         const escaped = escapeJSON(input);
         setOverrideOutput(escaped);
         setEscapeMode(true);
-        showMessage(t('escapeCompleted'), "success");
+        showMessage(t("escapeCompleted"), "success");
       }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      showMessage(`${t('escapeOperationFailed')}: ${errorMessage}`, "error");
+      showMessage(`${t("escapeOperationFailed")}: ${errorMessage}`, "error");
     } finally {
       setIsProcessing(false);
     }
@@ -296,13 +294,12 @@ export default function JSONFormatter() {
     setInput(JSON.stringify(example, null, 2));
     setCollapsed(false);
     setOverrideOutput(""); // 重置手动输出
-    showMessage(t('exampleAdded'), "success");
+    showMessage(t("exampleAdded"), "success");
   };
-
 
   const toolCategories = [
     {
-      name: t('jsonTools'),
+      name: t("jsonTools"),
       icon: "🛠",
       active: true,
     },
@@ -355,20 +352,20 @@ export default function JSONFormatter() {
     // },
     {
       icon: ClipboardIcon,
-      text: t('copyInput'),
-      tooltip: t('pasteFromClipboard'),
+      text: t("copyInput"),
+      tooltip: t("pasteFromClipboard"),
       action: () => handleCopy(input),
     },
     {
       icon: collapsed ? ChevronRightIcon : ChevronDownIcon,
-      text: collapsed ? t('expand') : t('compress'),
-      tooltip: collapsed ? t('expandJson') : t('compressJson'),
+      text: collapsed ? t("expand") : t("compress"),
+      tooltip: collapsed ? t("expandJson") : t("compressJson"),
       action: handleCompress,
       active: collapsed,
     },
     {
       icon: TrashIcon,
-      text: t('clear'),
+      text: t("clear"),
       tooltip: "清空所有内容",
       action: () => {
         setInput("");
@@ -380,37 +377,36 @@ export default function JSONFormatter() {
 
     {
       icon: ListBulletIcon,
-      text: t('lineNumbers'),
-      tooltip: showLineNumbers ? t('hideLineNumbers') : t('showLineNumbers'),
+      text: t("lineNumbers"),
+      tooltip: showLineNumbers ? t("hideLineNumbers") : t("showLineNumbers"),
       action: () => setShowLineNumbers(!showLineNumbers),
       active: showLineNumbers,
     },
     {
       icon: DocumentIcon,
-      text: overrideOutput && !escapeMode ? t('cancelXmlConversion') : t('toXML'),
-      tooltip: escapeMode 
-        ? t('xmlModeActive')
+      text:
+        overrideOutput && !escapeMode ? t("cancelXmlConversion") : t("toXML"),
+      tooltip: escapeMode
+        ? t("xmlModeActive")
         : overrideOutput && !escapeMode
-        ? t('cancelXmlConversion')
-        : t('convertToXml'),
+        ? t("cancelXmlConversion")
+        : t("convertToXml"),
       action: handleToXML,
       active: !!(overrideOutput && !escapeMode),
       disabled: escapeMode,
     },
     {
       icon: LockClosedIcon,
-      text: escapeMode ? t('unescape') : t('escape'),
-      tooltip: escapeMode
-        ? t('unescapeJsonString')
-        : t('escapeJsonString'),
+      text: escapeMode ? t("unescape") : t("escape"),
+      tooltip: escapeMode ? t("unescapeJsonString") : t("escapeJsonString"),
       action: handleEscapeMode,
       active: escapeMode,
       processing: isProcessing,
     },
     {
       icon: DocumentTextIcon,
-      text: t('addExample'),
-      tooltip: t('addExampleData'),
+      text: t("addExample"),
+      tooltip: t("addExampleData"),
       action: handleAddExample,
     },
     // {
@@ -497,12 +493,12 @@ export default function JSONFormatter() {
             <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[88px]">
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {t('input')}
+                  {t("input")}
                 </span>
                 {escapeMode && (
                   <span className="inline-flex items-center px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full border border-green-200 dark:border-green-700">
                     <LockClosedIcon className="w-3 h-3 mr-1" />
-                    {t('escapeMode')}
+                    {t("escapeMode")}
                   </span>
                 )}
               </div>
@@ -513,10 +509,10 @@ export default function JSONFormatter() {
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                   >
                     <ClipboardIcon className="w-3 h-3" />
-                    <span>{t('paste')}</span>
+                    <span>{t("paste")}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {t('pasteFromClipboard')}
+                    {t("pasteFromClipboard")}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>
@@ -524,7 +520,7 @@ export default function JSONFormatter() {
                   <label className="cursor-pointer">
                     <span className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
                       <FolderOpenIcon className="w-3 h-3" />
-                      <span>{t('upload')}</span>
+                      <span>{t("upload")}</span>
                     </span>
                     <input
                       type="file"
@@ -534,7 +530,7 @@ export default function JSONFormatter() {
                     />
                   </label>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {t('uploadLocalFile')}
+                    {t("uploadLocalFile")}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>
@@ -545,8 +541,8 @@ export default function JSONFormatter() {
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="w-full h-[calc(100%-50px)] p-4 border-none outline-none font-mono text-sm bg-transparent text-gray-900 dark:text-white resize-none"
-              placeholder={t('enterJsonData')}
+              className="w-full h-[calc(100%-100px)] p-4 border-none outline-none font-mono text-sm bg-transparent text-gray-900 dark:text-white resize-none"
+              placeholder={t("enterJsonData")}
               spellCheck={false}
             />
           </div>
@@ -565,21 +561,21 @@ export default function JSONFormatter() {
                 )}
                 {escapeMode && overrideOutput && (
                   <span className="text-xs text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded">
-                    ✓ {t('escapeMode')}
+                    ✓ {t("escapeMode")}
                   </span>
                 )}
                 {!overrideOutput &&
                   formattedOutput &&
                   !formattedOutput.startsWith("//") && (
                     <span className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900 px-2 py-1 rounded">
-                      ✓ {t('valid')}
+                      ✓ {t("valid")}
                     </span>
                   )}
                 {!overrideOutput &&
                   formattedOutput &&
                   formattedOutput.startsWith("//") && (
                     <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
-                      ✗ {t('formatError')}
+                      ✗ {t("formatError")}
                     </span>
                   )}
               </div>
@@ -592,7 +588,8 @@ export default function JSONFormatter() {
                     (tool.text === "转义" || tool.text === "取消转义");
                   const isProcessing = (tool as { processing?: boolean })
                     .processing;
-                  const isDisabled = (tool as { disabled?: boolean }).disabled || isProcessing;
+                  const isDisabled =
+                    (tool as { disabled?: boolean }).disabled || isProcessing;
 
                   return (
                     <div key={index} className="relative group">
@@ -648,10 +645,10 @@ export default function JSONFormatter() {
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
                   >
                     <ClipboardDocumentIcon className="w-3 h-3" />
-                    <span>{t('copy')}</span>
+                    <span>{t("copy")}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {t('copyToClipboard')}
+                    {t("copyToClipboard")}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>
@@ -672,10 +669,10 @@ export default function JSONFormatter() {
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
                   >
                     <ArrowDownTrayIcon className="w-3 h-3" />
-                    <span>{t('download')}</span>
+                    <span>{t("download")}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {t('downloadToLocal')}
+                    {t("downloadToLocal")}
                     <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                   </div>
                 </div>

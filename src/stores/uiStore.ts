@@ -8,10 +8,19 @@ interface LanguageState {
   setLanguage: (language: Language) => void;
 }
 
+const getBrowserLanguage = (): Language => {
+  if (typeof window === 'undefined') return 'en';
+  
+  const browserLang = navigator.language.split('-')[0] as Language;
+  const supportedLanguages: Language[] = ['en', 'zh', 'pt', 'es'];
+  
+  return supportedLanguages.includes(browserLang) ? browserLang : 'en';
+};
+
 export const useLanguageStore = create<LanguageState>()(
   persist(
     (set) => ({
-      language: 'en',
+      language: getBrowserLanguage(),
       setLanguage: (language) => {
         set({ language });
       },
