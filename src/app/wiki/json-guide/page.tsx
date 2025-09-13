@@ -27,13 +27,22 @@ export default function JSONGuidePage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Navigation */}
-          <Link 
-            href="/" 
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mb-6"
-          >
-            <ArrowLeftIcon className="w-4 h-4 mr-2" />
-            返回JSON工具
-          </Link>
+          <div className="flex items-center space-x-4 mb-6">
+            <Link 
+              href="/wiki" 
+              className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+            >
+              <ArrowLeftIcon className="w-4 h-4 mr-2" />
+              返回知识库
+            </Link>
+            <span className="text-gray-400">|</span>
+            <Link 
+              href="/" 
+              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            >
+              返回JSON工具
+            </Link>
+          </div>
 
           {/* Header */}
           <header className="mb-12">
@@ -393,6 +402,9 @@ export default function JSONGuidePage() {
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>本指南涵盖了JSON的核心概念和实践应用，适合初学者学习和专业开发者参考。</p>
               <p className="mt-2">
+                <Link href="/wiki" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                  返回知识库
+                </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
                   返回JSON工具首页
                 </Link>

@@ -1,13 +1,17 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-// import { useThemeStore } from "@/stores/uiStore";
 import { LanguageSelector } from "./LanguageSelector";
 import Link from "next/link";
 
 export default function Header() {
   const { t } = useTranslation();
   // const { theme, setTheme } = useThemeStore();
+
+  // Generate help link - always point to wiki main page for better navigation
+  const getHelpLink = () => {
+    return "/wiki";
+  };
 
   // useEffect(() => {
   //   document.documentElement.classList.toggle("dark", theme === "dark");
@@ -19,7 +23,9 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-blue-500">{t("title")}</h1>
+            <Link href="/" className="text-2xl font-bold text-blue-500 hover:text-blue-600 transition-colors">
+              {t("title")}
+            </Link>
           </div>
 
           {/* Navigation */}
@@ -56,7 +62,7 @@ export default function Header() {
 
             {/* Help link */}
             <Link
-              href="/json-guide"
+              href={getHelpLink()}
               className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center space-x-2"
               title={t("help.aboutJSON")}
             >
