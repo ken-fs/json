@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Header from "@/components/Header";
 import Link from "next/link";
-import { ArrowLeftIcon, AcademicCapIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, AcademicCapIcon, CheckCircleIcon, ExclamationTriangleIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 
 export const metadata: Metadata = {
   title: "JSON验证与校验完整指南 - JSON Schema使用教程 | JSON Tools",
@@ -634,10 +634,10 @@ null    // 空值`
                   <h4 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-3">❌ 糟糕的错误信息</h4>
                   <div className="space-y-2 text-red-700 dark:text-red-300 text-sm">
                     <div className="bg-red-100 dark:bg-red-800 p-2 rounded">
-                      <code>"must match format 'email'"</code>
+                      <code>&quot;must match format &apos;email&apos;&quot;</code>
                     </div>
                     <div className="bg-red-100 dark:bg-red-800 p-2 rounded">
-                      <code>"data.age must be >= 0"</code>
+                      <code>&quot;data.age must be &gt;= 0&quot;</code>
                     </div>
                     <p>问题：技术术语，用户难以理解</p>
                   </div>
@@ -647,10 +647,10 @@ null    // 空值`
                   <h4 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-3">✅ 良好的错误信息</h4>
                   <div className="space-y-2 text-green-700 dark:text-green-300 text-sm">
                     <div className="bg-green-100 dark:bg-green-800 p-2 rounded">
-                      <code>"邮箱格式不正确，请输入有效的邮箱地址"</code>
+                      <code>&quot;邮箱格式不正确，请输入有效的邮箱地址&quot;</code>
                     </div>
                     <div className="bg-green-100 dark:bg-green-800 p-2 rounded">
-                      <code>"年龄不能为负数，请输入0或正整数"</code>
+                      <code>&quot;年龄不能为负数，请输入0或正整数&quot;</code>
                     </div>
                     <p>优点：清晰明了，提供解决方案</p>
                   </div>

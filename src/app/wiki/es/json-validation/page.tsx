@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Header from "@/components/Header";
 import Link from "next/link";
-import { ArrowLeftIcon, AcademicCapIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, AcademicCapIcon, CheckCircleIcon, ExclamationTriangleIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 
 export const metadata: Metadata = {
   title: "Guía Completa de Validación y Schema JSON - Tutorial de JSON Schema | JSON Tools",
@@ -485,10 +485,10 @@ null    // Valor nulo`
                   <h4 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-3">❌ Información de Error Pobre</h4>
                   <div className="space-y-2 text-red-700 dark:text-red-300 text-sm">
                     <div className="bg-red-100 dark:bg-red-800 p-2 rounded">
-                      <code>"debe coincidir con formato 'email'"</code>
+                      <code>&quot;debe coincidir con formato &apos;email&apos;&quot;</code>
                     </div>
                     <div className="bg-red-100 dark:bg-red-800 p-2 rounded">
-                      <code>"data.edad debe ser &gt;= 0"</code>
+                      <code>&quot;data.edad debe ser &gt;= 0&quot;</code>
                     </div>
                     <p>Problema: Terminología técnica, difícil de entender para el usuario</p>
                   </div>
@@ -498,10 +498,10 @@ null    // Valor nulo`
                   <h4 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-3">✅ Información de Error Buena</h4>
                   <div className="space-y-2 text-green-700 dark:text-green-300 text-sm">
                     <div className="bg-green-100 dark:bg-green-800 p-2 rounded">
-                      <code>"Formato de email incorrecto, por favor ingrese un email válido"</code>
+                      <code>&quot;Formato de email incorrecto, por favor ingrese un email válido&quot;</code>
                     </div>
                     <div className="bg-green-100 dark:bg-green-800 p-2 rounded">
-                      <code>"La edad no puede ser negativa, por favor ingrese 0 o un entero positivo"</code>
+                      <code>&quot;La edad no puede ser negativa, por favor ingrese 0 o un entero positivo&quot;</code>
                     </div>
                     <p>Ventaja: Claro y comprensible, proporciona soluciones</p>
                   </div>
