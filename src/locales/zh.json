@@ -81,6 +81,7 @@
   "jsonParseErrorShort": "JSON解析错误",
   "items": "项",
   "keys": "键",
+  "helpText": "帮助",
   "help": {
     "aboutJSON": "关于JSON",
     "jsonDescription": "是一种轻量级的基于文本的数据交换格式。它易于人类阅读和编写，也易于机器解析和生成。",

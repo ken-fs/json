@@ -1,16 +1,29 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import { useLanguageStore } from "@/stores/uiStore";
 import { LanguageSelector } from "./LanguageSelector";
 import Link from "next/link";
 
 export default function Header() {
   const { t } = useTranslation();
+  const { language } = useLanguageStore();
   // const { theme, setTheme } = useThemeStore();
 
-  // Generate help link - always point to wiki main page for better navigation
+  // Generate help link based on current language
   const getHelpLink = () => {
-    return "/wiki";
+    switch (language) {
+      case 'en':
+        return '/wiki/en';
+      case 'zh':
+        return '/wiki';
+      case 'pt':
+        return '/wiki/pt';
+      case 'es':
+        return '/wiki/es';
+      default:
+        return '/wiki';
+    }
   };
 
   // useEffect(() => {
@@ -66,7 +79,7 @@ export default function Header() {
               className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center space-x-2"
               title={t("help.aboutJSON")}
             >
-              <span>帮助</span>
+              <span>{t("helpText")}</span>
               <svg
                 className="w-5 h-5"
                 fill="none"

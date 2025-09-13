@@ -76,5 +76,25 @@
   "expectedPropertyName": "Nome de propriedade ausente, certifique-se de que as propriedades do objeto estão entre aspas",
   "escapeMode": "Modo de Escape",
   "clickToCancel": "Clique para cancelar",
-  "clickToEnable": "Clique para ativar"
+  "clickToEnable": "Clique para ativar",
+  "formattedJsonDisplay": "Dados JSON formatados serão exibidos aqui...",
+  "jsonParseErrorShort": "Erro de Análise JSON",
+  "items": "itens",
+  "keys": "chaves",
+  "helpText": "Ajuda",
+  "help": {
+    "aboutJSON": "Sobre JSON",
+    "jsonDescription": "é um formato leve de intercâmbio de dados baseado em texto. É fácil para humanos lerem e escreverem, e fácil para máquinas analisarem e gerarem.",
+    "keyFeatures": "Principais Características:",
+    "feature1": "Formato de texto legível por humanos",
+    "feature2": "Formato de dados independente de linguagem",
+    "feature3": "Suporta strings, números, booleanos, arrays e objetos",
+    "feature4": "Amplamente suportado em todas as linguagens de programação",
+    "useCases": "Casos de Uso Comuns:",
+    "useCase1": "APIs Web e serviços RESTful",
+    "useCase2": "Arquivos de configuração e configurações",
+    "useCase3": "Armazenamento e transmissão de dados",
+    "useCase4": "Comunicação AJAX em aplicações web",
+    "tip": "Use nosso formatador JSON para embelezar, validar e converter seus dados JSON com facilidade!"
+  }
 }

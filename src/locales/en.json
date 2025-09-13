@@ -81,6 +81,7 @@
   "jsonParseErrorShort": "JSON Parse Error",
   "items": "items",
   "keys": "keys",
+  "helpText": "Help",
   "help": {
     "aboutJSON": "About JSON",
     "jsonDescription": "is a lightweight, text-based data interchange format. It's easy for humans to read and write, and easy for machines to parse and generate.",
