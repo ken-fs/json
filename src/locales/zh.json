@@ -80,5 +80,20 @@
   "formattedJsonDisplay": "格式化后的JSON数据将在这里显示...",
   "jsonParseErrorShort": "JSON解析错误",
   "items": "项",
-  "keys": "键"
+  "keys": "键",
+  "help": {
+    "aboutJSON": "关于JSON",
+    "jsonDescription": "是一种轻量级的基于文本的数据交换格式。它易于人类阅读和编写，也易于机器解析和生成。",
+    "keyFeatures": "主要特点:",
+    "feature1": "人类可读的文本格式",
+    "feature2": "语言无关的数据格式",
+    "feature3": "支持字符串、数字、布尔值、数组和对象",
+    "feature4": "所有编程语言广泛支持",
+    "useCases": "常见用途:",
+    "useCase1": "Web API和RESTful服务",
+    "useCase2": "配置文件和设置",
+    "useCase3": "数据存储和传输",
+    "useCase4": "Web应用中的AJAX通信",
+    "tip": "使用我们的JSON格式化工具轻松美化、验证和转换您的JSON数据！"
+  }
 }

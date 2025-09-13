@@ -80,5 +80,20 @@
   "formattedJsonDisplay": "Formatted JSON data will be displayed here...",
   "jsonParseErrorShort": "JSON Parse Error",
   "items": "items",
-  "keys": "keys"
+  "keys": "keys",
+  "help": {
+    "aboutJSON": "About JSON",
+    "jsonDescription": "is a lightweight, text-based data interchange format. It's easy for humans to read and write, and easy for machines to parse and generate.",
+    "keyFeatures": "Key Features:",
+    "feature1": "Human-readable text format",
+    "feature2": "Language-independent data format",
+    "feature3": "Supports strings, numbers, booleans, arrays, and objects",
+    "feature4": "Widely supported across all programming languages",
+    "useCases": "Common Use Cases:",
+    "useCase1": "Web APIs and RESTful services",
+    "useCase2": "Configuration files and settings",
+    "useCase3": "Data storage and transmission",
+    "useCase4": "AJAX communication in web applications",
+    "tip": "Use our JSON formatter to beautify, validate, and convert your JSON data with ease!"
+  }
 }
