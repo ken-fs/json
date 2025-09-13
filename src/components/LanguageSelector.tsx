@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Languages } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -20,9 +21,53 @@ const languages = [
 
 export function LanguageSelector() {
   const { language, setLanguage } = useLanguageStore();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleLanguageChange = (value: string) => {
-    setLanguage(value as Language);
+    const newLanguage = value as Language;
+    setLanguage(newLanguage);
+    
+    // Handle wiki route language switching
+    if (pathname.startsWith('/wiki')) {
+      let newPath = pathname;
+      
+      // If currently on wiki main page
+      if (pathname === '/wiki') {
+        // Chinese wiki
+        if (newLanguage === 'zh') {
+          newPath = '/wiki';
+        } else {
+          newPath = `/wiki/${newLanguage}`;
+        }
+      } else if (pathname.startsWith('/wiki/')) {
+        // Extract the current language and remaining path
+        const pathParts = pathname.split('/');
+        const currentLang = pathParts[2]; // e.g., 'en', 'pt', 'es'
+        
+        if (['en', 'pt', 'es'].includes(currentLang)) {
+          // Currently on a localized wiki page
+          const remainingPath = pathParts.slice(3).join('/');
+          
+          if (newLanguage === 'zh') {
+            newPath = remainingPath ? `/wiki/${remainingPath}` : '/wiki';
+          } else {
+            newPath = remainingPath ? `/wiki/${newLanguage}/${remainingPath}` : `/wiki/${newLanguage}`;
+          }
+        } else {
+          // Currently on Chinese wiki page (no language prefix)
+          const remainingPath = pathParts.slice(2).join('/');
+          
+          if (newLanguage === 'zh') {
+            newPath = `/wiki/${remainingPath}`;
+          } else {
+            newPath = `/wiki/${newLanguage}/${remainingPath}`;
+          }
+        }
+      }
+      
+      router.push(newPath);
+    }
   };
 
   const getCurrentLanguage = () => {
