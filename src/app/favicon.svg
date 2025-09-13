@@ -1,0 +1,33 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="jsonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5"/>
+      <stop offset="50%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#1E40AF"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="url(#jsonGrad)"/>
+  
+  <!-- Left curly brace -->
+  <path d="M 8 9 C 6 9 5.5 9.5 5.5 11.5 L 5.5 13 C 5.5 14 5 14.5 4 15 C 5 15.5 5.5 16 5.5 17 L 5.5 18.5 C 5.5 20.5 6 21 8 21" 
+        stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Right curly brace -->
+  <path d="M 24 9 C 26 9 26.5 9.5 26.5 11.5 L 26.5 13 C 26.5 14 27 14.5 28 15 C 27 15.5 26.5 16 26.5 17 L 26.5 18.5 C 26.5 20.5 26 21 24 21" 
+        stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- JSON content dots and lines -->
+  <circle cx="10" cy="12" r="0.8" fill="white" opacity="0.9"/>
+  <rect x="12" y="11.6" width="8" height="0.8" rx="0.4" fill="white" opacity="0.7"/>
+  
+  <circle cx="10" cy="15" r="0.8" fill="white" opacity="0.9"/>
+  <rect x="12" y="14.6" width="10" height="0.8" rx="0.4" fill="white" opacity="0.7"/>
+  
+  <circle cx="10" cy="18" r="0.8" fill="white" opacity="0.9"/>
+  <rect x="12" y="17.6" width="6" height="0.8" rx="0.4" fill="white" opacity="0.7"/>
+  
+  <!-- Subtle highlight -->
+  <ellipse cx="16" cy="8" rx="12" ry="2" fill="white" opacity="0.2"/>
+</svg>

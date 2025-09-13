@@ -136,11 +136,11 @@ export default function WikiEnglishPage() {
                 
                 return (
                   <Link key={category.id} href={firstArticle?.href || '#'}>
-                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer">
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer h-full flex flex-col">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                         {category.name}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 flex-1">
                         {category.description}
                       </p>
                       <div className="text-sm text-blue-600 dark:text-blue-400">

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Header from "@/components/Header";
 import Link from "next/link";
-import { ArrowLeftIcon, BoltIcon, DocumentTextIcon, ChartBarIcon, CpuChipIcon, ServerIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, BoltIcon, ChartBarIcon, CpuChipIcon, ServerIcon, ClockIcon } from "@heroicons/react/24/outline";
 
 export const metadata: Metadata = {
   title: "Optimización de Rendimiento JSON - Guía de Mejores Prácticas | JSON Tools",

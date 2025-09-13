@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Header from "@/components/Header";
 import Link from "next/link";
-import { ArrowLeftIcon, BookOpenIcon, CodeBracketIcon, DocumentTextIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, BookOpenIcon, CodeBracketIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 
 export const metadata: Metadata = {
   title: "Guía Completa de JSON - Formato de Intercambio de Datos Explicado | JSON Tools",
