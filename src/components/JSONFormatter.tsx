@@ -487,9 +487,9 @@ export default function JSONFormatter() {
 
       {/* Main content area - Split panes */}
       <div className="h-[calc(100vh-178px)] p-4">
-        <div className="h-full flex gap-4">
+        <div className="h-full flex gap-4 min-w-0">
           {/* Left pane - Input area */}
-          <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex-4 min-w-0 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[88px]">
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -541,14 +541,15 @@ export default function JSONFormatter() {
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="w-full h-[calc(100%-100px)] p-4 border-none outline-none font-mono text-sm bg-transparent text-gray-900 dark:text-white resize-none"
+              className="w-full h-[calc(100%-100px)] p-4 border-none outline-none font-mono text-sm bg-transparent text-gray-900 dark:text-white resize-none overflow-auto"
               placeholder={t("enterJsonData")}
               spellCheck={false}
+              style={{ wordBreak: "break-all", whiteSpace: "pre-wrap" }}
             />
           </div>
 
           {/* Right pane - JSON Viewer with syntax highlighting */}
-          <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex-5 min-w-0 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[88px]">
               <div className="flex items-center space-x-2">
                 {/* <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -679,14 +680,14 @@ export default function JSONFormatter() {
               </div>
             </div>
 
-            <div className="h-[calc(100%-188px)] border-radius-lg dark:bg-gray-900">
+            <div className="h-[calc(100%-188px)] border-radius-lg dark:bg-gray-900 overflow-hidden">
               {overrideOutput ? (
                 // 手动输出（如XML）：显示原始文本
                 <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
                   {showLineNumbers ? (
-                    <div className="flex items-start">
+                    <div className="flex items-start min-w-0">
                       <div
-                        className="text-gray-400 dark:text-gray-500 text-xs mr-4 select-none"
+                        className="text-gray-400 dark:text-gray-500 text-xs mr-4 select-none flex-shrink-0"
                         style={{ minWidth: "3ch" }}
                       >
                         {overrideOutput.split("\n").map((_, i) => (
@@ -695,14 +696,14 @@ export default function JSONFormatter() {
                           </div>
                         ))}
                       </div>
-                      <div className="flex-1">
-                        <pre className="whitespace-pre-wrap text-gray-900 dark:text-white">
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
                           {overrideOutput}
                         </pre>
                       </div>
                     </div>
                   ) : (
-                    <pre className="whitespace-pre-wrap text-gray-900 dark:text-white">
+                    <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
                       {overrideOutput}
                     </pre>
                   )}
@@ -713,14 +714,14 @@ export default function JSONFormatter() {
                 // 压缩模式：显示原始文本
                 <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
                   {showLineNumbers && (
-                    <div className="flex items-start">
+                    <div className="flex items-start min-w-0">
                       <span
-                        className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none"
+                        className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none flex-shrink-0"
                         style={{ minWidth: "3ch", textAlign: "right" }}
                       >
                         1
                       </span>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0 overflow-hidden">
                         <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
                           {formattedOutput}
                         </pre>
@@ -728,7 +729,7 @@ export default function JSONFormatter() {
                     </div>
                   )}
                   {!showLineNumbers && (
-                    <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
+                    <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
                       {formattedOutput}
                     </pre>
                   )}

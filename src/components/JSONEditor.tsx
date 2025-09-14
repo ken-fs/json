@@ -69,15 +69,15 @@ export default function JSONEditor({
     const createLine = (content: React.ReactNode, showComma: boolean = false) => {
       const lineNumber = showLineNumbers ? lineNumberRef.current.current++ : undefined;
       return (
-        <div className="flex items-start font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded">
+        <div className="flex items-start font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded min-w-0">
           {showLineNumbers && lineNumber !== undefined && (
-            <span className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none" style={{minWidth: '3ch', textAlign: 'right'}}>
+            <span className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none flex-shrink-0" style={{minWidth: '3ch', textAlign: 'right'}}>
               {lineNumber}
             </span>
           )}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0 overflow-hidden">
             <span className="whitespace-pre">{indent}</span>
-            {content}
+            <span style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}>{content}</span>
             {showComma && <span className={getTypeColor('comma')}>,</span>}
           </div>
         </div>
@@ -112,7 +112,7 @@ export default function JSONEditor({
                   <span className={getTypeColor('comma')}>: </span>
                 </>
               )}
-              <span className={getTypeColor('string')}>&quot;{data}&quot;</span>
+              <span className={`${getTypeColor('string')} break-all`}>&quot;{data}&quot;</span>
             </>,
             !isLastItem
           )}
@@ -283,10 +283,10 @@ export default function JSONEditor({
   return (
     <div 
       ref={editorRef}
-      className="p-4 font-mono text-sm overflow-auto h-full bg-transparent"
+      className="p-4 font-mono text-sm overflow-auto h-full bg-transparent min-w-0"
       style={{ minHeight: '200px' }}
     >
-      <div className="space-y-0">
+      <div className="space-y-0 min-w-0">
         {parsedData ? renderValue(parsedData, '', 0, undefined, true).map((element, index) => (
           <React.Fragment key={index}>{element}</React.Fragment>
         )) : null}
