@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { jsonToXML, escapeJSON, isEscapedJSON } from "@/lib/utils";
 import JSONEditor from "./JSONEditor";
 import { Alert, AlertDescription } from "./ui/alert";
+import ToolSelector from "./ToolSelector";
 import {
   ArrowDownTrayIcon,
   ClipboardDocumentIcon,
@@ -43,6 +44,7 @@ export default function JSONFormatter() {
     setMessageType(type);
     setTimeout(() => setMessage(""), 3000);
   };
+
 
   // 实时格式化JSON和手动输出处理
   useEffect(() => {
@@ -297,45 +299,6 @@ export default function JSONFormatter() {
     showMessage(t("exampleAdded"), "success");
   };
 
-  const toolCategories = [
-    {
-      name: t("jsonTools"),
-      icon: "🛠",
-      active: true,
-    },
-    // {
-    //   name: 'Formatter',
-    //   icon: '📝'
-    // },
-    // {
-    //   name: 'Online Run',
-    //   icon: '▶'
-    // },
-    // {
-    //   name: 'Common Tools',
-    //   icon: '🔧'
-    // },
-    // {
-    //   name: 'Image Tools',
-    //   icon: '🖼'
-    // },
-    // {
-    //   name: 'Network Tools',
-    //   icon: '🌐'
-    // },
-    // {
-    //   name: 'Text Tools',
-    //   icon: '📄'
-    // },
-    // {
-    //   name: 'Encode & Encrypt',
-    //   icon: '🔒'
-    // },
-    // {
-    //   name: 'App Store',
-    //   icon: '🏪'
-    // }
-  ];
 
   const rightToolbar = [
     // {
@@ -463,23 +426,9 @@ export default function JSONFormatter() {
     <div className="flex-1 bg-gray-50 dark:bg-gray-900 relative">
       {/* Toolbar */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between px-4 py-2">
-          {/* Left toolbar - Tool Categories */}
-          <div className="flex items-center space-x-1">
-            {toolCategories.map((tool, index) => (
-              <button
-                key={index}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  tool.active
-                    ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                    : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                }`}
-              >
-                <span className="mr-1">{tool.icon}</span>
-                {tool.name}
-              </button>
-            ))}
-          </div>
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Left toolbar - Tool Selector */}
+          <ToolSelector />
 
           {/* Right toolbar - Action buttons */}
         </div>
@@ -490,7 +439,7 @@ export default function JSONFormatter() {
         <div className="h-full flex gap-4 min-w-0">
           {/* Left pane - Input area */}
           <div className="flex-4 min-w-0 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[88px]">
+            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[60px]">
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t("input")}
@@ -550,7 +499,7 @@ export default function JSONFormatter() {
 
           {/* Right pane - JSON Viewer with syntax highlighting */}
           <div className="flex-5 min-w-0 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[88px]">
+            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[60px]">
               <div className="flex items-center space-x-2">
                 {/* <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   格式化结果
@@ -680,7 +629,7 @@ export default function JSONFormatter() {
               </div>
             </div>
 
-            <div className="h-[calc(100%-188px)] border-radius-lg dark:bg-gray-900 overflow-hidden">
+            <div className="h-[calc(100%-108px)] border-radius-lg dark:bg-gray-900 overflow-hidden">
               {overrideOutput ? (
                 // 手动输出（如XML）：显示原始文本
                 <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">

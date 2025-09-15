@@ -165,3 +165,152 @@ export function isEscapedJSON(str: string): boolean {
     return false; // 解析失败，不是有效的JSON
   }
 }
+
+// JSON转TypeScript接口工具函数
+export function jsonToTypeScript(jsonString: string, interfaceName: string = "RootObject"): string {
+  try {
+    const parsed = JSON.parse(jsonString);
+
+    function getTypeFromValue(value: unknown, key?: string): string {
+      if (value === null) return "null";
+      if (typeof value === "boolean") return "boolean";
+      if (typeof value === "number") return "number";
+      if (typeof value === "string") return "string";
+      if (Array.isArray(value)) {
+        if (value.length === 0) return "unknown[]";
+        const firstElementType = getTypeFromValue(value[0]);
+        return `${firstElementType}[]`;
+      }
+      if (typeof value === "object" && value !== null) {
+        return key ? `${capitalize(key)}Interface` : "object";
+      }
+      return "unknown";
+    }
+
+    function capitalize(str: string): string {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function generateInterface(obj: unknown, name: string): string[] {
+      if (typeof obj !== "object" || obj === null || Array.isArray(obj)) {
+        return [];
+      }
+
+      const interfaces: string[] = [];
+      const objRecord = obj as Record<string, unknown>;
+      const properties: string[] = [];
+
+      for (const key in objRecord) {
+        if (objRecord.hasOwnProperty(key)) {
+          const value = objRecord[key];
+          const type = getTypeFromValue(value, key);
+
+          // 如果是嵌套对象，生成子接口
+          if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+            const childInterfaceName = `${capitalize(key)}Interface`;
+            const childInterfaces = generateInterface(value, childInterfaceName);
+            interfaces.push(...childInterfaces);
+          }
+
+          properties.push(`  ${key}: ${type};`);
+        }
+      }
+
+      const interfaceDefinition = `interface ${name} {\n${properties.join('\n')}\n}`;
+      interfaces.push(interfaceDefinition);
+
+      return interfaces;
+    }
+
+    const interfaces = generateInterface(parsed, interfaceName);
+    return interfaces.join('\n\n');
+  } catch {
+    throw new Error("Invalid JSON format for TypeScript conversion");
+  }
+}
+
+// JSON转Java类工具函数
+export function jsonToJava(jsonString: string, className: string = "RootObject"): string {
+  try {
+    const parsed = JSON.parse(jsonString);
+
+    function getJavaTypeFromValue(value: unknown, key?: string): string {
+      if (value === null) return "Object";
+      if (typeof value === "boolean") return "boolean";
+      if (typeof value === "number") {
+        return Number.isInteger(value as number) ? "int" : "double";
+      }
+      if (typeof value === "string") return "String";
+      if (Array.isArray(value)) {
+        if (value.length === 0) return "List<Object>";
+        const firstElementType = getJavaTypeFromValue(value[0]);
+        return `List<${firstElementType}>`;
+      }
+      if (typeof value === "object" && value !== null) {
+        return key ? capitalize(key) : "Object";
+      }
+      return "Object";
+    }
+
+    function capitalize(str: string): string {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function generateClass(obj: unknown, name: string): string[] {
+      if (typeof obj !== "object" || obj === null || Array.isArray(obj)) {
+        return [];
+      }
+
+      const classes: string[] = [];
+      const objRecord = obj as Record<string, unknown>;
+      const fields: string[] = [];
+      const getters: string[] = [];
+      const setters: string[] = [];
+
+      for (const key in objRecord) {
+        if (objRecord.hasOwnProperty(key)) {
+          const value = objRecord[key];
+          const type = getJavaTypeFromValue(value, key);
+
+          // 如果是嵌套对象，生成子类
+          if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+            const childClassName = capitalize(key);
+            const childClasses = generateClass(value, childClassName);
+            classes.push(...childClasses);
+          }
+
+          // 生成字段
+          fields.push(`    private ${type} ${key};`);
+
+          // 生成getter
+          const getterName = `get${capitalize(key)}`;
+          getters.push(`    public ${type} ${getterName}() {\n        return ${key};\n    }`);
+
+          // 生成setter
+          const setterName = `set${capitalize(key)}`;
+          setters.push(`    public void ${setterName}(${type} ${key}) {\n        this.${key} = ${key};\n    }`);
+        }
+      }
+
+      const imports = fields.some(field => field.includes('List<'))
+        ? 'import java.util.List;\n\n'
+        : '';
+
+      const classDefinition = `${imports}public class ${name} {
+${fields.join('\n')}
+
+${getters.join('\n\n')}
+
+${setters.join('\n\n')}
+}`;
+
+      classes.push(classDefinition);
+      return classes;
+    }
+
+    const classes = generateClass(parsed, className);
+    return classes.join('\n\n');
+  } catch {
+    throw new Error("Invalid JSON format for Java conversion");
+  }
+}

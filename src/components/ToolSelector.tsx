@@ -1,0 +1,112 @@
+"use client";
+
+import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+
+const toolOptions = [
+  {
+    value: "json-formatter",
+    label: "JSON格式化",
+    description: "格式化、验证和美化JSON数据",
+    path: "/"
+  },
+  {
+    value: "json-to-typescript",
+    label: "JSON转TypeScript",
+    description: "将JSON转换为TypeScript接口定义",
+    path: "/json-to-typescript"
+  },
+  {
+    value: "json-to-java",
+    label: "JSON转Java",
+    description: "将JSON转换为Java类定义",
+    path: "/json-to-java"
+  }
+];
+
+export default function ToolSelector() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [selectedValue, setSelectedValue] = useState<string>("json-formatter");
+  const [isOpen, setIsOpen] = useState(false);
+
+  // 当路径变化时更新选中值
+  useEffect(() => {
+    const tool = toolOptions.find(option => option.path === pathname);
+    const newValue = tool?.value || "json-formatter";
+    setSelectedValue(newValue);
+  }, [pathname]);
+
+  // 点击外部关闭下拉框
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.tool-selector-dropdown')) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [isOpen]);
+
+  const handleToolChange = (value: string) => {
+    const selectedToolOption = toolOptions.find(tool => tool.value === value);
+    if (selectedToolOption) {
+      setSelectedValue(value); // 立即更新状态
+      setIsOpen(false); // 关闭下拉框
+      if (selectedToolOption.path !== pathname) {
+        router.push(selectedToolOption.path);
+      }
+    }
+  };
+
+  const currentOption = toolOptions.find(tool => tool.value === selectedValue);
+
+  return (
+    <div className="relative tool-selector-dropdown">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-64 px-3 py-3 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <div className="flex flex-col items-start">
+          <span className="font-medium text-gray-900 dark:text-white text-sm leading-tight">
+            {currentOption?.label || "选择工具"}
+          </span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">
+            {currentOption?.description}
+          </span>
+        </div>
+        <ChevronDownIcon
+          className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50">
+          {toolOptions.map((tool) => (
+            <button
+              key={tool.value}
+              onClick={() => handleToolChange(tool.value)}
+              className={`w-full px-3 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 first:rounded-t-md last:rounded-b-md ${
+                selectedValue === tool.value
+                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
+                  : 'text-gray-900 dark:text-white'
+              }`}
+            >
+              <div className="flex flex-col">
+                <span className="font-medium text-sm leading-tight">{tool.label}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">
+                  {tool.description}
+                </span>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

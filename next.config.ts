@@ -1,9 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable static exports for better SEO
-  output: "export",
-  trailingSlash: true,
+  // Enable static exports for better SEO (disabled in development)
+  ...(process.env.NODE_ENV === 'production' && {
+    output: "export",
+    trailingSlash: true,
+  }),
 
   // Image optimization
   images: {
@@ -13,6 +15,15 @@ const nextConfig: NextConfig = {
 
   // Performance optimizations
   compress: true,
+
+  // Development optimizations
+  ...(process.env.NODE_ENV === 'development' && {
+    turbopack: {
+      resolveAlias: {
+        // Fix potential module resolution issues
+      },
+    },
+  }),
 
   // Note: headers and redirects are not supported with static export
   // These configurations are commented out for static export compatibility
