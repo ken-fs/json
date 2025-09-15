@@ -20,6 +20,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **pnpm** - 首选包管理器
 - 避免使用npm或yarn，除非项目明确要求
 
+### 数据库和持久化
+- **Zustand** - 轻量级状态管理，支持持久化
+- **LocalStorage** - 通过Zustand middleware实现设置持久化
+
 ## 常用命令
 
 ### 开发命令
@@ -53,9 +57,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 使用Zustand进行状态管理，持久化存储：
 ```typescript
 // src/stores/uiStore.ts
-useLanguageStore - 语言切换 ('en' | 'zh')
+useLanguageStore - 语言切换 ('en' | 'zh' | 'pt' | 'es')
 useThemeStore - 主题切换 ('light' | 'dark')
 ```
+
+#### 多语言支持
+项目支持4种语言：
+- **en** - 英语（默认）
+- **zh** - 中文简体
+- **pt** - 葡萄牙语
+- **es** - 西班牙语
+
+使用i18next + react-i18next实现国际化，包含专门的wiki页面多语言路由结构。
 
 #### 工具函数
 `src/lib/utils.ts` 包含核心JSON处理功能：
@@ -120,6 +133,8 @@ import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 - 使用App Router (src/app/目录)
 - React 19兼容性
 - Turbopack作为构建工具
+- 完整的SEO元数据配置（sitemap.ts, 结构化数据）
+- PWA支持（manifest.json配置）
 
 ### 性能优化
 - 组件懒加载和代码分割
