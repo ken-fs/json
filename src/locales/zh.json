@@ -82,6 +82,47 @@
   "items": "项",
   "keys": "键",
   "helpText": "帮助",
+  "selectOption": "选择一个选项",
+  "noOptions": "暂无可选项",
+  "pleaseSelect": "请选择...",
+  "jsonInput": "JSON输入",
+  "typeScriptInterfaces": "TypeScript接口",
+  "javaClasses": "Java类",
+  "enterJsonData": "输入JSON数据...",
+  "pasteData": "粘贴",
+  "uploadFile": "上传",
+  "addExample": "示例",
+  "clearAll": "清空",
+  "copyCode": "复制",
+  "downloadFile": "下载",
+  "convertSuccess": "转换成功",
+  "convertFailed": "转换失败",
+  "pleaseEnterJson": "请输入JSON数据",
+  "copiedToClipboard": "已复制到剪贴板",
+  "copyFailed": "复制失败",
+  "pasteSuccess": "已粘贴数据",
+  "pasteFailed": "粘贴失败",
+  "fileUploaded": "文件上传成功",
+  "fileDownloaded": "文件已下载",
+  "exampleAdded": "示例数据已添加",
+  "generatedSuccess": "✓ 生成成功",
+  "interfacesPlaceholder": "// TypeScript接口将在这里显示...",
+  "classesPlaceholder": "// Java类将在这里显示...",
+  "selectTool": "选择工具",
+  "tools": {
+    "jsonFormatter": {
+      "label": "JSON格式化",
+      "description": "格式化、验证和美化JSON数据"
+    },
+    "jsonToTypeScript": {
+      "label": "JSON转TypeScript",
+      "description": "将JSON转换为TypeScript接口定义"
+    },
+    "jsonToJava": {
+      "label": "JSON转Java",
+      "description": "将JSON转换为Java类定义"
+    }
+  },
   "help": {
     "aboutJSON": "关于JSON",
     "jsonDescription": "是一种轻量级的基于文本的数据交换格式。它易于人类阅读和编写，也易于机器解析和生成。",

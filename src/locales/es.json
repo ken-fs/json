@@ -82,6 +82,47 @@
   "items": "elementos",
   "keys": "claves",
   "helpText": "Ayuda",
+  "selectOption": "Seleccionar una opción",
+  "noOptions": "No hay opciones disponibles",
+  "pleaseSelect": "Por favor seleccione...",
+  "jsonInput": "Entrada JSON",
+  "typeScriptInterfaces": "Interfaces TypeScript",
+  "javaClasses": "Clases Java",
+  "enterJsonData": "Introducir datos JSON...",
+  "pasteData": "Pegar",
+  "uploadFile": "Subir",
+  "addExample": "Ejemplo",
+  "clearAll": "Limpiar",
+  "copyCode": "Copiar",
+  "downloadFile": "Descargar",
+  "convertSuccess": "Conversión exitosa",
+  "convertFailed": "Conversión fallida",
+  "pleaseEnterJson": "Por favor introduzca datos JSON",
+  "copiedToClipboard": "Copiado al portapapeles",
+  "copyFailed": "Copia fallida",
+  "pasteSuccess": "Datos pegados",
+  "pasteFailed": "Pegado fallido",
+  "fileUploaded": "Archivo subido exitosamente",
+  "fileDownloaded": "Archivo descargado",
+  "exampleAdded": "Datos de ejemplo añadidos",
+  "generatedSuccess": "✓ Generado exitosamente",
+  "interfacesPlaceholder": "// Las interfaces TypeScript aparecerán aquí...",
+  "classesPlaceholder": "// Las clases Java aparecerán aquí...",
+  "selectTool": "Seleccionar Herramienta",
+  "tools": {
+    "jsonFormatter": {
+      "label": "Formateador JSON",
+      "description": "Formatear, validar y embellecer datos JSON"
+    },
+    "jsonToTypeScript": {
+      "label": "JSON a TypeScript",
+      "description": "Convertir JSON a definiciones de interfaces TypeScript"
+    },
+    "jsonToJava": {
+      "label": "JSON a Java",
+      "description": "Convertir JSON a definiciones de clases Java"
+    }
+  },
   "help": {
     "aboutJSON": "Acerca de JSON",
     "jsonDescription": "es un formato ligero de intercambio de datos basado en texto. Es fácil de leer y escribir para los humanos, y fácil de analizar y generar para las máquinas.",

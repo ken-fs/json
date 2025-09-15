@@ -7,6 +7,79 @@ import { cn } from "@/lib/utils";
 
 const Select = SelectPrimitive.Root;
 
+interface SelectWithStorageProps extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> {
+  storageKey: string;
+  defaultValue?: string;
+  onValueChange?: (value: string) => void;
+  children: React.ReactNode;
+  value?: string;
+}
+
+const getFirstSelectValue = (children: React.ReactNode): string | undefined => {
+  let firstValue: string | undefined;
+
+  const findValueInChildren = (childrenToSearch: React.ReactNode) => {
+    React.Children.forEach(childrenToSearch, (child) => {
+      if (React.isValidElement(child) && !firstValue) {
+        // Check if this is a SelectItem with a value prop
+        const props = child.props as { value?: string; children?: React.ReactNode };
+        if (props.value) {
+          firstValue = props.value;
+        }
+        // Recursively search in children
+        if (props.children) {
+          findValueInChildren(props.children);
+        }
+      }
+    });
+  };
+
+  findValueInChildren(children);
+  return firstValue;
+};
+
+const SelectWithStorage: React.FC<SelectWithStorageProps> = ({ storageKey, defaultValue, onValueChange, children, value, ...props }) => {
+  const [internalValue, setInternalValue] = React.useState<string>("");
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+    const stored = localStorage.getItem(storageKey);
+    if (stored) {
+      setInternalValue(stored);
+    } else {
+      const fallbackValue = defaultValue || getFirstSelectValue(children);
+      if (fallbackValue) {
+        setInternalValue(fallbackValue);
+      }
+    }
+  }, [storageKey, defaultValue, children]);
+
+  const handleValueChange = React.useCallback((newValue: string) => {
+    setInternalValue(newValue);
+    if (isClient) {
+      localStorage.setItem(storageKey, newValue);
+    }
+    onValueChange?.(newValue);
+  }, [storageKey, onValueChange, isClient]);
+
+  const currentValue = value !== undefined ? value : internalValue;
+
+  if (!isClient) {
+    return null;
+  }
+
+  return (
+    <SelectPrimitive.Root
+      value={currentValue}
+      onValueChange={handleValueChange}
+      {...props}
+    >
+      {children}
+    </SelectPrimitive.Root>
+  );
+};
+
 const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
@@ -145,8 +218,11 @@ const SelectSeparator = React.forwardRef<
 ));
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
 
+SelectWithStorage.displayName = "SelectWithStorage";
+
 export {
   Select,
+  SelectWithStorage,
   SelectGroup,
   SelectValue,
   SelectTrigger,

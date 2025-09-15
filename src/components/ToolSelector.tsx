@@ -2,30 +2,29 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const toolOptions = [
   {
     value: "json-formatter",
-    label: "JSON格式化",
-    description: "格式化、验证和美化JSON数据",
+    translationKey: "jsonFormatter",
     path: "/"
   },
   {
     value: "json-to-typescript",
-    label: "JSON转TypeScript",
-    description: "将JSON转换为TypeScript接口定义",
+    translationKey: "jsonToTypeScript",
     path: "/json-to-typescript"
   },
   {
     value: "json-to-java",
-    label: "JSON转Java",
-    description: "将JSON转换为Java类定义",
+    translationKey: "jsonToJava",
     path: "/json-to-java"
   }
 ];
 
 export default function ToolSelector() {
+  const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
   const [selectedValue, setSelectedValue] = useState<string>("json-formatter");
@@ -66,6 +65,14 @@ export default function ToolSelector() {
 
   const currentOption = toolOptions.find(tool => tool.value === selectedValue);
 
+  const getToolLabel = (translationKey: string) => {
+    return t(`tools.${translationKey}.label`);
+  };
+
+  const getToolDescription = (translationKey: string) => {
+    return t(`tools.${translationKey}.description`);
+  };
+
   return (
     <div className="relative tool-selector-dropdown">
       <button
@@ -74,10 +81,10 @@ export default function ToolSelector() {
       >
         <div className="flex flex-col items-start">
           <span className="font-medium text-gray-900 dark:text-white text-sm leading-tight">
-            {currentOption?.label || "选择工具"}
+            {currentOption ? getToolLabel(currentOption.translationKey) : t("selectTool")}
           </span>
           <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">
-            {currentOption?.description}
+            {currentOption ? getToolDescription(currentOption.translationKey) : ""}
           </span>
         </div>
         <ChevronDownIcon
@@ -98,9 +105,9 @@ export default function ToolSelector() {
               }`}
             >
               <div className="flex flex-col">
-                <span className="font-medium text-sm leading-tight">{tool.label}</span>
+                <span className="font-medium text-sm leading-tight">{getToolLabel(tool.translationKey)}</span>
                 <span className="text-xs text-gray-500 dark:text-gray-400 leading-none">
-                  {tool.description}
+                  {getToolDescription(tool.translationKey)}
                 </span>
               </div>
             </button>

@@ -82,6 +82,47 @@
   "items": "items",
   "keys": "keys",
   "helpText": "Help",
+  "selectOption": "Select an option",
+  "noOptions": "No options available",
+  "pleaseSelect": "Please select...",
+  "jsonInput": "JSON Input",
+  "typeScriptInterfaces": "TypeScript Interfaces",
+  "javaClasses": "Java Classes",
+  "enterJsonData": "Enter JSON data...",
+  "pasteData": "Paste",
+  "uploadFile": "Upload",
+  "addExample": "Example",
+  "clearAll": "Clear",
+  "copyCode": "Copy",
+  "downloadFile": "Download",
+  "convertSuccess": "Conversion successful",
+  "convertFailed": "Conversion failed",
+  "pleaseEnterJson": "Please enter JSON data",
+  "copiedToClipboard": "Copied to clipboard",
+  "copyFailed": "Copy failed",
+  "pasteSuccess": "Data pasted",
+  "pasteFailed": "Paste failed",
+  "fileUploaded": "File uploaded successfully",
+  "fileDownloaded": "File downloaded",
+  "exampleAdded": "Example data added",
+  "generatedSuccess": "✓ Generated successfully",
+  "interfacesPlaceholder": "// TypeScript interfaces will appear here...",
+  "classesPlaceholder": "// Java classes will appear here...",
+  "selectTool": "Select Tool",
+  "tools": {
+    "jsonFormatter": {
+      "label": "JSON Formatter",
+      "description": "Format, validate and beautify JSON data"
+    },
+    "jsonToTypeScript": {
+      "label": "JSON to TypeScript",
+      "description": "Convert JSON to TypeScript interface definitions"
+    },
+    "jsonToJava": {
+      "label": "JSON to Java",
+      "description": "Convert JSON to Java class definitions"
+    }
+  },
   "help": {
     "aboutJSON": "About JSON",
     "jsonDescription": "is a lightweight, text-based data interchange format. It's easy for humans to read and write, and easy for machines to parse and generate.",
