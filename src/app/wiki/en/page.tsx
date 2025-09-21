@@ -63,6 +63,30 @@ export default function WikiEnglishPage() {
       tags: ['Performance', 'Optimization', 'Big Data'],
       readTime: '8 min read',
       difficulty: 'advanced'
+    },
+    {
+      id: 'json-to-typescript',
+      title: 'JSON → TypeScript Interfaces',
+      description: 'Generate TypeScript interfaces from JSON with nested types and arrays',
+      category: 'conversion',
+      categoryName: 'Conversion',
+      icon: CodeBracketIcon,
+      href: '/wiki/en/json-to-typescript',
+      tags: ['Codegen', 'TypeScript', 'Interfaces'],
+      readTime: '5 min read',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-to-java',
+      title: 'JSON → Java Classes',
+      description: 'Generate plain Java classes (POJOs) from JSON, including nested objects',
+      category: 'conversion',
+      categoryName: 'Conversion',
+      icon: CodeBracketIcon,
+      href: '/wiki/en/json-to-java',
+      tags: ['Codegen', 'Java', 'Types'],
+      readTime: '5 min read',
+      difficulty: 'beginner'
     }
   ];
 
@@ -70,7 +94,8 @@ export default function WikiEnglishPage() {
     { id: 'foundation', name: 'Foundation', description: 'JSON basic concepts and syntax' },
     { id: 'api', name: 'API Design', description: 'RESTful APIs and JSON data exchange' },
     { id: 'validation', name: 'Validation', description: 'Data validation and error handling' },
-    { id: 'performance', name: 'Performance', description: 'Performance tuning and best practices' }
+    { id: 'performance', name: 'Performance', description: 'Performance tuning and best practices' },
+    { id: 'conversion', name: 'Conversion', description: 'Format conversion and code generation' }
   ];
 
   const getDifficultyColor = (difficulty: string) => {

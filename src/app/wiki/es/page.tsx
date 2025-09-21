@@ -63,6 +63,30 @@ export default function WikiSpanishPage() {
       tags: ['Rendimiento', 'Optimización', 'Big Data'],
       readTime: '8 min de lectura',
       difficulty: 'advanced'
+    },
+    {
+      id: 'json-to-typescript',
+      title: 'JSON → Interfaces TypeScript',
+      description: 'Genera interfaces TypeScript a partir de JSON con tipos anidados y arrays',
+      category: 'conversion',
+      categoryName: 'Conversión',
+      icon: CodeBracketIcon,
+      href: '/wiki/es/json-to-typescript',
+      tags: ['Codegen', 'TypeScript', 'Interfaces'],
+      readTime: '5 min de lectura',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-to-java',
+      title: 'JSON → Clases Java',
+      description: 'Genera clases Java (POJO) a partir de JSON, incluyendo objetos anidados',
+      category: 'conversion',
+      categoryName: 'Conversión',
+      icon: CodeBracketIcon,
+      href: '/wiki/es/json-to-java',
+      tags: ['Codegen', 'Java', 'Tipos'],
+      readTime: '5 min de lectura',
+      difficulty: 'beginner'
     }
   ];
 
@@ -70,7 +94,8 @@ export default function WikiSpanishPage() {
     { id: 'foundation', name: 'Fundamentos', description: 'Conceptos básicos y sintaxis de JSON' },
     { id: 'api', name: 'Diseño de API', description: 'APIs RESTful e intercambio de datos JSON' },
     { id: 'validation', name: 'Validación', description: 'Validación de datos y manejo de errores' },
-    { id: 'performance', name: 'Rendimiento', description: 'Ajuste de rendimiento y mejores prácticas' }
+    { id: 'performance', name: 'Rendimiento', description: 'Ajuste de rendimiento y mejores prácticas' },
+    { id: 'conversion', name: 'Conversión', description: 'Conversión de formatos y generación de código' }
   ];
 
   const getDifficultyColor = (difficulty: string) => {

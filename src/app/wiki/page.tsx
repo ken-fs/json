@@ -63,6 +63,30 @@ export default function WikiPage() {
       tags: ['性能', '优化', '大数据'],
       readTime: '8分钟',
       difficulty: 'advanced'
+    },
+    {
+      id: 'json-to-typescript',
+      title: 'JSON 转 TypeScript 接口',
+      description: '从 JSON 一键生成 TypeScript 接口，支持嵌套对象与数组',
+      category: 'conversion',
+      categoryName: '格式转换',
+      icon: CodeBracketIcon,
+      href: '/wiki/cn/json-to-typescript',
+      tags: ['代码生成', 'TypeScript', '接口'],
+      readTime: '5分钟',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-to-java',
+      title: 'JSON 转 Java 类',
+      description: '从 JSON 生成 Java POJO 类，包括嵌套对象与集合',
+      category: 'conversion',
+      categoryName: '格式转换',
+      icon: CodeBracketIcon,
+      href: '/wiki/cn/json-to-java',
+      tags: ['代码生成', 'Java', '类型'],
+      readTime: '5分钟',
+      difficulty: 'beginner'
     }
   ];
 
@@ -70,7 +94,8 @@ export default function WikiPage() {
     { id: 'foundation', name: '基础知识', description: 'JSON基础概念和语法' },
     { id: 'api', name: 'API设计', description: 'RESTful API和JSON数据交换' },
     { id: 'validation', name: '验证与校验', description: '数据验证和错误处理' },
-    { id: 'performance', name: '性能优化', description: '性能调优和最佳实践' }
+    { id: 'performance', name: '性能优化', description: '性能调优和最佳实践' },
+    { id: 'conversion', name: '格式转换', description: '格式转换与代码生成' }
   ];
 
   const getDifficultyColor = (difficulty: string) => {
