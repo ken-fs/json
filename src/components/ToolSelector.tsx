@@ -27,14 +27,32 @@ export default function ToolSelector() {
   const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
-  const [selectedValue, setSelectedValue] = useState<string>("json-formatter");
+  // 规范化路径，去除结尾斜杠（根路径除外）
+  const normalizePath = (p: string | null | undefined) => {
+    if (!p || p === "/") return "/";
+    return p.replace(/\/+$/, "");
+  };
+
+  // 初始状态基于当前路径，避免首次渲染显示第一个选项
+  const [selectedValue, setSelectedValue] = useState<string>(() => {
+    const currentPath = normalizePath(pathname);
+    const tool = toolOptions.find(
+      (option) => normalizePath(option.path) === currentPath
+    );
+    return tool?.value || "json-formatter";
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   // 当路径变化时更新选中值
   useEffect(() => {
-    const tool = toolOptions.find(option => option.path === pathname);
-    const newValue = tool?.value || "json-formatter";
-    setSelectedValue(newValue);
+    const currentPath = normalizePath(pathname);
+    const tool = toolOptions.find(
+      (option) => normalizePath(option.path) === currentPath
+    );
+    // 未匹配到时不进行重置，保持当前选择，避免误回到第一个
+    if (tool) {
+      setSelectedValue(tool.value);
+    }
   }, [pathname]);
 
   // 点击外部关闭下拉框
@@ -57,7 +75,7 @@ export default function ToolSelector() {
     if (selectedToolOption) {
       setSelectedValue(value); // 立即更新状态
       setIsOpen(false); // 关闭下拉框
-      if (selectedToolOption.path !== pathname) {
+      if (normalizePath(selectedToolOption.path) !== normalizePath(pathname)) {
         router.push(selectedToolOption.path);
       }
     }
