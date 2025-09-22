@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import HydrationFix from "@/components/HydrationFix";
 import { I18nProvider } from "@/components/I18nProvider";
 import StructuredData from "@/components/StructuredData";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -98,6 +100,9 @@ export const metadata: Metadata = {
   }
 };
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-6FX1CYKSLV";
+const IS_PROD = process.env.NODE_ENV === "production";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -113,6 +118,24 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="JSON Tools" />
         <link rel="apple-touch-icon" href="/icons/icon-152x152.png" />
         <meta name="theme-color" content="#3b82f6" />
+        {IS_PROD && GA_ID ? (
+          <>
+            <Script
+              id="gtag-lib"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                window.gtag = window.gtag || gtag;
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}', { send_page_view: false });
+              `}
+            </Script>
+          </>
+        ) : null}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white`}
@@ -121,6 +144,7 @@ export default function RootLayout({
         <I18nProvider>
           <HydrationFix>
             <StructuredData />
+            {IS_PROD && GA_ID ? <GoogleAnalytics /> : null}
             {children}
           </HydrationFix>
         </I18nProvider>

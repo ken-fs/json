@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
@@ -43,19 +43,19 @@ export default function ToolSelector() {
   });
   const [isOpen, setIsOpen] = useState(false);
 
-  // 当路径变化时更新选中值
+  // 当路径变化时更新选中项
   useEffect(() => {
     const currentPath = normalizePath(pathname);
     const tool = toolOptions.find(
       (option) => normalizePath(option.path) === currentPath
     );
-    // 未匹配到时不进行重置，保持当前选择，避免误回到第一个
+    // 未匹配到时不进行重置，保持当前选择
     if (tool) {
       setSelectedValue(tool.value);
     }
   }, [pathname]);
 
-  // 点击外部关闭下拉框
+  // 点击外部关闭下拉
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
@@ -70,11 +70,26 @@ export default function ToolSelector() {
     }
   }, [isOpen]);
 
+  // GA 事件：功能切换（仅在选项变更后触发，跳过首次渲染）
+  const didMountRef = useRef(false);
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    try {
+      const gtag = (window as any).gtag as ((...args: any[]) => void) | undefined;
+      if (typeof gtag === 'function') {
+        gtag('event', '功能切换', { value: selectedValue });
+      }
+    } catch {}
+  }, [selectedValue]);
+
   const handleToolChange = (value: string) => {
     const selectedToolOption = toolOptions.find(tool => tool.value === value);
     if (selectedToolOption) {
       setSelectedValue(value); // 立即更新状态
-      setIsOpen(false); // 关闭下拉框
+      setIsOpen(false); // 关闭下拉
       if (normalizePath(selectedToolOption.path) !== normalizePath(pathname)) {
         router.push(selectedToolOption.path);
       }
@@ -135,3 +150,4 @@ export default function ToolSelector() {
     </div>
   );
 }
+
