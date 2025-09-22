@@ -13,7 +13,7 @@ export default function GoogleAnalytics() {
     if (!GA_ID) return;
 
     const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
-    const gtag = (window as any).gtag as ((...args: any[]) => void) | undefined;
+    const gtag = typeof window !== 'undefined' ? window.gtag : undefined;
 
     if (typeof gtag === 'function') {
       gtag('event', 'page_view', {

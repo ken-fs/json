@@ -78,7 +78,7 @@ export default function ToolSelector() {
       return;
     }
     try {
-      const gtag = (window as any).gtag as ((...args: any[]) => void) | undefined;
+      const gtag = typeof window !== 'undefined' ? window.gtag : undefined;
       if (typeof gtag === 'function') {
         gtag('event', '功能切换', { value: selectedValue });
       }
@@ -150,4 +150,3 @@ export default function ToolSelector() {
     </div>
   );
 }
-
