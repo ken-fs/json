@@ -43,16 +43,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const wikiPageMetadataDraft: Metadata = {
-  title: "Base de Conhecimento de Ferramentas JSON - Centro de Documentação para Desenvolvedores | JSON Tools",
-  description: "Base completa de conhecimento sobre ferramentas JSON: guia de sintaxe JSON, melhores práticas, documentação de API, tutoriais e FAQ. Recursos essenciais de aprendizado JSON para desenvolvedores.",
-  keywords: "base conhecimento JSON,documentação JSON,tutorial JSON,documentação API,guia desenvolvedor,melhores práticas JSON",
-  openGraph: {
-    title: "Base de Conhecimento de Ferramentas JSON - Centro de Documentação para Desenvolvedores",
-    description: "Recursos completos de aprendizado JSON e documentação para desenvolvedores, cobrindo desde o básico até aplicações avançadas.",
-    type: "website"
-  }
-};
 
 export default function WikiPortuguesePage() {
   const articles = [

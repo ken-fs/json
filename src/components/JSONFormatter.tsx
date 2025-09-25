@@ -6,23 +6,91 @@ import { jsonToXML, escapeJSON, unescapeJSON, isEscapedJSON } from "@/lib/utils"
 import JSONEditor from "./JSONEditor";
 import { Alert, AlertDescription } from "./ui/alert";
 import ToolSelector from "./ToolSelector";
-import {
-  ArrowDownTrayIcon,
-  ClipboardDocumentIcon,
-  ClipboardIcon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  TrashIcon,
-  ArrowPathIcon,
-  ListBulletIcon,
-  DocumentIcon,
-  LockClosedIcon,
-  LockOpenIcon,
-  DocumentTextIcon,
-  FolderOpenIcon,
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/24/outline";
+import { CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+
+// Inline SVG icons (theme-aware via currentColor)
+type IconProps = { className?: string };
+const IconCopy = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <rect x="9" y="9" width="11" height="11" rx="2" />
+    <rect x="4" y="4" width="11" height="11" rx="2" />
+  </svg>
+);
+const IconExpand = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M4 12h6M8 8l2 2-2 2" />
+    <path d="M20 12h-6M16 16l-2-2 2-2" />
+  </svg>
+);
+const IconCompress = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M4 12h8M8 8l-2 2 2 2" />
+    <path d="M20 12h-8M16 16l2-2-2-2" />
+  </svg>
+);
+const IconClear = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M4 7h16M9 7l1-2h4l1 2M7 7l1 12h8l1-12" />
+  </svg>
+);
+const IconLineNumbers = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M6 6h12M6 12h12M6 18h12" />
+    <path d="M3 6v0M3 12v0M3 18v0" strokeLinecap="round" />
+  </svg>
+);
+const IconXML = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M7 8l-4 4 4 4" />
+    <path d="M17 8l4 4-4 4" />
+    <path d="M11 6l2 12" />
+  </svg>
+);
+const IconUnescape = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M6 18L18 6" />
+    <path d="M8 6l-2 2" />
+    <path d="M16 18l2-2" />
+  </svg>
+);
+const IconEscape = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M6 18L18 6" />
+    <path d="M12 10v4" />
+    <path d="M10 12h4" />
+  </svg>
+);
+const IconAdd = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <rect x="4" y="4" width="16" height="18" rx="2" />
+    <path d="M12 10v6M9 13h6" />
+  </svg>
+);
+const IconDownload = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M12 3v10" />
+    <path d="M8 9l4 4 4-4" />
+    <path d="M4 20h16" />
+  </svg>
+);
+const IconPaste = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M9 4h6M8 7h8M7 7h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z" />
+  </svg>
+);
+const IconUpload = ({ className = "w-4 h-4" }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M20 20H4" />
+    <path d="M12 4v10" />
+    <path d="M8 8l4-4 4 4" />
+  </svg>
+);
+const IconSpinner = ({ className = "w-4 h-4 animate-spin" }: IconProps) => (
+  <svg viewBox="0 0 24 24" className={className}>
+    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" fill="none" />
+    <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" fill="none" />
+  </svg>
+);
 
 export default function JSONFormatter() {
   const { t } = useTranslation();
@@ -343,20 +411,20 @@ export default function JSONFormatter() {
     //   action: () => handleCopy(formattedOutput)
     // },
     {
-      icon: ClipboardIcon,
+      icon: IconCopy,
       text: t("copyInput"),
       tooltip: t("pasteFromClipboard"),
       action: () => handleCopy(input),
     },
     {
-      icon: collapsed ? ChevronRightIcon : ChevronDownIcon,
+      icon: collapsed ? IconExpand : IconCompress,
       text: collapsed ? t("expand") : t("compress"),
       tooltip: collapsed ? t("expandJson") : t("compressJson"),
       action: handleCompress,
       active: collapsed,
     },
     {
-      icon: TrashIcon,
+      icon: IconClear,
       text: t("clear"),
       tooltip: "清空所有内容",
       action: () => {
@@ -368,14 +436,14 @@ export default function JSONFormatter() {
     },
 
     {
-      icon: ListBulletIcon,
+      icon: IconLineNumbers,
       text: t("lineNumbers"),
       tooltip: showLineNumbers ? t("hideLineNumbers") : t("showLineNumbers"),
       action: () => setShowLineNumbers(!showLineNumbers),
       active: showLineNumbers,
     },
     {
-      icon: DocumentIcon,
+      icon: IconXML,
       text: previewType === 'xml' ? t("cancelXmlConversion") : t("toXML"),
       tooltip: escapeMode
         ? t("xmlModeActive")
@@ -396,7 +464,7 @@ export default function JSONFormatter() {
       disabled: escapeMode,
     },
     {
-      icon: LockOpenIcon,
+      icon: IconUnescape,
       text: previewType === 'unescape' ? t("returnToJsonView") : (t("removeEscapes") || t("unescape")),
       tooltip: previewType === 'unescape' ? t("returnToJsonView") : (t("removeEscapesTooltip") || t("unescapeJsonString")),
       action: handleUnescapePreview,
@@ -404,7 +472,7 @@ export default function JSONFormatter() {
       disabled: !isEscapedJSON(input) && previewType !== 'unescape',
     },
     {
-      icon: LockClosedIcon,
+      icon: IconEscape,
       text: escapeMode ? t("unescape") : t("escape"),
       tooltip: escapeMode ? t("unescapeJsonString") : t("escapeJsonString"),
       action: handleEscapeMode,
@@ -412,7 +480,7 @@ export default function JSONFormatter() {
       processing: isProcessing,
     },
     {
-      icon: DocumentTextIcon,
+      icon: IconAdd,
       text: t("addExample"),
       tooltip: t("addExampleData"),
       action: handleAddExample,
@@ -571,7 +639,7 @@ export default function JSONFormatter() {
                 </span>
                 {escapeMode && (
                   <span className="inline-flex items-center px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full border border-green-200 dark:border-green-700">
-                    <LockClosedIcon className="w-3 h-3 mr-1" />
+                    <IconEscape className="w-3 h-3 mr-1" />
                     {t("escapeMode")}
                   </span>
                 )}
@@ -582,7 +650,7 @@ export default function JSONFormatter() {
                     onClick={handlePaste}
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                   >
-                    <ClipboardIcon className="w-3 h-3" />
+                    <IconPaste className="w-3 h-3" />
                     <span>{t("paste")}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
@@ -593,7 +661,7 @@ export default function JSONFormatter() {
                 <div className="relative group">
                   <label className="cursor-pointer">
                     <span className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
-                      <FolderOpenIcon className="w-3 h-3" />
+                      <IconUpload className="w-3 h-3" />
                       <span>{t("upload")}</span>
                     </span>
                     <input
@@ -663,9 +731,7 @@ export default function JSONFormatter() {
                 {/* 工具栏图标按钮 */}
                 {rightToolbar.map((tool, index) => {
                   const IconComponent = tool.icon;
-                  const isEscapeButton =
-                    tool.text &&
-                    (tool.text === "转义" || tool.text === "取消转义");
+                  const isEscapeButton = tool.action === handleEscapeMode;
                   const isProcessing = (tool as { processing?: boolean })
                     .processing;
                   const isDisabled =
@@ -689,7 +755,7 @@ export default function JSONFormatter() {
                         disabled={isDisabled}
                       >
                         {isProcessing ? (
-                          <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                          <IconSpinner className="w-4 h-4 animate-spin" />
                         ) : (
                           <IconComponent className="w-4 h-4" />
                         )}
@@ -724,7 +790,7 @@ export default function JSONFormatter() {
                     disabled={!overrideOutput && !formattedOutput}
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
                   >
-                    <ClipboardDocumentIcon className="w-3 h-3" />
+                    <IconCopy className="w-3 h-3" />
                     <span>{t("copy")}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
@@ -748,7 +814,7 @@ export default function JSONFormatter() {
                     }
                     className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
                   >
-                    <ArrowDownTrayIcon className="w-3 h-3" />
+                    <IconDownload className="w-3 h-3" />
                     <span>{t("download")}</span>
                   </button>
                   <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
