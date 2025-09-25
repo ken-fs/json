@@ -1,0 +1,28 @@
+{overrideOutput ? (
+                // 鎵嬪姩杈撳嚭锛堝XML锛夛細鏄剧ず鍘熷鏂囨湰
+                <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
+                  {showLineNumbers ? (
+                    <div className="flex items-start min-w-0">
+                      <div
+                        className="text-gray-400 dark:text-gray-500 text-xs mr-4 select-none flex-shrink-0"
+                        style={{ minWidth: "3ch" }}
+                      >
+                        {overrideOutput.split("\n").map((_, i) => (
+                          <div key={i} style={{ textAlign: "right" }}>
+                            {i + 1}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
+                          {overrideOutput}
+                        </pre>
+                      </div>
+                    </div>
+                  ) : (
+                    <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
+                      {overrideOutput}
+                    </pre>
+                  )}
+                </div>
+              ) :

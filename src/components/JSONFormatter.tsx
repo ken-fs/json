@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { jsonToXML, escapeJSON, isEscapedJSON } from "@/lib/utils";
+import { jsonToXML, escapeJSON, unescapeJSON, isEscapedJSON } from "@/lib/utils";
 import JSONEditor from "./JSONEditor";
 import { Alert, AlertDescription } from "./ui/alert";
 import ToolSelector from "./ToolSelector";
@@ -17,6 +17,7 @@ import {
   ListBulletIcon,
   DocumentIcon,
   LockClosedIcon,
+  LockOpenIcon,
   DocumentTextIcon,
   FolderOpenIcon,
   CheckCircleIcon,
@@ -190,6 +191,32 @@ export default function JSONFormatter() {
     showMessage(t("fileDownloaded"), "success");
   };
 
+  // 去除转义（预览）：将被转义的 JSON 字符串还原为正常 JSON，显示在右侧预览，不替换输入
+  const [previewType, setPreviewType] = useState<null | 'xml' | 'unescape'>(null);
+  const handleUnescapePreview = () => {
+    if (!input.trim()) {
+      showMessage(t("enterJsonDataFirst"), "error");
+      return;
+    }
+    try {
+      if (previewType === 'unescape') {
+        setOverrideOutput("");
+        setPreviewType(null);
+        showMessage(t("returnToJsonView"), "success");
+        return;
+      }
+      const unescaped = unescapeJSON(input);
+      setOverrideOutput(unescaped);
+      setCollapsed(false);
+      setEscapeMode(false);
+      setPreviewType('unescape');
+      showMessage(t("unescapeCompleted"), "success");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      showMessage(`${t("escapeOperationFailed")}: ${errorMessage}`, "error");
+    }
+  };
+
   const handleToXML = () => {
     try {
       // 如果处于转义模式，不允许XML转换
@@ -260,6 +287,7 @@ export default function JSONFormatter() {
         // 取消转义模式：清除右侧的转义输出，恢复正常JSON格式化
         setOverrideOutput("");
         setEscapeMode(false);
+        setPreviewType(null);
         showMessage(t("unescapeCompleted"), "success");
       } else {
         // 如果处于XML模式，先取消XML模式
@@ -271,6 +299,7 @@ export default function JSONFormatter() {
         const escaped = escapeJSON(input);
         setOverrideOutput(escaped);
         setEscapeMode(true);
+        setPreviewType(null);
         showMessage(t("escapeCompleted"), "success");
       }
     } catch (error: unknown) {
@@ -347,16 +376,32 @@ export default function JSONFormatter() {
     },
     {
       icon: DocumentIcon,
-      text:
-        overrideOutput && !escapeMode ? t("cancelXmlConversion") : t("toXML"),
+      text: previewType === 'xml' ? t("cancelXmlConversion") : t("toXML"),
       tooltip: escapeMode
         ? t("xmlModeActive")
-        : overrideOutput && !escapeMode
+        : previewType === 'xml'
         ? t("cancelXmlConversion")
         : t("convertToXml"),
-      action: handleToXML,
-      active: !!(overrideOutput && !escapeMode),
+      action: () => {
+        if (previewType === 'xml') {
+          setOverrideOutput("");
+          setPreviewType(null);
+          showMessage(t("returnToJsonView"), "success");
+          return;
+        }
+        handleToXML();
+        setPreviewType('xml');
+      },
+      active: previewType === 'xml',
       disabled: escapeMode,
+    },
+    {
+      icon: LockOpenIcon,
+      text: previewType === 'unescape' ? t("returnToJsonView") : (t("removeEscapes") || t("unescape")),
+      tooltip: previewType === 'unescape' ? t("returnToJsonView") : (t("removeEscapesTooltip") || t("unescapeJsonString")),
+      action: handleUnescapePreview,
+      active: previewType === 'unescape',
+      disabled: !isEscapedJSON(input) && previewType !== 'unescape',
     },
     {
       icon: LockClosedIcon,
@@ -420,6 +465,86 @@ export default function JSONFormatter() {
       };
       reader.readAsText(file);
     }
+  };
+
+  // Extracted to simplify deeply nested JSX/ternaries in the right pane
+  const RightPaneContent = () => {
+    if (overrideOutput) {
+      return (
+        <>
+          {previewType === 'unescape' && (
+            <JSONEditor
+              value={overrideOutput}
+              showLineNumbers={showLineNumbers}
+              readOnly={true}
+            />
+          )}
+          <div
+            className="p-4 font-mono text-sm overflow-auto h-full bg-transparent"
+            style={{ display: previewType === 'unescape' ? 'none' : undefined }}
+          >
+            {showLineNumbers ? (
+              <div className="flex items-start min-w-0">
+                <div
+                  className="text-gray-400 dark:text-gray-500 text-xs mr-4 select-none flex-shrink-0"
+                  style={{ minWidth: '3ch' }}
+                >
+                  {overrideOutput.split('\n').map((_, i) => (
+                    <div key={i} style={{ textAlign: 'right' }}>
+                      {i + 1}
+                    </div>
+                  ))}
+                </div>
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
+                    {overrideOutput}
+                  </pre>
+                </div>
+              </div>
+            ) : (
+              <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
+                {overrideOutput}
+              </pre>
+            )}
+          </div>
+        </>
+      );
+    }
+
+    if (collapsed && formattedOutput && !formattedOutput.startsWith('//')) {
+      return (
+        <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
+          {showLineNumbers && (
+            <div className="flex items-start min-w-0">
+              <span
+                className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none flex-shrink-0"
+                style={{ minWidth: '3ch', textAlign: 'right' }}
+              >
+                1
+              </span>
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
+                  {formattedOutput}
+                </pre>
+              </div>
+            </div>
+          )}
+          {!showLineNumbers && (
+            <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
+              {formattedOutput}
+            </pre>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <JSONEditor
+        value={formattedOutput}
+        showLineNumbers={showLineNumbers}
+        readOnly={false}
+      />
+    );
   };
 
   return (
@@ -504,7 +629,7 @@ export default function JSONFormatter() {
                 {/* <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   格式化结果
                 </span> */}
-                {overrideOutput && !escapeMode && (
+                {previewType === 'xml' && (
                   <span className="text-xs text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded">
                     ✓ XML
                   </span>
@@ -512,6 +637,11 @@ export default function JSONFormatter() {
                 {escapeMode && overrideOutput && (
                   <span className="text-xs text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded">
                     ✓ {t("escapeMode")}
+                  </span>
+                )}
+                {previewType === 'unescape' && (
+                  <span className="text-xs text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-900 px-2 py-1 rounded">
+                    ✓{t('unescaped')}
                   </span>
                 )}
                 {!overrideOutput &&
@@ -609,7 +739,7 @@ export default function JSONFormatter() {
                     onClick={() =>
                       handleDownload(
                         overrideOutput || formattedOutput,
-                        overrideOutput ? "data.xml" : "data.json"
+                        previewType === 'xml' ? "data.xml" : "data.json"
                       )
                     }
                     disabled={
@@ -630,67 +760,16 @@ export default function JSONFormatter() {
             </div>
 
             <div className="h-[calc(100%-108px)] border-radius-lg dark:bg-gray-900 overflow-hidden">
-              {overrideOutput ? (
-                // 手动输出（如XML）：显示原始文本
-                <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
-                  {showLineNumbers ? (
-                    <div className="flex items-start min-w-0">
-                      <div
-                        className="text-gray-400 dark:text-gray-500 text-xs mr-4 select-none flex-shrink-0"
-                        style={{ minWidth: "3ch" }}
-                      >
-                        {overrideOutput.split("\n").map((_, i) => (
-                          <div key={i} style={{ textAlign: "right" }}>
-                            {i + 1}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex-1 min-w-0 overflow-hidden">
-                        <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
-                          {overrideOutput}
-                        </pre>
-                      </div>
-                    </div>
-                  ) : (
-                    <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
-                      {overrideOutput}
-                    </pre>
-                  )}
-                </div>
-              ) : collapsed &&
-                formattedOutput &&
-                !formattedOutput.startsWith("//") ? (
-                // 压缩模式：显示原始文本
-                <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
-                  {showLineNumbers && (
-                    <div className="flex items-start min-w-0">
-                      <span
-                        className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none flex-shrink-0"
-                        style={{ minWidth: "3ch", textAlign: "right" }}
-                      >
-                        1
-                      </span>
-                      <div className="flex-1 min-w-0 overflow-hidden">
-                        <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
-                          {formattedOutput}
-                        </pre>
-                      </div>
-                    </div>
-                  )}
-                  {!showLineNumbers && (
-                    <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
-                      {formattedOutput}
-                    </pre>
-                  )}
-                </div>
-              ) : (
-                // 展开模式：使用JSONEditor
-                <JSONEditor
-                  value={formattedOutput}
-                  showLineNumbers={showLineNumbers}
-                  readOnly={false}
-                />
-              )}
+               <RightPaneContent />
+
+
+
+
+
+                {/* 压缩模式：显示原始文本 */}
+
+
+
             </div>
           </div>
         </div>
