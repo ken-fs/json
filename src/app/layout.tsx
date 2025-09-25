@@ -116,7 +116,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="JSON Tools" />
-        <link rel="apple-touch-icon" href="/icons/icon-152x152.png" />
+        {/* Removed missing apple-touch-icon to avoid 404; Next.js serves app/favicon.* automatically */}
         <meta name="theme-color" content="#3b82f6" />
         {IS_PROD && GA_ID ? (
           <>

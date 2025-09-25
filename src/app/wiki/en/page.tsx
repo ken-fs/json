@@ -3,16 +3,46 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, DocumentTextIcon, CodeBracketIcon, GlobeAltIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "JSON Tools Knowledge Base - Developer Documentation Center | JSON Tools",
-  description: "Complete JSON tools knowledge base: JSON syntax guide, best practices, API documentation, tutorials and FAQ. Essential JSON learning resources for developers.",
-  keywords: "JSON knowledge base,JSON documentation,JSON tutorial,API documentation,developer guide,JSON best practices",
-  openGraph: {
-    title: "JSON Tools Knowledge Base - Developer Documentation Center",
-    description: "Complete JSON learning resources and developer documentation, covering everything from basics to advanced applications.",
-    type: "website"
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const title = 'JSON Tools Knowledge Base – Developer Docs';
+  const description =
+    'Curated JSON knowledge base covering syntax, validation (JSON Schema), formatting/minifying, API design, performance, debugging, and code generation (TypeScript/Java). Tutorials and examples included.';
+
+  return {
+    title,
+    description,
+    keywords: [
+      'JSON',
+      'JSON tools',
+      'JSON documentation',
+      'JSON tutorial',
+      'JSON validation',
+      'JSON Schema',
+      'API design',
+      'performance',
+      'code generation',
+      'TypeScript',
+      'Java',
+      'best practices',
+      'developer docs',
+    ],
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+    },
+    alternates: {
+      canonical: '/wiki/en',
+      languages: {
+        'en-US': '/wiki/en',
+        'zh-CN': '/wiki/cn',
+        'es-ES': '/wiki/es',
+        'pt-BR': '/wiki/pt',
+        'x-default': '/wiki/en',
+      },
+    },
+  };
+}
 
 export default function WikiEnglishPage() {
   const articles = [

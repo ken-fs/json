@@ -3,27 +3,41 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, DocumentTextIcon, CodeBracketIcon, GlobeAltIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
 
+const wikiPageMetadataDraft: Metadata = {
+  title: "JSON工具知识�?- 开发者文档中�?| JSON Tools",
+  description: "JSON工具完整知识库：包含JSON语法指南、最佳实践、API文档、教程和常见问题解答。开发者必备的JSON学习资源�?,
+  keywords: "JSON知识�?JSON文档,JSON教程,API文档,开发者指�?JSON最佳实�?,
+  openGraph: {
+    title: "JSON工具知识�?- 开发者文档中�?,
+    description: "完整的JSON学习资源和开发者文档，涵盖从基础到高级的所有内容�?,
+    type: "website"
+  }
+};
+
+// Override/optimize page-level SEO without touching the original block
 export async function generateMetadata(): Promise<Metadata> {
-  const title = 'Base de Conocimiento JSON – Docs para Desarrolladores';
+  const title = 'JSON工具知识�?- 开发者文档中�?;
   const description =
-    'Base de conocimiento sobre JSON: sintaxis, validación (JSON Schema), formateo/minificación, diseño de APIs, rendimiento, depuración y generación de código (TypeScript/Java). Incluye tutoriales y ejemplos.';
+    'JSON工具知识库：系统整理JSON基础与进阶内容，涵盖语法规则、数据类型、格式化与压缩、校验与Schema、API设计与最佳实践、性能优化与大数据处理、错误排查与调试、代码生成（TypeScript/Java）等。提供教程、示例与技巧，助力高效开发�?;
 
   return {
+    // Let the root layout template append " | JSON Tools"
     title,
     description,
     keywords: [
       'JSON',
-      'herramientas JSON',
-      'documentación JSON',
-      'tutorial JSON',
-      'validación JSON',
+      'JSON工具',
+      'JSON文档',
+      'JSON教程',
+      'JSON验证',
       'JSON Schema',
-      'diseño de API',
-      'rendimiento',
-      'generación de código',
+      'API设计',
+      '性能优化',
+      '代码生成',
       'TypeScript',
       'Java',
-      'mejores prácticas',
+      '开发者文�?,
+      '最佳实�?,
     ],
     openGraph: {
       title,
@@ -31,7 +45,7 @@ export async function generateMetadata(): Promise<Metadata> {
       type: 'website',
     },
     alternates: {
-      canonical: '/wiki/es',
+      canonical: '/wiki',
       languages: {
         'en-US': '/wiki/en',
         'zh-CN': '/wiki/cn',
@@ -43,99 +57,88 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const wikiPageMetadataDraft: Metadata = {
-  title: "Base de Conocimiento de Herramientas JSON - Centro de Documentación para Desarrolladores | JSON Tools",
-  description: "Base completa de conocimiento sobre herramientas JSON: guía de sintaxis JSON, mejores prácticas, documentación de API, tutoriales y FAQ. Recursos esenciales de aprendizaje JSON para desarrolladores.",
-  keywords: "base conocimiento JSON,documentación JSON,tutorial JSON,documentación API,guía desarrollador,mejores prácticas JSON",
-  openGraph: {
-    title: "Base de Conocimiento de Herramientas JSON - Centro de Documentación para Desarrolladores",
-    description: "Recursos completos de aprendizaje JSON y documentación para desarrolladores, cubriendo desde lo básico hasta aplicaciones avanzadas.",
-    type: "website"
-  }
-};
-
-export default function WikiSpanishPage() {
+export default function WikiPage() {
   const articles = [
     {
       id: 'json-guide',
-      title: 'Guía Completa de JSON',
-      description: 'Profundiza en el formato JSON: reglas de sintaxis, tipos de datos, casos de uso y mejores prácticas',
+      title: 'JSON完全指南',
+      description: '深入了解JSON格式：语法规则、数据类型、应用场景和最佳实�?,
       category: 'foundation',
-      categoryName: 'Fundamentos',
+      categoryName: '基础知识',
       icon: DocumentTextIcon,
-      href: '/wiki/es/json-guide',
-      tags: ['Básico', 'Sintaxis', 'Formato de Datos'],
-      readTime: '15 min de lectura',
+      href: '/wiki/cn/json-guide',
+      tags: ['基础', '语法', '数据格式'],
+      readTime: '15分钟',
       difficulty: 'beginner'
     },
     {
       id: 'json-api-best-practices',
-      title: 'Mejores Prácticas para API JSON',
-      description: 'Principios, especificaciones y consejos prácticos para diseñar APIs JSON de alta calidad',
+      title: 'JSON API最佳实�?,
+      description: '设计高质量JSON API的原则、规范和实用技�?,
       category: 'api',
-      categoryName: 'Diseño de API',
+      categoryName: 'API设计',
       icon: CodeBracketIcon,
-      href: '/wiki/es/json-api-best-practices',
-      tags: ['API', 'Patrones de Diseño', 'Estándares'],
-      readTime: '12 min de lectura',
+      href: '/wiki/cn/json-api-best-practices',
+      tags: ['API', '设计模式', '规范'],
+      readTime: '12分钟',
       difficulty: 'intermediate'
     },
     {
       id: 'json-validation',
-      title: 'Validación y Schema JSON',
-      description: 'Guía de uso de JSON Schema, reglas de validación y estrategias de manejo de errores',
+      title: 'JSON验证与校�?,
+      description: 'JSON Schema使用指南，数据验证规则和错误处理',
       category: 'validation',
-      categoryName: 'Validación',
+      categoryName: '验证与校�?,
       icon: AcademicCapIcon,
-      href: '/wiki/es/json-validation',
-      tags: ['Validación', 'Schema', 'Manejo de Errores'],
-      readTime: '10 min de lectura',
+      href: '/wiki/cn/json-validation',
+      tags: ['验证', 'Schema', '错误处理'],
+      readTime: '10分钟',
       difficulty: 'intermediate'
     },
     {
       id: 'json-performance',
-      title: 'Optimización de Rendimiento JSON',
-      description: 'Optimización de parsing JSON, gestión de memoria y técnicas de procesamiento de big data',
+      title: 'JSON性能优化',
+      description: 'JSON解析性能优化、内存管理和大数据处理技�?,
       category: 'performance',
-      categoryName: 'Rendimiento',
+      categoryName: '性能优化',
       icon: GlobeAltIcon,
-      href: '/wiki/es/json-performance',
-      tags: ['Rendimiento', 'Optimización', 'Big Data'],
-      readTime: '8 min de lectura',
+      href: '/wiki/cn/json-performance',
+      tags: ['性能', '优化', '大数�?],
+      readTime: '8分钟',
       difficulty: 'advanced'
     },
     {
       id: 'json-to-typescript',
-      title: 'JSON → Interfaces TypeScript',
-      description: 'Genera interfaces TypeScript a partir de JSON con tipos anidados y arrays',
+      title: 'JSON �?TypeScript 接口',
+      description: '�?JSON 一键生�?TypeScript 接口，支持嵌套对象与数组',
       category: 'conversion',
-      categoryName: 'Conversión',
+      categoryName: '格式转换',
       icon: CodeBracketIcon,
-      href: '/wiki/es/json-to-typescript',
-      tags: ['Codegen', 'TypeScript', 'Interfaces'],
-      readTime: '5 min de lectura',
+      href: '/wiki/cn/json-to-typescript',
+      tags: ['代码生成', 'TypeScript', '接口'],
+      readTime: '5分钟',
       difficulty: 'beginner'
     },
     {
       id: 'json-to-java',
-      title: 'JSON → Clases Java',
-      description: 'Genera clases Java (POJO) a partir de JSON, incluyendo objetos anidados',
+      title: 'JSON �?Java �?,
+      description: '�?JSON 生成 Java POJO 类，包括嵌套对象与集�?,
       category: 'conversion',
-      categoryName: 'Conversión',
+      categoryName: '格式转换',
       icon: CodeBracketIcon,
-      href: '/wiki/es/json-to-java',
-      tags: ['Codegen', 'Java', 'Tipos'],
-      readTime: '5 min de lectura',
+      href: '/wiki/cn/json-to-java',
+      tags: ['代码生成', 'Java', '类型'],
+      readTime: '5分钟',
       difficulty: 'beginner'
     }
   ];
 
   const categories = [
-    { id: 'foundation', name: 'Fundamentos', description: 'Conceptos básicos y sintaxis de JSON' },
-    { id: 'api', name: 'Diseño de API', description: 'APIs RESTful e intercambio de datos JSON' },
-    { id: 'validation', name: 'Validación', description: 'Validación de datos y manejo de errores' },
-    { id: 'performance', name: 'Rendimiento', description: 'Ajuste de rendimiento y mejores prácticas' },
-    { id: 'conversion', name: 'Conversión', description: 'Conversión de formatos y generación de código' }
+    { id: 'foundation', name: '基础知识', description: 'JSON基础概念和语�? },
+    { id: 'api', name: 'API设计', description: 'RESTful API和JSON数据交换' },
+    { id: 'validation', name: '验证与校�?, description: '数据验证和错误处�? },
+    { id: 'performance', name: '性能优化', description: '性能调优和最佳实�? },
+    { id: 'conversion', name: '格式转换', description: '格式转换与代码生�? }
   ];
 
   const getDifficultyColor = (difficulty: string) => {
@@ -154,13 +157,13 @@ export default function WikiSpanishPage() {
   const getDifficultyText = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner':
-        return 'Principiante';
+        return '初级';
       case 'intermediate':
-        return 'Intermedio';
+        return '中级';
       case 'advanced':
-        return 'Avanzado';
+        return '高级';
       default:
-        return 'Desconocido';
+        return '未知';
     }
   };
 
@@ -176,26 +179,26 @@ export default function WikiSpanishPage() {
             className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mb-6"
           >
             <ArrowLeftIcon className="w-4 h-4 mr-2" />
-            Volver a Herramientas JSON
+            返回JSON工具
           </Link>
 
           {/* Header */}
           <header className="mb-12">
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
               <BookOpenIcon className="w-10 h-10 mr-4 text-blue-600" />
-              Base de Conocimiento de Herramientas JSON
+              JSON工具知识�?
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed">
-              Recursos completos de aprendizaje JSON y documentación para desarrolladores, desde sintaxis básica hasta aplicaciones avanzadas, ayudándote a convertirte en un experto en JSON
+              完整的JSON学习资源和开发者文档，从基础语法到高级应用，助您成为JSON专家
             </p>
           </header>
 
           {/* Categories Overview */}
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Categorías de Conocimiento</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">知识分类</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {categories.map((category) => {
-                // Encontrar el primer artículo en esta categoría
+                // 找到该分类的第一篇文�?
                 const firstArticle = articles.find(article => article.category === category.id);
                 const articleCount = articles.filter(article => article.category === category.id).length;
                 
@@ -209,7 +212,7 @@ export default function WikiSpanishPage() {
                         {category.description}
                       </p>
                       <div className="text-sm text-blue-600 dark:text-blue-400">
-                        {articleCount} artículo{articleCount !== 1 ? 's' : ''}
+                        {articleCount} 篇文�?
                       </div>
                     </div>
                   </Link>
@@ -220,7 +223,7 @@ export default function WikiSpanishPage() {
 
           {/* Articles List */}
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Todos los Artículos</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">所有文�?/h2>
             <div className="space-y-6">
               {articles.map((article) => {
                 const IconComponent = article.icon;
@@ -254,7 +257,7 @@ export default function WikiSpanishPage() {
                                 {article.categoryName}
                               </span>
                               <span className="text-sm text-gray-500 dark:text-gray-400">
-                                Tiempo de lectura: {article.readTime}
+                                阅读时间: {article.readTime}
                               </span>
                             </div>
                             
@@ -278,29 +281,29 @@ export default function WikiSpanishPage() {
           {/* Quick Links */}
           <section className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800">
             <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">
-              Inicio Rápido
+              快速开�?
             </h2>
             <div className="grid md:grid-cols-3 gap-4">
               <Link
-                href="/wiki/es/json-guide"
+                href="/wiki/cn/json-guide"
                 className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
               >
-                <h3 className="font-medium text-gray-900 dark:text-white mb-2">Comenzando</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Comienza aprendiendo la sintaxis básica de JSON</p>
+                <h3 className="font-medium text-gray-900 dark:text-white mb-2">新手入门</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">从JSON基础语法开始学�?/p>
               </Link>
               <Link
                 href="/"
                 className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
               >
-                <h3 className="font-medium text-gray-900 dark:text-white mb-2">Herramientas en Línea</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Usa herramientas de formateo y validación JSON</p>
+                <h3 className="font-medium text-gray-900 dark:text-white mb-2">在线工具</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">使用JSON格式化和验证工具</p>
               </Link>
               <Link
-                href="/wiki/es/json-api-best-practices"
+                href="/wiki/cn/json-api-best-practices"
                 className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
               >
-                <h3 className="font-medium text-gray-900 dark:text-white mb-2">Diseño de API</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Aprende las mejores prácticas para API JSON</p>
+                <h3 className="font-medium text-gray-900 dark:text-white mb-2">API设计</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">学习JSON API最佳实�?/p>
               </Link>
             </div>
           </section>
@@ -309,3 +312,4 @@ export default function WikiSpanishPage() {
     </div>
   );
 }
+

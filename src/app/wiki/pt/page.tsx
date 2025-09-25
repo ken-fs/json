@@ -3,7 +3,47 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, DocumentTextIcon, CodeBracketIcon, GlobeAltIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
+export async function generateMetadata(): Promise<Metadata> {
+  const title = 'Base de Conhecimento JSON – Docs para Desenvolvedores';
+  const description =
+    'Base de conhecimento JSON: sintaxe, validação (JSON Schema), formatação/minificação, design de APIs, performance, depuração e geração de código (TypeScript/Java). Inclui tutoriais e exemplos.';
+
+  return {
+    title,
+    description,
+    keywords: [
+      'JSON',
+      'ferramentas JSON',
+      'documentação JSON',
+      'tutorial JSON',
+      'validação JSON',
+      'JSON Schema',
+      'design de API',
+      'performance',
+      'geração de código',
+      'TypeScript',
+      'Java',
+      'melhores práticas',
+    ],
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+    },
+    alternates: {
+      canonical: '/wiki/pt',
+      languages: {
+        'en-US': '/wiki/en',
+        'zh-CN': '/wiki/cn',
+        'es-ES': '/wiki/es',
+        'pt-BR': '/wiki/pt',
+        'x-default': '/wiki/en',
+      },
+    },
+  };
+}
+
+const wikiPageMetadataDraft: Metadata = {
   title: "Base de Conhecimento de Ferramentas JSON - Centro de Documentação para Desenvolvedores | JSON Tools",
   description: "Base completa de conhecimento sobre ferramentas JSON: guia de sintaxe JSON, melhores práticas, documentação de API, tutoriais e FAQ. Recursos essenciais de aprendizado JSON para desenvolvedores.",
   keywords: "base conhecimento JSON,documentação JSON,tutorial JSON,documentação API,guia desenvolvedor,melhores práticas JSON",
