@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://jsontools.io"),
+  metadataBase: new URL("https://www.json1.org"),
   alternates: {
     canonical: "/",
     languages: {
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://jsontools.io",
+    url: "https://www.json1.org",
     title: "JSON Tools - Free Online JSON Formatter, Validator & Converter",
     description: "Free online JSON formatter, validator, and converter. Format, minify, validate JSON data. Convert JSON to XML, CSV. Professional developer tools for JSON processing.",
     siteName: "JSON Tools",

@@ -1,11 +1,11 @@
 # JSON Tools - Robots.txt
-# https://jsontools.io
+# https://www.json1.org
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://jsontools.io/sitemap.xml
+Sitemap: https://www.json1.org/sitemap.xml
 
 # Crawl delay for respectful crawling
 Crawl-delay: 1

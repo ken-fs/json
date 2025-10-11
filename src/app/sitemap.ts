@@ -1,91 +1,67 @@
-import { MetadataRoute } from "next";
+import { MetadataRoute } from 'next';
 
-export const dynamic = "force-static";
+export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://jsontools.io";
-  const currentDate = new Date().toISOString();
+  const baseUrl = 'https://www.json1.org';
+  const lastModified = new Date().toISOString();
 
-  return [
+  const routes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
+      lastModified,
+      changeFrequency: 'weekly',
       priority: 1,
     },
-    // Wiki index pages (all languages)
+    // Core tools
+    {
+      url: `${baseUrl}/json-to-java`,
+      lastModified,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/json-to-typescript`,
+      lastModified,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    // Wiki index (default and locales)
     {
       url: `${baseUrl}/wiki`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/wiki/en`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/wiki/cn`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/wiki/es`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/wiki/pt`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    // Example article (JSON Guide) per language
-    {
-      url: `${baseUrl}/wiki/en/json-guide`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
+      lastModified,
+      changeFrequency: 'weekly',
       priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/wiki/cn/json-guide`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/wiki/es/json-guide`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/wiki/pt/json-guide`,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/?lang=zh`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/?lang=es`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/?lang=pt`,
-      lastModified: currentDate,
-      changeFrequency: "weekly",
-      priority: 0.9,
     },
   ];
+
+  const locales = ['en', 'cn', 'es', 'pt'] as const;
+  const wikiSlugs = [
+    'json-guide',
+    'json-api-best-practices',
+    'json-validation',
+    'json-performance',
+    'json-to-typescript',
+    'json-to-java',
+  ] as const;
+
+  for (const locale of locales) {
+    routes.push({
+      url: `${baseUrl}/wiki/${locale}`,
+      lastModified,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    });
+
+    for (const slug of wikiSlugs) {
+      routes.push({
+        url: `${baseUrl}/wiki/${locale}/${slug}`,
+        lastModified,
+        changeFrequency: 'monthly',
+        priority: 0.7,
+      });
+    }
+  }
+
+  return routes;
 }

@@ -4,7 +4,7 @@ export default function StructuredData() {
     "@type": "WebApplication",
     "name": "JSON Tools",
     "description": "Free online JSON formatter, validator, and converter. Format, minify, validate JSON data. Convert JSON to XML, CSV. Professional developer tools for JSON processing.",
-    "url": "https://jsontools.io",
+    "url": "https://www.json1.org",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Any",
     "browserRequirements": "Requires JavaScript",
@@ -32,7 +32,7 @@ export default function StructuredData() {
       "Dark mode interface",
       "Real-time processing"
     ],
-    "screenshot": "https://jsontools.io/screenshot.png",
+    "screenshot": "https://www.json1.org/screenshot.png",
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.8",
@@ -46,7 +46,7 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "JSON Tools",
-    "url": "https://jsontools.io",
+    "url": "https://www.json1.org",
     "description": "Professional JSON processing tools for developers",
     "sameAs": [
       "https://github.com/jsontools",
@@ -58,14 +58,14 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "JSON Tools",
-    "url": "https://jsontools.io",
+    "url": "https://www.json1.org",
     "description": "Free online JSON formatter, validator, and converter tools",
     "inLanguage": ["en-US", "zh-CN", "es-ES", "pt-BR"],
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://jsontools.io/?q={search_term_string}"
+        "urlTemplate": "https://www.json1.org/?q={search_term_string}"
       },
       "query-input": "required name=search_term_string"
     },
@@ -83,13 +83,13 @@ export default function StructuredData() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://jsontools.io"
+        "item": "https://www.json1.org"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "JSON Tools",
-        "item": "https://jsontools.io"
+        "item": "https://www.json1.org"
       }
     ]
   }
