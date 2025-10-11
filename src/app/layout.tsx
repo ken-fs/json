@@ -20,16 +20,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     default: "JSON Tools - Free Online JSON Formatter, Validator & Converter",
-    template: "%s | JSON Tools"
+    template: "%s | JSON Tools",
   },
-  description: "Free online JSON formatter, validator, and converter. Format, minify, validate JSON data. Convert JSON to XML, CSV. Professional developer tools for JSON processing.",
+  description:
+    "Free online JSON formatter, validator, and converter. Format, minify, validate JSON data. Convert JSON to XML, CSV. Professional developer tools for JSON processing.",
   keywords: [
     "json formatter",
     "json validator",
     "json converter",
     "json minifier",
     "json to xml",
-    "json to csv", 
+    "json to csv",
     "online json tools",
     "json beautifier",
     "json parser",
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     "validate json",
     "json viewer",
     "json editor",
-    "developer tools"
+    "developer tools",
   ],
   authors: [{ name: "JSON Tools Team" }],
   creator: "JSON Tools",
@@ -54,31 +55,33 @@ export const metadata: Metadata = {
       "en-US": "/",
       "zh-CN": "/?lang=zh",
       "es-ES": "/?lang=es",
-      "pt-BR": "/?lang=pt"
-    }
+      "pt-BR": "/?lang=pt",
+    },
   },
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://www.json1.org",
     title: "JSON Tools - Free Online JSON Formatter, Validator & Converter",
-    description: "Free online JSON formatter, validator, and converter. Format, minify, validate JSON data. Convert JSON to XML, CSV. Professional developer tools for JSON processing.",
+    description:
+      "Free online JSON formatter, validator, and converter. Format, minify, validate JSON data. Convert JSON to XML, CSV. Professional developer tools for JSON processing.",
     siteName: "JSON Tools",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "JSON Tools - Professional JSON Processing"
-      }
-    ]
+        alt: "JSON Tools - Professional JSON Processing",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "JSON Tools - Free Online JSON Formatter, Validator & Converter",
-    description: "Free online JSON formatter, validator, and converter. Format, minify, validate JSON data. Convert JSON to XML, CSV.",
+    description:
+      "Free online JSON formatter, validator, and converter. Format, minify, validate JSON data. Convert JSON to XML, CSV.",
     images: ["/twitter-image.png"],
-    creator: "@jsontools"
+    creator: "@jsontools",
   },
   robots: {
     index: true,
@@ -95,9 +98,9 @@ export const metadata: Metadata = {
     google: "your-google-verification-code",
     yandex: "your-yandex-verification-code",
     other: {
-      "msvalidate.01": "your-bing-verification-code"
-    }
-  }
+      "msvalidate.01": "your-bing-verification-code",
+    },
+  },
 };
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-6FX1CYKSLV";
@@ -135,6 +138,17 @@ export default function RootLayout({
               `}
             </Script>
           </>
+        ) : null}
+        {IS_PROD ? (
+          <Script id="ms-clarity" strategy="afterInteractive">
+            {`
+              (function(c,l,a,r,i,t,y){
+                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "tokl9x7rbv");
+            `}
+          </Script>
         ) : null}
       </head>
       <body
