@@ -121,6 +121,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="JSON Tools" />
         {/* Removed missing apple-touch-icon to avoid 404; Next.js serves app/favicon.* automatically */}
         <meta name="theme-color" content="#3b82f6" />
+        {/* Google AdSense */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4969757168101127"
+          crossOrigin="anonymous"
+        />
         {IS_PROD && GA_ID ? (
           <>
             <Script
