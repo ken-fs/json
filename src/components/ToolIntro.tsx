@@ -2,28 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import { getIntro, type IntroBullet, type IntroQuestion } from "@/lib/intros";
-
-/**
- * Split text on backticked spans so `` `{}` `` can render in the mono face.
- *
- * Deliberately not markdown: the copy needs exactly one inline style, and a
- * parser would be more code than the feature and a larger bundle on every page.
- */
-function withInlineCode(text: string) {
-  return text.split(/(`[^`]+`)/g).map((part, index) => {
-    if (part.startsWith("`") && part.endsWith("`") && part.length > 2) {
-      return (
-        <code
-          key={index}
-          className="rounded bg-[#f2f2ed] px-1.5 py-0.5 font-mono text-[0.9em] text-[#1261ff]"
-        >
-          {part.slice(1, -1)}
-        </code>
-      );
-    }
-    return part;
-  });
-}
+import { withInlineCode } from "@/components/inlineCode";
 
 interface ToolIntroProps {
   /** Tool id, or `jsonFormatter` for the homepage. */

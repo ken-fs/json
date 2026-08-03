@@ -8,7 +8,7 @@ import { ArrowLeftIcon, BookOpenIcon, DocumentTextIcon, CodeBracketIcon, GlobeAl
 const META: WikiMetaInput = {
   locale: 'es',
   title: 'Base de Conocimiento JSON: Guías, Schema y Más',
-  description: 'Seis guías sobre JSON: sintaxis y tipos, validación con JSON Schema, diseño de APIs REST, rendimiento de parsing y generación de tipos.',
+  description: 'Diez guías sobre JSON: sintaxis y tipos, validación con Schema, diseño de APIs REST, rendimiento, escapado, comentarios y generación de código.',
   keywords: 'JSON,herramientas JSON,documentación JSON,tutorial JSON,validación JSON,JSON Schema,diseño de API,rendimiento,generación de código,TypeScript,Java,mejores prácticas',
   socialTitle: 'Base de Conocimiento JSON',
 };
@@ -89,6 +89,54 @@ export default function WikiSpanishPage() {
       href: '/wiki/es/json-to-java',
       tags: ['Codegen', 'Java', 'Tipos'],
       readTime: '5 min de lectura',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-vs-yaml',
+      title: 'JSON vs YAML',
+      description: 'En qué formato debería estar un archivo, y qué cambia al convertir entre ambos',
+      category: 'conversion',
+      categoryName: 'Conversión',
+      icon: GlobeAltIcon,
+      href: '/wiki/es/json-vs-yaml/',
+      tags: ['YAML', 'Config', 'Comparación'],
+      readTime: '9 min de lectura',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-to-csv-nested',
+      title: 'JSON anidado a CSV',
+      description: 'Cómo el anidamiento se aplana en columnas, qué pasa con los arrays y dónde se pierden datos',
+      category: 'conversion',
+      categoryName: 'Conversión',
+      icon: DocumentTextIcon,
+      href: '/wiki/es/json-to-csv-nested/',
+      tags: ['CSV', 'Aplanado', 'Hojas de cálculo'],
+      readTime: '10 min de lectura',
+      difficulty: 'intermediate'
+    },
+    {
+      id: 'json-escaping',
+      title: 'Escapado en JSON',
+      description: 'Por qué una cadena JSON dentro de otra duplica las barras invertidas, y cómo recuperar los datos',
+      category: 'foundation',
+      categoryName: 'Fundamentos',
+      icon: DocumentTextIcon,
+      href: '/wiki/es/json-escaping/',
+      tags: ['Escapado', 'Cadenas', 'Logs'],
+      readTime: '8 min de lectura',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-comments',
+      title: '¿Puede JSON tener comentarios?',
+      description: 'No. Qué dice el parser si lo intentas, qué cambian JSON5 y JSONC, y las cuatro alternativas',
+      category: 'foundation',
+      categoryName: 'Fundamentos',
+      icon: AcademicCapIcon,
+      href: '/wiki/es/json-comments/',
+      tags: ['Sintaxis', 'JSON5', 'Config'],
+      readTime: '7 min de lectura',
       difficulty: 'beginner'
     }
   ];

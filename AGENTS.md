@@ -45,6 +45,10 @@ committed because a static export has nothing to build them at request time.
 
 ## Testing Guidelines
 - `pnpm test` — converter and generator suites (`tests/*.test.ts`, run with `tsx`). No framework; each file asserts and prints.
+- `pnpm test:wiki` — Re-derives every code sample in `src/lib/wiki/*` from the real
+  converters and checks the article metadata against the `test:seo` limits. Needs no
+  server or build, and unlike the other suites it exits non‑zero, so it is the cheap
+  gate to run first. A doc page that no longer matches the code is a bug.
 - `pnpm test:pages` — Playwright pass over the static export. Needs a build first:
   `pnpm build && (cd out && python3 -m http.server 4321)`. Covers tool‑page content,
   i18n, mobile overflow, and the toolbar tooltips (hover, keyboard focus, viewport
@@ -138,7 +142,9 @@ shapes on containers.
 Enforce these rules on new and edited code. Two areas do not comply yet, and
 neither should be rewritten in passing:
 
-- **`src/app/wiki/**` (29 files)** — entirely Tailwind default palette, up to 123
+- **The six original wiki articles** (`json-guide`, `json-api-best-practices`,
+  `json-validation`, `json-performance`, `json-to-typescript`, `json-to-java`, and
+  the four locale index pages) — entirely Tailwind default palette, up to 123
   utility hits in a single file. A full port is its own task. The SEO pass touched
   only their metadata and JSON‑LD (each page hoists a `META: WikiMetaInput`
   literal and feeds it to both `wikiMetadata()` and `<WikiJsonLd>`, so the two
@@ -148,7 +154,32 @@ neither should be rewritten in passing:
   `Header.tsx` are mid‑migration and carry both.
 
 The redesigned surfaces to copy patterns from: `app/page.tsx`, `app/tools/page.tsx`,
-`AppSidebar.tsx`, `ConverterWorkspace.tsx`, `ToolIntro.tsx`, `ToolPage.tsx`.
+`AppSidebar.tsx`, `ConverterWorkspace.tsx`, `ToolIntro.tsx`, `ToolPage.tsx`,
+`WikiArticle.tsx`.
+
+## Adding a wiki article / 新增 wiki 文章
+
+New articles are data, not hand-written TSX. `WikiArticle.tsx` owns the layout and
+is already on the design tokens, so four locales share one set of classes:
+
+1. Write `src/lib/wiki/<slug>.ts` exporting `SLUG`, `REVISED`,
+   `META: Record<WikiLocale, WikiMetaInput>`, `CONTENT: Record<WikiLocale,
+   WikiArticleContent>`, and a `SAMPLES` object holding every code sample.
+2. Add 4 route files under `src/app/wiki/{en,cn,es,pt}/<slug>/page.tsx` — seven
+   lines each: `wikiMetadata(META.<locale>)` plus `<WikiArticle>`.
+3. Register the slug in `WIKI_ARTICLES` (`src/lib/wikiMeta.ts`). Sitemap coverage
+   and `test:seo` follow from that list, so skipping this ships four orphan pages.
+4. Add the article to all four locale index pages, or nothing links to it.
+5. Extend `tests/wiki.test.ts` so every sample is re-derived from the real
+   converter. This is not optional: the article claims things about what this
+   site's buttons output, and `pnpm test:wiki` is what keeps those claims true.
+   It also checks the title/description limits, so a too-long title fails in
+   seconds instead of after a build.
+
+All four locales must ship together and carry the same section ids — `wikiMetadata()`
+emits hreflang for all four unconditionally, so a partial set points hreflang at
+404s and fails `test:seo`. Inline markup in the copy is `` `code` `` and
+`**strong**` only, rendered by `withInlineCode`; anything else appears literally.
 
 Two rules the redesign does not currently satisfy, so treat them as direction
 rather than as a description of what exists: the `#f7f7f4` surface is flat with no noise

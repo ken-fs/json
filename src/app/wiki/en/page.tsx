@@ -8,7 +8,7 @@ import { ArrowLeftIcon, BookOpenIcon, DocumentTextIcon, CodeBracketIcon, GlobeAl
 const META: WikiMetaInput = {
   locale: 'en',
   title: 'JSON Knowledge Base: Guides, Schema & Performance',
-  description: 'Six guides on JSON: syntax and types, JSON Schema validation, REST API design, parsing performance, and generating TypeScript and Java types.',
+  description: 'Ten guides on JSON: syntax and types, Schema validation, REST API design, parsing performance, escaping, comments, and code generation.',
   keywords: 'JSON,JSON tools,JSON documentation,JSON tutorial,JSON validation,JSON Schema,API design,performance,code generation,TypeScript,Java,best practices,developer docs',
   socialTitle: 'JSON Knowledge Base',
 };
@@ -87,6 +87,54 @@ export default function WikiEnglishPage() {
       href: '/wiki/en/json-to-java',
       tags: ['Codegen', 'Java', 'Types'],
       readTime: '5 min read',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-vs-yaml',
+      title: 'JSON vs YAML',
+      description: 'Which format a given file should be in, and what changes when you convert between them',
+      category: 'conversion',
+      categoryName: 'Conversion',
+      icon: GlobeAltIcon,
+      href: '/wiki/en/json-vs-yaml/',
+      tags: ['YAML', 'Config', 'Comparison'],
+      readTime: '9 min read',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-to-csv-nested',
+      title: 'Nested JSON to CSV',
+      description: 'How nesting flattens into columns, what happens to arrays, and where the conversion loses data',
+      category: 'conversion',
+      categoryName: 'Conversion',
+      icon: DocumentTextIcon,
+      href: '/wiki/en/json-to-csv-nested/',
+      tags: ['CSV', 'Flattening', 'Spreadsheets'],
+      readTime: '10 min read',
+      difficulty: 'intermediate'
+    },
+    {
+      id: 'json-escaping',
+      title: 'JSON Escaping',
+      description: 'Why a JSON string inside a JSON string doubles every backslash, and how to read the payload back out',
+      category: 'foundation',
+      categoryName: 'Foundation',
+      icon: DocumentTextIcon,
+      href: '/wiki/en/json-escaping/',
+      tags: ['Escaping', 'Strings', 'Logs'],
+      readTime: '8 min read',
+      difficulty: 'beginner'
+    },
+    {
+      id: 'json-comments',
+      title: 'Can JSON Have Comments?',
+      description: 'No. What the parser says when you try, what JSON5 and JSONC change, and the four workarounds',
+      category: 'foundation',
+      categoryName: 'Foundation',
+      icon: AcademicCapIcon,
+      href: '/wiki/en/json-comments/',
+      tags: ['Syntax', 'JSON5', 'Config'],
+      readTime: '7 min read',
       difficulty: 'beginner'
     }
   ];

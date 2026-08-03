@@ -50,6 +50,10 @@ export const WIKI_ARTICLES = [
   { slug: 'json-performance', revised: '2026-08-03' },
   { slug: 'json-to-typescript', revised: '2026-08-03' },
   { slug: 'json-to-java', revised: '2026-08-03' },
+  { slug: 'json-vs-yaml', revised: '2026-08-03' },
+  { slug: 'json-to-csv-nested', revised: '2026-08-03' },
+  { slug: 'json-escaping', revised: '2026-08-03' },
+  { slug: 'json-comments', revised: '2026-08-03' },
 ] as const;
 
 /**
