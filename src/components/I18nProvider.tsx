@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
-import { useLanguageStore } from "@/stores/uiStore";
+import { I18nextProvider, initReactI18next } from "react-i18next";
+import { hydrateLanguage, useLanguageStore, type Language } from "@/stores/uiStore";
 
 import en from "../locales/en.json";
 import zh from "../locales/zh.json";
@@ -18,51 +17,51 @@ const resources = {
   es: { translation: es },
 };
 
-let isInitialized = false;
+/**
+ * Initialise i18next synchronously, in English, on both server and client.
+ *
+ * Two things depend on this being synchronous and English:
+ *
+ * 1. The site is a static export. This provider used to return `null` until an
+ *    effect had run, so every prerendered page shipped an empty `<body>` — the
+ *    pages had metadata but no crawlable content at all. Rendering on the first
+ *    pass puts the real text into the exported HTML.
+ * 2. Hydration has to match. The server can only produce English, so the
+ *    client's first render must be English too. The visitor's own language is
+ *    applied in an effect below, after hydration.
+ *
+ * `init()` completes synchronously here because the resources are bundled and
+ * no async backend is configured. Language detection moved to the Zustand store
+ * (which reads `navigator.language` and localStorage) so this stays sync.
+ */
+if (!i18n.isInitialized) {
+  i18n.use(initReactI18next).init({
+    resources,
+    lng: "en",
+    fallbackLng: "en",
+    debug: false,
+    interpolation: { escapeValue: false },
+    // Suspense would reintroduce the blank-render problem during export.
+    react: { useSuspense: false },
+  });
+}
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const { language } = useLanguageStore();
-  const [isReady, setIsReady] = useState(false);
+  // i18n is not React state, so track the applied language to trigger the
+  // re-render that swaps translated strings in after hydration.
+  const [, setActiveLanguage] = useState<Language>("en");
 
+  // Read the stored/detected language only after hydration, so the first client
+  // render still matches the English HTML the export produced.
   useEffect(() => {
-    if (!isInitialized) {
-      i18n
-        .use(LanguageDetector)
-        .use(initReactI18next)
-        .init({
-          resources,
-          fallbackLng: "en",
-          debug: false,
-
-          detection: {
-            order: ["localStorage", "navigator", "htmlTag"],
-            caches: ["localStorage"],
-          },
-
-          interpolation: {
-            escapeValue: false,
-          },
-        })
-        .then(() => {
-          isInitialized = true;
-          setIsReady(true);
-        });
-    } else {
-      setIsReady(true);
-    }
+    void hydrateLanguage();
   }, []);
 
-  // 当 Zustand 语言状态改变时，更新 i18n
   useEffect(() => {
-    if (isInitialized && i18n.language !== language) {
-      i18n.changeLanguage(language);
-    }
+    if (i18n.language === language) return;
+    void i18n.changeLanguage(language).then(() => setActiveLanguage(language));
   }, [language]);
 
-  // 在 i18n 初始化完成之前不渲染子组件
-  if (!isReady) {
-    return null;
-  }
-
-  return <>{children}</>;
+  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 }

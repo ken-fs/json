@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguageStore } from "@/stores/uiStore";
 import { LanguageSelector } from "./LanguageSelector";
 import Link from "next/link";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 
 export default function Header() {
   const { t } = useTranslation();
@@ -31,15 +32,13 @@ export default function Header() {
   // }, [theme]);
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-      <div className="mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold text-blue-500 hover:text-blue-600 transition-colors">
-              {t("title")}
-            </Link>
-          </div>
+    <header className="flex h-16 shrink-0 items-center justify-between border-b border-[#dedede] bg-white px-5 lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:h-[72px] lg:border-b-0 lg:bg-transparent lg:px-9">
+      <Link
+        href="/"
+        className="text-xl font-black tracking-[-0.05em] text-[#141414] lg:hidden"
+      >
+        JSON<span className="text-[#95ee1c]">1</span>
+      </Link>
 
           {/* Navigation */}
           {/* <nav className="hidden md:flex items-center space-x-8">
@@ -55,7 +54,7 @@ export default function Header() {
           </nav> */}
 
           {/* Right side controls */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2">
             {/* Search icon */}
             {/* <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
               <svg
@@ -76,23 +75,11 @@ export default function Header() {
             {/* Help link */}
             <Link
               href={getHelpLink()}
-              className="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white flex items-center space-x-2"
+              className="hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-[#4d5057] transition-colors hover:bg-[#f5f5f1] hover:text-[#141414] sm:flex"
               title={t("help.aboutJSON")}
             >
               <span>{t("helpText")}</span>
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <QuestionMarkCircleIcon className="h-5 w-5" aria-hidden="true" />
             </Link>
 
             {/* Favorites/Star icon */}
@@ -185,8 +172,6 @@ export default function Header() {
             {/* Language selector */}
             <LanguageSelector />
           </div>
-        </div>
-      </div>
     </header>
   );
 }

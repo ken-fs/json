@@ -1,6 +1,18 @@
 {
   "title": "JSON",
   "description": "Formatador, validador e conversor JSON online profissional",
+  "workspaceTitle": "Formatar JSON",
+  "workspaceSubtitle": "Cole ou envie JSON para formatar, validar, inspecionar e exportar em segundos.",
+  "inputLabel": "Entrada",
+  "outputLabel": "Saída",
+  "formatted": "JSON formatado",
+  "validJson": "JSON válido",
+  "processedLocally": "Processado localmente",
+  "privacyNote": "Os seus dados nunca saem do dispositivo",
+  "lines": "linhas",
+  "ready": "Pronto",
+  "footerTagline": "Formate. Valide. Publique.",
+  "formatCompleted": "JSON formatado com sucesso",
   "format": "Formatar",
   "validate": "Validar",
   "minify": "Minificar",
@@ -18,7 +30,6 @@
   "invalid": "Inválido",
   "error": "Erro",
   "success": "Sucesso",
-  "tools": "Ferramentas",
   "examples": "Exemplos",
   "settings": "Configurações",
   "about": "Sobre",
@@ -33,11 +44,9 @@
   "unescaped": "Sem escapes",
   "removeEscapes": "Remover escapes",
   "lineNumbers": "Números de Linha",
-  "addExample": "Adicionar Exemplo",
   "jsonTools": "Ferramentas JSON",
   "copyInput": "Copiar Entrada",
   "copyOutput": "Copiar Saída",
-  "enterJsonData": "Por favor, insira dados JSON...",
   "pasteFromClipboard": "Colar dados JSON da área de transferência",
   "uploadLocalFile": "Carregar arquivo JSON local",
   "copyToClipboard": "Copiar JSON formatado para a área de transferência",
@@ -56,12 +65,7 @@
   "returnToJsonView": "Retornado à visualização JSON",
   "convertedToXml": "Convertido para XML",
   "xmlConversionFailed": "Falha na conversão XML",
-  "copiedToClipboard": "Copiado para a área de transferência",
-  "copyFailed": "Falha ao copiar",
   "pasteSuccessful": "Cola bem-sucedida",
-  "pasteFailed": "Falha ao colar",
-  "fileDownloaded": "Arquivo baixado",
-  "exampleAdded": "Exemplo JSON adicionado",
   "jsonCompressed": "JSON comprimido",
   "jsonExpanded": "JSON expandido",
   "compressionFailed": "Falha na compressão",
@@ -124,6 +128,142 @@
     "jsonToJava": {
       "label": "JSON para Java",
       "description": "Converter JSON para definições de classes Java"
+    },
+    "json-to-yaml": {
+      "label": "JSON para YAML",
+      "short": "JSON → YAML",
+      "description": "Converte JSON em YAML. Strings que seriam lidas como booleanos, números ou nulos recebem aspas para que o resultado volte ao mesmo valor."
+    },
+    "yaml-to-json": {
+      "label": "YAML para JSON",
+      "short": "YAML → JSON",
+      "description": "Converte YAML em JSON formatado. Suporta mapeamentos aninhados, sequências em bloco e inline, escalares com aspas e comentários.",
+      "notes": [
+        "Âncoras, aliases e fluxos multidocumento não são suportados. O restante do YAML de dados comum é."
+      ]
+    },
+    "json-to-xml": {
+      "label": "JSON para XML",
+      "short": "JSON → XML",
+      "description": "Converte JSON em XML indentado. Arrays repetem a tag pai, nulos viram xsi:nil e chaves inválidas como nome de elemento são saneadas."
+    },
+    "xml-to-json": {
+      "label": "XML para JSON",
+      "short": "XML → JSON",
+      "description": "Converte XML em JSON formatado. Atributos viram chaves @nome, elementos repetidos formam arrays e texto misto fica em #text.",
+      "notes": [
+        "XML não tem sistema de tipos, então os valores são inferidos: \"10001\" vira o número 10001 e um elemento vazio vira null. Ida e volta por XML não devolve sempre os tipos originais."
+      ]
+    },
+    "json-to-csv": {
+      "label": "JSON para CSV",
+      "short": "JSON → CSV",
+      "description": "Achata um array JSON em CSV. Objetos aninhados viram colunas com pontos, registros incompletos continuam alinhados e células com delimitadores recebem aspas.",
+      "notes": [
+        "Arrays de valores simples ficam em uma célula, unidos por \"; \"."
+      ]
+    },
+    "csv-to-json": {
+      "label": "CSV para JSON",
+      "short": "CSV → JSON",
+      "description": "Converte CSV em um array JSON de objetos. Interpreta campos com aspas, aspas escapadas e quebras de linha internas, e tipa números e booleanos."
+    },
+    "json-to-toml": {
+      "label": "JSON para TOML",
+      "short": "JSON → TOML",
+      "description": "Converte JSON em TOML. Objetos aninhados viram tabelas, arrays de objetos viram arrays de tabelas e o resto fica inline.",
+      "notes": [
+        "Documentos TOML precisam de um objeto no nível superior, então um array JSON não converte diretamente."
+      ]
+    },
+    "toml-to-json": {
+      "label": "TOML para JSON",
+      "short": "TOML → JSON",
+      "description": "Converte TOML em JSON formatado. Suporta tabelas, arrays de tabelas, chaves com pontos, tabelas inline e arrays multilinha.",
+      "notes": [
+        "JSON não tem tipo de data, então datas e horas do TOML são mantidas como strings."
+      ]
+    },
+    "json-to-typescript": {
+      "label": "JSON para TypeScript",
+      "short": "JSON → TypeScript",
+      "description": "Gere interfaces TypeScript a partir de uma amostra JSON. Campos ausentes em alguns registros são marcados como opcionais e valores que às vezes são null viram uma união com null.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
+    },
+    "json-to-java": {
+      "label": "JSON para Java",
+      "short": "JSON → Java",
+      "description": "Gere classes Java com anotações Jackson a partir de uma amostra JSON. Primitivos opcionais são encapsulados, então um campo ausente não se confunde com zero ou false.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
+    },
+    "json-to-go": {
+      "label": "JSON para Go",
+      "short": "JSON → Go",
+      "description": "Gere structs Go com tags JSON a partir de uma amostra JSON. Campos opcionais viram ponteiros com omitempty, para que encoding/json distinga ausente do valor zero.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
+    },
+    "json-to-python": {
+      "label": "JSON para Python",
+      "short": "JSON → Python",
+      "description": "Gere dataclasses Python com anotações de tipo a partir de uma amostra JSON. Campos opcionais recebem None por padrão e vêm depois dos obrigatórios, então a classe compila como está.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
+    },
+    "json-to-csharp": {
+      "label": "JSON para C#",
+      "short": "JSON → C#",
+      "description": "Gere classes C# com atributos System.Text.Json a partir de uma amostra JSON. As propriedades usam PascalCase com um JsonPropertyName guardando a chave original, e tipos de valor opcionais ganham interrogação.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
+    },
+    "json-to-rust": {
+      "label": "JSON para Rust",
+      "short": "JSON → Rust",
+      "description": "Gere structs Rust com derives Serde a partir de uma amostra JSON. Campos opcionais viram Option e toda chave que snake_case não alcança recebe um serde rename explícito.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
+    },
+    "json-to-kotlin": {
+      "label": "JSON para Kotlin",
+      "short": "JSON → Kotlin",
+      "description": "Gere data classes Kotlin com kotlinx.serialization a partir de uma amostra JSON. A anotação SerialName só é adicionada quando a chave JSON difere do nome da propriedade.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
+    },
+    "json-to-dart": {
+      "label": "JSON para Dart",
+      "short": "JSON → Dart",
+      "description": "Gere classes Dart com fromJson e toJson a partir de uma amostra JSON. Cada objeto aninhado tem sua própria classe, então decodificar nunca deixa você com um map cru.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
+    },
+    "json-to-swift": {
+      "label": "JSON para Swift",
+      "short": "JSON → Swift",
+      "description": "Gere structs Swift que seguem Codable a partir de uma amostra JSON. CodingKeys só é emitido quando uma chave difere da propriedade, então modelos simples ficam legíveis.",
+      "notes": [
+        "Cada registro do array é inspecionado, não apenas o primeiro, então um campo que aparece em alguns deles é tipado como opcional em vez de obrigatório.",
+        "Formas aninhadas idênticas são emitidas uma vez e reutilizadas, e palavras reservadas são renomeadas para algo válido nesta linguagem."
+      ]
     }
   },
   "help": {
@@ -140,5 +280,395 @@
     "useCase3": "Armazenamento e transmissão de dados",
     "useCase4": "Comunicação AJAX em aplicações web",
     "tip": "Use nosso formatador JSON para embelezar, validar e converter seus dados JSON com facilidade!"
+  },
+  "allTools": "Todas as ferramentas",
+  "rootTypeName": "Tipo raiz",
+  "delimiter": "Delimitador",
+  "comma": "Vírgula",
+  "semicolon": "Ponto e vírgula",
+  "tab": "Tabulação",
+  "pipe": "Barra vertical",
+  "outputAppearsHere": "O resultado aparece aqui enquanto você digita.",
+  "goodToKnow": "Vale saber",
+  "pasteInputPlaceholder": "Cole {{format}} aqui",
+  "categories": {
+    "format": "Formatos",
+    "data": "Tabular",
+    "code": "Código"
+  },
+  "guides": "Guias",
+  "intros": {
+    "jsonFormatter": {
+      "paragraphs": [
+        "JSON é um formato de texto para dados estruturados. Substituiu o XML na maioria das APIs por ser mais compacto e mais rápido de ler, sem abrir mão de descrever estruturas aninhadas. Um documento JSON é apenas uma string, e um punhado de caracteres carrega todo o significado:"
+      ],
+      "bullets": [
+        {
+          "text": "As chaves delimitam um objeto: um conjunto de pares chave/valor sem ordem."
+        },
+        {
+          "text": "Os colchetes delimitam um array: uma lista ordenada de valores."
+        },
+        {
+          "text": "As aspas duplas envolvem cada string e também cada chave."
+        },
+        {
+          "text": "Os dois-pontos separam uma chave do seu valor, que pode ser outro objeto ou um array."
+        }
+      ],
+      "questions": [
+        {
+          "q": "Por que {name:'json'} não passa na validação?",
+          "a": "JSON exige aspas duplas tanto nas chaves quanto nos valores de texto, então isso precisa ser {\"name\": \"json\"}. Aspas simples e chaves sem aspas são literais de objeto válidos em JavaScript, mas não são JSON válido — é o motivo mais comum para um payload que parece correto ser rejeitado."
+        },
+        {
+          "q": "Por que a vírgula sobrando é um erro?",
+          "a": "JSON não aceita vírgula depois do último elemento de um objeto ou array: {\"a\": 1,} é inválido. JavaScript, Python e quase todos os linters toleram, então ela sobrevive até algo rigoroso tentar interpretar."
+        },
+        {
+          "q": "Posso usar comentários?",
+          "a": "Não. JSON não tem sintaxe de comentário, e é por isso que formatos como YAML e TOML existem para arquivos de configuração mantidos por pessoas. Se você precisa de comentários numa configuração, converta para um deles."
+        },
+        {
+          "q": "Meus dados são enviados para algum lugar?",
+          "a": "Não. Todas as ferramentas deste site rodam no seu navegador. Nada é enviado para um servidor, então você pode colar um payload de produção sem que ele saia da sua máquina."
+        }
+      ]
+    },
+    "json-to-yaml": {
+      "paragraphs": [
+        "YAML expressa os mesmos dados que JSON, mas se apoia na indentação em vez de chaves, o que o torna a escolha habitual para configurações que alguém precisa ler e editar. Qualquer documento JSON é convertível, já que JSON é um subconjunto de YAML.",
+        "O risco é que o YAML infere tipos a partir de texto sem aspas. Uma string como `yes`, `off`, `null` ou `1.0` voltaria como booleano, null ou número, então este conversor coloca aspas em qualquer string que, sem elas, seria lida como outra coisa. O resultado recarrega exatamente com os valores originais."
+      ],
+      "questions": [
+        {
+          "q": "Por que algumas strings voltaram com aspas e outras não?",
+          "a": "Só as ambíguas recebem aspas. `name: Ada` é inequivocamente texto, então as aspas seriam ruído, mas `version: \"1.0\"` precisa delas ou o YAML lê como o número 1. Isso às vezes é chamado de problema da Noruega, porque o código de país NO se torna false."
+        },
+        {
+          "q": "A indentação e a ordem das chaves são estáveis?",
+          "a": "Sim. Mapeamentos aninhados usam dois espaços de indentação e as chaves mantêm a ordem que tinham no JSON, então a saída pode ser comparada com a de uma execução anterior."
+        }
+      ]
+    },
+    "yaml-to-json": {
+      "paragraphs": [
+        "Converter YAML de volta para JSON costuma ser o primeiro passo quando um arquivo de configuração precisa ser consumido por algo que só entende JSON, ou quando você quer conferir no que um YAML realmente resulta em vez do que ele parece dizer.",
+        "Mapeamentos aninhados, sequências em bloco, coleções em fluxo inline, escalares com aspas e comentários são todos suportados. A estrutura é definida pela indentação, então um tab perdido ou uma chave desalinhada gera erro de parsing em vez de mudar o sentido silenciosamente."
+      ],
+      "questions": [
+        {
+          "q": "Por que meu arquivo indentado com tabs é rejeitado?",
+          "a": "A especificação do YAML proíbe tabs na indentação. Quase todos os editores os exibem igual a espaços, o que torna esse problema difícil de enxergar — converter é uma forma rápida de encontrá-lo."
+        },
+        {
+          "q": "Âncoras e aliases são suportados?",
+          "a": "Não. Âncoras (`&name`), aliases (`*name`) e fluxos com vários documentos separados por `---` estão fora do escopo. Todo o resto do YAML de dados comum funciona."
+        }
+      ]
+    },
+    "json-to-xml": {
+      "paragraphs": [
+        "XML continua sendo o que muitos sistemas corporativos, serviços SOAP e formatos de documento esperam. Converter JSON em XML significa resolver um desencontro estrutural: JSON tem arrays e um null de verdade, o XML não tem nenhum dos dois.",
+        "Arrays repetem a tag pai uma vez por elemento, nulos se tornam um elemento com `xsi:nil=\"true\"`, e qualquer chave que não seja um nome de elemento válido é saneada. Um array na raiz é envolvido em elementos `<item>`, porque um documento com vários elementos de primeiro nível não é XML bem formado."
+      ],
+      "questions": [
+        {
+          "q": "Por que meu array não aparece como array?",
+          "a": "XML não tem tipo array. Uma lista de três itens se torna o mesmo elemento repetido três vezes, que é a codificação convencional — mas isso significa que um array de um único item e um valor simples ficam idênticos na saída."
+        },
+        {
+          "q": "O que acontece com uma chave como \"first name\" ou \"2fa\"?",
+          "a": "Nomes de elemento não podem conter espaços nem começar com dígito, então esses casos são reescritos para algo válido. Para essas chaves a conversão não é reversível, o que vale saber antes de usar isso como formato de armazenamento."
+        }
+      ]
+    },
+    "xml-to-json": {
+      "paragraphs": [
+        "Transformar XML em JSON geralmente é sobre trazer um payload legado ou de terceiros para um formato com que o código moderno consiga trabalhar. O mapeamento precisa inventar convenções, porque o XML distingue coisas que o JSON não distingue.",
+        "Atributos se tornam chaves com o prefixo `@`, elementos irmãos repetidos se agrupam num array, e texto misturado com elementos filhos vai para `#text`. Essas três regras cobrem os casos em que uma conversão ingênua perderia dados sem avisar."
+      ],
+      "questions": [
+        {
+          "q": "Por que meu CEP 02134 virou o número 2134?",
+          "a": "XML não tem sistema de tipos — tudo é texto — então os valores precisam ser adivinhados. O que parece numérico se torna número e um elemento vazio se torna null. Levar JSON para XML e de volta não devolve sempre os tipos originais, e é neste passo que isso acontece."
+        },
+        {
+          "q": "Para onde foram meus atributos?",
+          "a": "Para lugar nenhum. O atributo `id=\"7\"` se torna a chave `@id`. O prefixo evita conflito com um elemento filho que também se chame `id`."
+        }
+      ]
+    },
+    "json-to-csv": {
+      "paragraphs": [
+        "CSV é o que planilhas e a maioria das ferramentas de análise de dados importam, então esta é a conversão a usar quando uma resposta de API precisa chegar a alguém que trabalha no Excel, no Numbers ou no Sheets.",
+        "JSON é uma árvore e CSV é uma grade, então o aninhamento precisa ser achatado: um objeto aninhado se torna nomes de coluna com ponto, como `address.zipCode`. Registros sem algum campo continuam alinhados sob o cabeçalho certo, e qualquer célula que contenha seu delimitador, uma aspa ou uma quebra de linha recebe aspas para sobreviver à ida e volta."
+      ],
+      "questions": [
+        {
+          "q": "Meu JSON é um único objeto, não um array. Por que o erro?",
+          "a": "As linhas de um CSV são registros, então a entrada precisa ser um array de objetos. Envolva o objeto solto em colchetes para obter um arquivo de uma linha."
+        },
+        {
+          "q": "Por que uma célula que começa com = ou + recebe aspas?",
+          "a": "Planilhas tratam um `=`, `+`, `-` ou `@` inicial como o começo de uma fórmula. Colocar aspas nessas células mantém um valor como `-5` ou `=SUM` como texto em vez de algo que a planilha tenta calcular."
+        },
+        {
+          "q": "O que acontece com um array de valores simples?",
+          "a": "Ele fica numa única célula, unido por ponto e vírgula mais espaço, já que não há colunas para distribuí-lo. Um array de objetos, por outro lado, é achatado por índice."
+        }
+      ]
+    },
+    "csv-to-json": {
+      "paragraphs": [
+        "No sentido inverso, uma exportação ou planilha se torna um array de objetos, que é o formato que você quer para alimentar uma API, um script de dados iniciais ou uma fixture de teste.",
+        "A primeira linha se torna as chaves. O parsing segue as convenções reais de CSV em vez de separar por vírgulas: campos com aspas podem conter o delimitador, `\"\"` é uma aspa escapada e um campo pode ocupar várias linhas. Números e booleanos são convertidos para os tipos JSON correspondentes em vez de continuarem como texto."
+      ],
+      "questions": [
+        {
+          "q": "Por que meu ID 007 virou 7?",
+          "a": "Valores que parecem numéricos são tipados como números, o que descarta os zeros à esquerda. Para identificadores, CEPs e telefones isso importa — se você precisa mantê-los como texto, colocar aspas no CSV não basta, então confira a saída antes de confiar nela."
+        },
+        {
+          "q": "Meu arquivo é separado por ponto e vírgula. Ainda dá para usar?",
+          "a": "Sim. Mude o delimitador no controle acima do editor para ponto e vírgula, tab ou barra vertical. Exportações de planilhas em locais que usam vírgula decimal geralmente vêm separadas por ponto e vírgula."
+        }
+      ]
+    },
+    "json-to-toml": {
+      "paragraphs": [
+        "TOML é o formato de configuração usado pelo Cargo, pelo pyproject e por um número crescente de ferramentas. Ele busca ser inequívoco onde o YAML é sutil: os tipos são explícitos e não há espaço em branco significativo.",
+        "Objetos aninhados se tornam cabeçalhos `[table]`, arrays de objetos se tornam blocos `[[table]]`, e todo o resto é escrito inline. A ordem das chaves é preservada, então a saída continua comparável."
+      ],
+      "questions": [
+        {
+          "q": "Por que um array no nível superior é rejeitado?",
+          "a": "Um documento TOML é uma tabela — um conjunto de pares chave/valor — então não há onde acomodar um array solto. Envolva-o antes num objeto sob alguma chave."
+        },
+        {
+          "q": "Vêm comentários?",
+          "a": "Não, porque não há nenhum no JSON para trazer. TOML aceita comentários com `#`, então este é um bom momento para adicioná-los depois que o arquivo for gerado."
+        }
+      ]
+    },
+    "toml-to-json": {
+      "paragraphs": [
+        "Ler uma configuração TOML como JSON serve para inspecionar o que uma ferramenta realmente vai ver, ou para extrair valores de um `Cargo.toml` ou `pyproject.toml` num script que só lida com JSON.",
+        "Tabelas, arrays de tabelas, chaves com ponto, tabelas inline e arrays espalhados por várias linhas são todos suportados, incluindo o aninhamento que os cabeçalhos de seção do TOML implicam."
+      ],
+      "questions": [
+        {
+          "q": "O que acontece com uma data do TOML?",
+          "a": "Ela continua string. TOML tem tipos de data e hora nativos e o JSON não tem nenhum, então `1979-05-27T07:32:00Z` é preservado literalmente em vez de convertido em algo com perda."
+        },
+        {
+          "q": "Como uma chave com ponto é convertida?",
+          "a": "Ela se torna aninhamento: `owner.name = \"Ada\"` produz um objeto `owner` com um `name` dentro, o mesmo resultado de escrever uma seção `[owner]`."
+        }
+      ]
+    },
+    "json-to-typescript": {
+      "paragraphs": [
+        "Escrever à mão a interface de uma resposta de API é tedioso e fácil de errar nos detalhes, sobretudo nos campos que só aparecem em alguns casos. Colar aqui uma resposta real devolve a interface que ela implica.",
+        "Objetos aninhados são extraídos para interfaces próprias com nome em vez de ficarem inline, então você pode referenciar `Address` diretamente sem repetir a forma dele. Objetos estruturalmente idênticos são emitidos uma vez e reutilizados."
+      ],
+      "questions": [
+        {
+          "q": "Qual é a diferença entre `field?: string` e `field: string | null`?",
+          "a": "A primeira diz que a chave pode não existir; a segunda, que a chave existe mas o valor pode ser null. São dois modos de falha diferentes e este gerador os distingue, porque o JSON também distingue."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    },
+    "json-to-java": {
+      "paragraphs": [
+        "POJOs em Java para um payload JSON são quase todo código repetitivo: um campo privado, um getter e um setter para cada chave. Isto gera os três, com as anotações do Jackson necessárias quando uma chave JSON não é um identificador válido em Java.",
+        "Objetos aninhados se tornam classes próprias, e `java.util.List` só é importado quando o payload realmente contém um array."
+      ],
+      "questions": [
+        {
+          "q": "Por que meu contador é `Long` aqui e `long` em outro lugar?",
+          "a": "Um primitivo não consegue representar ausência. Quando um campo é opcional ou aceita null, o tipo empacotado é usado, para que um valor ausente continue distinguível de 0 — com um primitivo ele viraria zero silenciosamente."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    },
+    "json-to-go": {
+      "paragraphs": [
+        "Structs em Go precisam de uma tag em cada campo para ligá-lo à chave JSON, o que torna lento escrevê-los à mão para um payload grande. Isto produz o conjunto completo, alinhado como o gofmt formataria.",
+        "Os nomes exportados seguem as convenções do Go, incluindo as siglas que o linter espera: uma chave `id` se torna `ID`, não `Id`."
+      ],
+      "questions": [
+        {
+          "q": "Por que alguns campos são ponteiros?",
+          "a": "Campos opcionais se tornam ponteiros com a tag `omitempty`, que é a única forma de o `encoding/json` distinguir um campo ausente de um que chegou com o valor zero. Sem isso, um `count` ausente e um `count` igual a 0 são indistinguíveis."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    },
+    "json-to-python": {
+      "paragraphs": [
+        "Uma dataclass dá acesso por atributos e um repr legível para um payload JSON sem escrever o construtor. Isto gera uma por objeto do exemplo, com anotações de tipo em tudo.",
+        "As chaves são convertidas para snake_case e, quando isso muda o nome, um comentário registra a chave JSON original para o mapeamento continuar visível."
+      ],
+      "questions": [
+        {
+          "q": "Por que os campos opcionais ficam no final?",
+          "a": "Python falha na criação da classe se um campo com valor padrão vier antes de um sem. Campos opcionais têm None como padrão, então precisam vir por último — a classe gerada está ordenada para funcionar como está."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    },
+    "json-to-csharp": {
+      "paragraphs": [
+        "Classes em C# para um payload JSON precisam de atributos para conciliar as convenções de nome, já que propriedades .NET são PascalCase e chaves JSON normalmente não. Isto gera as propriedades e os atributos juntos.",
+        "Objetos aninhados se tornam classes próprias e `System.Collections.Generic` só é importado quando o payload contém uma lista."
+      ],
+      "questions": [
+        {
+          "q": "Por que toda propriedade tem um JsonPropertyName?",
+          "a": "Porque propriedades em PascalCase quase nunca coincidem exatamente com suas chaves JSON. Guardar a chave original no atributo faz a serialização funcionar sem depender de uma política de nomes global estar configurada."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    },
+    "json-to-rust": {
+      "paragraphs": [
+        "O Serde faz o trabalho de desserializar JSON em Rust, mas precisa de structs que combinem com o payload. Isto os gera com os derives já no lugar.",
+        "Os nomes dos campos são convertidos para snake_case, e qualquer chave que o snake_case não consiga reverter recebe um `#[serde(rename)]` explícito, para o mapeamento ser exato e não aproximado."
+      ],
+      "questions": [
+        {
+          "q": "Por que alguns campos ficam dentro de Option?",
+          "a": "Rust não tem null. Um campo opcional ou que às vezes é null se torna `Option<T>`, o que obriga a tratar o caso ausente no ponto de uso em vez de dar panic mais adiante."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    },
+    "json-to-kotlin": {
+      "paragraphs": [
+        "Uma data class em Kotlin dá igualdade, um método copy e desestruturação de graça, o que a torna o destino natural de um payload JSON. Isto gera uma por objeto com anotações do kotlinx.serialization.",
+        "As chaves se tornam propriedades em camelCase, e objetos aninhados são extraídos para classes próprias em vez de ficarem inline."
+      ],
+      "questions": [
+        {
+          "q": "Quando uma anotação SerialName é adicionada?",
+          "a": "Só quando a chave JSON difere do nome da propriedade depois da conversão para camelCase. Colocá-la em todo lugar seria ruído, então modelos simples ficam limpos."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    },
+    "json-to-dart": {
+      "paragraphs": [
+        "O Dart não tem reflexão de JSON embutida, então cada classe de modelo precisa de `fromJson` e `toJson` escritos à mão. É muito código repetitivo para um app Flutter que conversa com uma API real, e isto gera tudo.",
+        "Cada objeto aninhado tem a própria classe com o próprio par de métodos, então decodificar um payload deixa você com modelos tipados em vez de um `Map<String, dynamic>` que precisa de cast a cada acesso."
+      ],
+      "questions": [
+        {
+          "q": "Os campos são imutáveis?",
+          "a": "Sim. Os campos são `final`, com construtor const e parâmetros nomeados obrigatórios, que é a forma convencional de um modelo Flutter e permite à árvore de widgets tratar as instâncias como valores."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    },
+    "json-to-swift": {
+      "paragraphs": [
+        "Fazer um struct conformar com `Codable` é tudo de que o Swift precisa para decodificar JSON, desde que os nomes das propriedades combinem com as chaves. Isto gera os structs e os `CodingKeys` para os casos em que não combinam.",
+        "As chaves se tornam propriedades em camelCase e objetos aninhados são extraídos para structs próprios, então o valor decodificado fica totalmente tipado."
+      ],
+      "questions": [
+        {
+          "q": "Por que só alguns structs têm um enum CodingKeys?",
+          "a": "Ele é emitido só quando ao menos uma chave difere do nome da propriedade. Quando os nomes já coincidem, o Codable resolve o mapeamento sozinho e o enum seria peso morto."
+        },
+        {
+          "q": "Como os campos opcionais são decididos?",
+          "a": "Cada registro do array é inspecionado, não só o primeiro. Um campo que aparece em alguns registros e não em outros é tipado como opcional, e um valor que às vezes é null amplia o tipo de acordo. Geradores que leem só o primeiro elemento erram exatamente nos payloads em que isso importa."
+        },
+        {
+          "q": "O que acontece com uma chave que é palavra reservada?",
+          "a": "Ela é renomeada para algo válido na linguagem de destino e, quando a linguagem permite, uma anotação registra a chave JSON original para a serialização continuar funcionando nos dois sentidos."
+        }
+      ]
+    }
+  },
+  "aboutThisTool": "Sobre esta ferramenta",
+  "toolsIndex": {
+    "heading": "{{count}} ferramentas, sem upload",
+    "intro": "Todos os conversores rodam inteiramente no seu navegador. Seus dados não saem da página, então você pode colar payloads de produção sem pensar duas vezes.",
+    "startHere": "Comece aqui",
+    "formatterTitle": "Formatador e validador de JSON",
+    "formatterBlurb": "Formate, minifique, valide, escape e inspecione JSON numa árvore recolhível. O espaço de trabalho principal cobre tudo o que você faz no dia a dia.",
+    "readGuides": "Ler os guias de JSON",
+    "categories": {
+      "format": {
+        "title": "Formatos",
+        "blurb": "Vá do JSON para os formatos de configuração com que ele divide trabalho, e de volta."
+      },
+      "data": {
+        "title": "Dados tabulares",
+        "blurb": "Achate JSON em linhas de planilha, ou traga essas linhas de volta para objetos."
+      },
+      "code": {
+        "title": "Geração de código",
+        "blurb": "Transforme uma amostra de JSON em modelos tipados. Cada registro é inspecionado, então campos opcionais e tipos mistos são detectados em vez de adivinhados pelo primeiro."
+      }
+    }
   }
 }

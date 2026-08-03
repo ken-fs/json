@@ -1,6 +1,18 @@
 {
   "title": "JSON",
   "description": "Professional online JSON formatter, validator, and converter",
+  "workspaceTitle": "Format JSON",
+  "workspaceSubtitle": "Paste or upload JSON to format, validate, inspect, and export it in seconds.",
+  "inputLabel": "Input",
+  "outputLabel": "Output",
+  "formatted": "Formatted JSON",
+  "validJson": "Valid JSON",
+  "processedLocally": "Processed locally",
+  "privacyNote": "Your data never leaves your device",
+  "lines": "lines",
+  "ready": "Ready",
+  "footerTagline": "Format. Validate. Ship.",
+  "formatCompleted": "JSON formatted successfully",
   "format": "Format",
   "validate": "Validate",
   "minify": "Minify",
@@ -18,7 +30,6 @@
   "invalid": "Invalid",
   "error": "Error",
   "success": "Success",
-  "tools": "Tools",
   "examples": "Examples",
   "settings": "Settings",
   "about": "About",
@@ -33,11 +44,9 @@
   "unescaped": "Unescaped",
   "removeEscapes": "Remove Escapes",
   "lineNumbers": "Line Numbers",
-  "addExample": "Add Example",
   "jsonTools": "JSON Tools",
   "copyInput": "Copy Input",
   "copyOutput": "Copy Output",
-  "enterJsonData": "Please enter JSON data...",
   "pasteFromClipboard": "Paste from clipboard",
   "uploadLocalFile": "Upload local file",
   "copyToClipboard": "Copy to clipboard",
@@ -56,12 +65,7 @@
   "returnToJsonView": "Returned to JSON view",
   "convertedToXml": "Converted to XML",
   "xmlConversionFailed": "XML conversion failed",
-  "copiedToClipboard": "Copied to clipboard",
-  "copyFailed": "Copy failed",
   "pasteSuccessful": "Paste successful",
-  "pasteFailed": "Paste failed",
-  "fileDownloaded": "File downloaded",
-  "exampleAdded": "Example JSON added",
   "jsonCompressed": "JSON compressed",
   "jsonExpanded": "JSON expanded",
   "compressionFailed": "Compression failed",
@@ -124,6 +128,142 @@
     "jsonToJava": {
       "label": "JSON to Java",
       "description": "Convert JSON to Java class definitions"
+    },
+    "json-to-yaml": {
+      "label": "JSON to YAML",
+      "short": "JSON → YAML",
+      "description": "Convert JSON to YAML. Strings that would otherwise read as booleans, numbers, or nulls are quoted so the result parses back to the same value."
+    },
+    "yaml-to-json": {
+      "label": "YAML to JSON",
+      "short": "YAML → JSON",
+      "description": "Convert YAML to formatted JSON. Handles nested mappings, block and inline sequences, quoted scalars, and comments.",
+      "notes": [
+        "Anchors, aliases, and multi-document streams are not supported. Everything else in common data YAML is."
+      ]
+    },
+    "json-to-xml": {
+      "label": "JSON to XML",
+      "short": "JSON → XML",
+      "description": "Convert JSON to indented XML. Arrays repeat the parent tag, nulls become xsi:nil, and keys that are not legal element names are sanitised."
+    },
+    "xml-to-json": {
+      "label": "XML to JSON",
+      "short": "XML → JSON",
+      "description": "Convert XML to formatted JSON. Attributes become @name keys, repeated elements collapse into arrays, and mixed text lands under #text.",
+      "notes": [
+        "XML has no type system, so values are guessed: \"10001\" becomes the number 10001 and an empty element becomes null. Round-tripping JSON through XML will not always return the original types."
+      ]
+    },
+    "json-to-csv": {
+      "label": "JSON to CSV",
+      "short": "JSON → CSV",
+      "description": "Flatten a JSON array into CSV. Nested objects become dotted columns, sparse records still line up, and cells containing delimiters are quoted.",
+      "notes": [
+        "Arrays of plain values share one cell, joined with \"; \"."
+      ]
+    },
+    "csv-to-json": {
+      "label": "CSV to JSON",
+      "short": "CSV → JSON",
+      "description": "Convert CSV to a JSON array of objects. Quoted fields, escaped quotes, and embedded newlines are parsed correctly, and numbers and booleans are typed."
+    },
+    "json-to-toml": {
+      "label": "JSON to TOML",
+      "short": "JSON → TOML",
+      "description": "Convert JSON to TOML. Nested objects become tables, arrays of objects become table arrays, and everything else inlines.",
+      "notes": [
+        "TOML documents must have an object at the top level, so a JSON array cannot convert directly."
+      ]
+    },
+    "toml-to-json": {
+      "label": "TOML to JSON",
+      "short": "TOML → JSON",
+      "description": "Convert TOML to formatted JSON. Tables, table arrays, dotted keys, inline tables, and multi-line arrays are all supported.",
+      "notes": [
+        "JSON has no date type, so TOML datetimes are kept as strings."
+      ]
+    },
+    "json-to-typescript": {
+      "label": "JSON to TypeScript",
+      "short": "JSON → TypeScript",
+      "description": "Generate TypeScript interfaces from a JSON sample. Fields missing from some records are marked optional, and values that are sometimes null widen to a null union.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
+    },
+    "json-to-java": {
+      "label": "JSON to Java",
+      "short": "JSON → Java",
+      "description": "Generate Java classes with Jackson annotations from a JSON sample. Optional primitives are boxed, so an absent field stays distinct from zero or false.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
+    },
+    "json-to-go": {
+      "label": "JSON to Go",
+      "short": "JSON → Go",
+      "description": "Generate Go structs with JSON tags from a JSON sample. Optional fields become pointers tagged omitempty, so encoding/json can tell absent from the zero value.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
+    },
+    "json-to-python": {
+      "label": "JSON to Python",
+      "short": "JSON → Python",
+      "description": "Generate Python dataclasses with type hints from a JSON sample. Optional fields default to None and are ordered after the required ones, so the class compiles as written.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
+    },
+    "json-to-csharp": {
+      "label": "JSON to C#",
+      "short": "JSON → C#",
+      "description": "Generate C# classes with System.Text.Json attributes from a JSON sample. Properties are PascalCase with a JsonPropertyName holding the original key, and optional value types get a question mark.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
+    },
+    "json-to-rust": {
+      "label": "JSON to Rust",
+      "short": "JSON → Rust",
+      "description": "Generate Rust structs with Serde derives from a JSON sample. Optional fields become Option types, and any key that snake_case cannot reach gets an explicit serde rename.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
+    },
+    "json-to-kotlin": {
+      "label": "JSON to Kotlin",
+      "short": "JSON → Kotlin",
+      "description": "Generate Kotlin data classes with kotlinx.serialization from a JSON sample. A SerialName annotation is added only where the JSON key differs from the property name.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
+    },
+    "json-to-dart": {
+      "label": "JSON to Dart",
+      "short": "JSON → Dart",
+      "description": "Generate Dart classes with fromJson and toJson from a JSON sample. Every nested object gets its own class, so decoding a payload never leaves you holding a raw map.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
+    },
+    "json-to-swift": {
+      "label": "JSON to Swift",
+      "short": "JSON → Swift",
+      "description": "Generate Swift structs conforming to Codable from a JSON sample. CodingKeys are emitted only when a key differs from its property name, so simple models stay readable.",
+      "notes": [
+        "Every record in an array is inspected, not just the first, so a field that appears in only some of them is typed as optional rather than required.",
+        "Identical nested shapes are emitted once and reused, and reserved words are renamed to something legal in this language."
+      ]
     }
   },
   "help": {
@@ -140,5 +280,22 @@
     "useCase3": "Data storage and transmission",
     "useCase4": "AJAX communication in web applications",
     "tip": "Use our JSON formatter to beautify, validate, and convert your JSON data with ease!"
-  }
+  },
+  "allTools": "All tools",
+  "rootTypeName": "Root type",
+  "delimiter": "Delimiter",
+  "comma": "Comma",
+  "semicolon": "Semicolon",
+  "tab": "Tab",
+  "pipe": "Pipe",
+  "outputAppearsHere": "Converted output appears here as you type.",
+  "goodToKnow": "Good to know",
+  "pasteInputPlaceholder": "Paste {{format}} here",
+  "categories": {
+    "format": "Formats",
+    "data": "Tabular",
+    "code": "Code"
+  },
+  "guides": "Guides",
+  "aboutThisTool": "About this tool"
 }

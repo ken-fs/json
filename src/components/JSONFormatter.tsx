@@ -4,93 +4,24 @@ import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { jsonToXML, escapeJSON, unescapeJSON, isEscapedJSON } from "@/lib/utils";
 import JSONEditor from "./JSONEditor";
+import ToolIntro from "./ToolIntro";
 import { Alert, AlertDescription } from "./ui/alert";
-import ToolSelector from "./ToolSelector";
-import { CheckCircleIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
-
-// Inline SVG icons (theme-aware via currentColor)
-type IconProps = { className?: string };
-const IconCopy = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <rect x="9" y="9" width="11" height="11" rx="2" />
-    <rect x="4" y="4" width="11" height="11" rx="2" />
-  </svg>
-);
-const IconExpand = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M4 12h6M8 8l2 2-2 2" />
-    <path d="M20 12h-6M16 16l-2-2 2-2" />
-  </svg>
-);
-const IconCompress = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M4 12h8M8 8l-2 2 2 2" />
-    <path d="M20 12h-8M16 16l2-2-2-2" />
-  </svg>
-);
-const IconClear = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M4 7h16M9 7l1-2h4l1 2M7 7l1 12h8l1-12" />
-  </svg>
-);
-const IconLineNumbers = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M6 6h12M6 12h12M6 18h12" />
-    <path d="M3 6v0M3 12v0M3 18v0" strokeLinecap="round" />
-  </svg>
-);
-const IconXML = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M7 8l-4 4 4 4" />
-    <path d="M17 8l4 4-4 4" />
-    <path d="M11 6l2 12" />
-  </svg>
-);
-const IconUnescape = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M6 18L18 6" />
-    <path d="M8 6l-2 2" />
-    <path d="M16 18l2-2" />
-  </svg>
-);
-const IconEscape = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M6 18L18 6" />
-    <path d="M12 10v4" />
-    <path d="M10 12h4" />
-  </svg>
-);
-const IconAdd = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <rect x="4" y="4" width="16" height="18" rx="2" />
-    <path d="M12 10v6M9 13h6" />
-  </svg>
-);
-const IconDownload = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M12 3v10" />
-    <path d="M8 9l4 4 4-4" />
-    <path d="M4 20h16" />
-  </svg>
-);
-const IconPaste = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M9 4h6M8 7h8M7 7h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z" />
-  </svg>
-);
-const IconUpload = ({ className = "w-4 h-4" }: IconProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
-    <path d="M20 20H4" />
-    <path d="M12 4v10" />
-    <path d="M8 8l4-4 4 4" />
-  </svg>
-);
-const IconSpinner = ({ className = "w-4 h-4 animate-spin" }: IconProps) => (
-  <svg viewBox="0 0 24 24" className={className}>
-    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.25" strokeWidth="4" fill="none" />
-    <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="4" fill="none" />
-  </svg>
-);
+import {
+  ArrowDownTrayIcon,
+  ArrowPathIcon,
+  ArrowUpTrayIcon,
+  ArrowsPointingInIcon,
+  ArrowsPointingOutIcon,
+  CheckCircleIcon,
+  ClipboardDocumentIcon,
+  CodeBracketIcon,
+  DocumentDuplicateIcon,
+  ExclamationCircleIcon,
+  ListBulletIcon,
+  PlusIcon,
+  SparklesIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 
 export default function JSONFormatter() {
   const { t } = useTranslation();
@@ -411,20 +342,20 @@ export default function JSONFormatter() {
     //   action: () => handleCopy(formattedOutput)
     // },
     {
-      icon: IconCopy,
+      icon: DocumentDuplicateIcon,
       text: t("copyInput"),
       tooltip: t("pasteFromClipboard"),
       action: () => handleCopy(input),
     },
     {
-      icon: collapsed ? IconExpand : IconCompress,
+      icon: collapsed ? ArrowsPointingOutIcon : ArrowsPointingInIcon,
       text: collapsed ? t("expand") : t("compress"),
       tooltip: collapsed ? t("expandJson") : t("compressJson"),
       action: handleCompress,
       active: collapsed,
     },
     {
-      icon: IconClear,
+      icon: TrashIcon,
       text: t("clear"),
       tooltip: "清空所有内容",
       action: () => {
@@ -436,14 +367,14 @@ export default function JSONFormatter() {
     },
 
     {
-      icon: IconLineNumbers,
+      icon: ListBulletIcon,
       text: t("lineNumbers"),
       tooltip: showLineNumbers ? t("hideLineNumbers") : t("showLineNumbers"),
       action: () => setShowLineNumbers(!showLineNumbers),
       active: showLineNumbers,
     },
     {
-      icon: IconXML,
+      icon: CodeBracketIcon,
       text: previewType === 'xml' ? t("cancelXmlConversion") : t("toXML"),
       tooltip: escapeMode
         ? t("xmlModeActive")
@@ -464,7 +395,7 @@ export default function JSONFormatter() {
       disabled: escapeMode,
     },
     {
-      icon: IconUnescape,
+      icon: ArrowPathIcon,
       text: previewType === 'unescape' ? t("returnToJsonView") : (t("removeEscapes") || t("unescape")),
       tooltip: previewType === 'unescape' ? t("returnToJsonView") : (t("removeEscapesTooltip") || t("unescapeJsonString")),
       action: handleUnescapePreview,
@@ -472,7 +403,7 @@ export default function JSONFormatter() {
       disabled: !isEscapedJSON(input) && previewType !== 'unescape',
     },
     {
-      icon: IconEscape,
+      icon: SparklesIcon,
       text: escapeMode ? t("unescape") : t("escape"),
       tooltip: escapeMode ? t("unescapeJsonString") : t("escapeJsonString"),
       action: handleEscapeMode,
@@ -480,7 +411,7 @@ export default function JSONFormatter() {
       processing: isProcessing,
     },
     {
-      icon: IconAdd,
+      icon: PlusIcon,
       text: t("addExample"),
       tooltip: t("addExampleData"),
       action: handleAddExample,
@@ -615,238 +546,212 @@ export default function JSONFormatter() {
     );
   };
 
+  const handleFormat = () => {
+    if (!input.trim()) {
+      showMessage(t("enterJsonDataFirst"), "error");
+      textareaRef.current?.focus();
+      return;
+    }
+
+    if (formattedOutput.startsWith("//")) {
+      showMessage(t("formatError"), "error");
+      return;
+    }
+
+    showMessage(t("formatCompleted"), "success");
+  };
+
+  const hasOutput = Boolean(overrideOutput || formattedOutput);
+  const hasError = formattedOutput.startsWith("//");
+  const isValid = Boolean(input.trim() && formattedOutput && !hasError);
+
   return (
-    <div className="flex-1 bg-gray-50 dark:bg-gray-900 relative">
-      {/* Toolbar */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between px-4 py-3">
-          {/* Left toolbar - Tool Selector */}
-          <ToolSelector />
+    <main className="relative flex-1 bg-[#f7f7f4] px-4 py-6 sm:px-6 lg:px-9 lg:py-7">
+      <div className="mx-auto max-w-[1480px]">
+        <div className="mb-7 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
+              JSON1 / {t("tools.jsonFormatter.label")}
+            </p>
+            <h1 className="text-[42px] font-black leading-none tracking-[-0.055em] text-[#111] sm:text-[54px]">
+              {t("workspaceTitle")}
+            </h1>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-[#666a72] sm:text-base">
+              {t("workspaceSubtitle")}
+            </p>
+          </div>
 
-          {/* Right toolbar - Action buttons */}
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-md border border-[#d6d6d1] bg-white px-4 text-sm font-semibold text-[#303238] transition-colors hover:border-[#a8a8a2] hover:bg-[#fcfcfa]">
+              <ArrowUpTrayIcon className="h-5 w-5" aria-hidden="true" />
+              {t("upload")}
+              <input
+                type="file"
+                accept=".json,.txt"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+            </label>
+            <button
+              type="button"
+              onClick={handlePaste}
+              className="inline-flex h-11 items-center gap-2 rounded-md border border-[#d6d6d1] bg-white px-4 text-sm font-semibold text-[#303238] transition-colors hover:border-[#a8a8a2] hover:bg-[#fcfcfa]"
+            >
+              <ClipboardDocumentIcon className="h-5 w-5" aria-hidden="true" />
+              {t("paste")}
+            </button>
+            <button
+              type="button"
+              onClick={handleFormat}
+              className="inline-flex h-11 items-center gap-2 rounded-md bg-[#1261ff] px-5 text-sm font-semibold text-white shadow-[0_5px_18px_rgba(18,97,255,0.22)] transition-transform hover:-translate-y-0.5 hover:bg-[#064fdc] active:translate-y-0"
+            >
+              <SparklesIcon className="h-5 w-5" aria-hidden="true" />
+              {t("format")} JSON
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Main content area - Split panes */}
-      <div className="h-[calc(100vh-178px)] p-4">
-        <div className="h-full flex gap-4 min-w-0">
-          {/* Left pane - Input area */}
-          <div className="flex-4 min-w-0 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[60px]">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {t("input")}
+        <div className="mb-3 flex flex-col gap-3 border-y border-[#dedede] py-3 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex items-center gap-2 text-sm text-[#62656c]">
+            <CheckCircleIcon
+              className={`h-5 w-5 ${isValid ? "text-[#63b100]" : "text-[#a7aaa4]"}`}
+              aria-hidden="true"
+            />
+            <span className={isValid ? "font-semibold text-[#4f8f00]" : ""}>
+              {isValid ? t("validJson") : t("processedLocally")}
+            </span>
+            <span className="hidden text-[#b0b0aa] sm:inline">·</span>
+            <span className="hidden sm:inline">{t("privacyNote")}</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1">
+            {rightToolbar.map((tool, index) => {
+              const IconComponent = tool.icon;
+              const processing = (tool as { processing?: boolean }).processing;
+              const disabled =
+                (tool as { disabled?: boolean }).disabled || processing;
+
+              return (
+                <button
+                  key={`${tool.text}-${index}`}
+                  type="button"
+                  onClick={disabled ? undefined : tool.action}
+                  disabled={disabled}
+                  title={tool.tooltip}
+                  aria-label={tool.text}
+                  className={`inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
+                    disabled
+                      ? "cursor-not-allowed text-[#c5c5c0]"
+                      : tool.active
+                      ? "bg-[#edf3ff] text-[#1261ff]"
+                      : "text-[#555961] hover:bg-white hover:text-[#111]"
+                  }`}
+                >
+                  <IconComponent
+                    className={`h-[18px] w-[18px] ${processing ? "animate-spin" : ""}`}
+                    aria-hidden="true"
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="grid min-h-[680px] overflow-hidden rounded-lg border border-[#d9d9d5] bg-white lg:grid-cols-[0.9fr_1.1fr]">
+          <section className="flex min-h-[460px] min-w-0 flex-col border-b border-[#d9d9d5] lg:border-b-0 lg:border-r">
+            <div className="flex h-[60px] shrink-0 items-center justify-between border-b border-[#e2e2de] px-5">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold uppercase tracking-[0.08em] text-[#27292e]">
+                  {t("inputLabel")}
                 </span>
-                {escapeMode && (
-                  <span className="inline-flex items-center px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full border border-green-200 dark:border-green-700">
-                    <IconEscape className="w-3 h-3 mr-1" />
+                <span className="rounded bg-[#f0f0ec] px-2 py-1 text-xs font-medium text-[#666a72]">
+                  JSON
+                </span>
+                {escapeMode ? (
+                  <span className="text-xs font-semibold text-[#1261ff]">
                     {t("escapeMode")}
                   </span>
-                )}
+                ) : null}
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="relative group">
-                  <button
-                    onClick={handlePaste}
-                    className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                  >
-                    <IconPaste className="w-3 h-3" />
-                    <span>{t("paste")}</span>
-                  </button>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {t("pasteFromClipboard")}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                  </div>
-                </div>
-                <div className="relative group">
-                  <label className="cursor-pointer">
-                    <span className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">
-                      <IconUpload className="w-3 h-3" />
-                      <span>{t("upload")}</span>
-                    </span>
-                    <input
-                      type="file"
-                      accept=".json,.txt"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                    />
-                  </label>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {t("uploadLocalFile")}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                  </div>
-                </div>
-              </div>
+              <span className="text-xs tabular-nums text-[#8a8d93]">
+                {input ? `${input.split("\n").length} ${t("lines")}` : t("ready")}
+              </span>
             </div>
 
             <textarea
               ref={textareaRef}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="w-full h-[calc(100%-100px)] p-4 border-none outline-none font-mono text-sm bg-transparent text-gray-900 dark:text-white resize-none overflow-auto"
+              onChange={(event) => setInput(event.target.value)}
+              className="min-h-[400px] flex-1 resize-none overflow-auto border-none bg-white p-5 font-mono text-[13px] leading-6 text-[#25282d] outline-none placeholder:font-sans placeholder:text-[#9a9da3] focus:bg-[#fefeff]"
               placeholder={t("enterJsonData")}
               spellCheck={false}
               style={{ wordBreak: "break-all", whiteSpace: "pre-wrap" }}
             />
-          </div>
+          </section>
 
-          {/* Right pane - JSON Viewer with syntax highlighting */}
-          <div className="flex-5 min-w-0 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 h-[60px]">
-              <div className="flex items-center space-x-2">
-                {/* <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  格式化结果
-                </span> */}
-                {previewType === 'xml' && (
-                  <span className="text-xs text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900 px-2 py-1 rounded">
-                    ✓ XML
+          <section className="flex min-h-[460px] min-w-0 flex-col">
+            <div className="flex h-[60px] shrink-0 items-center justify-between border-b border-[#e2e2de] px-5">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold uppercase tracking-[0.08em] text-[#27292e]">
+                  {t("outputLabel")}
+                </span>
+                <span className="rounded bg-[#f0f0ec] px-2 py-1 text-xs font-medium text-[#666a72]">
+                  {previewType === "xml" ? "XML" : t("formatted")}
+                </span>
+                {hasError ? (
+                  <span className="text-xs font-semibold text-[#cf3030]">
+                    {t("invalid")}
                   </span>
-                )}
-                {escapeMode && overrideOutput && (
-                  <span className="text-xs text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded">
-                    ✓ {t("escapeMode")}
-                  </span>
-                )}
-                {previewType === 'unescape' && (
-                  <span className="text-xs text-teal-700 dark:text-teal-300 bg-teal-100 dark:bg-teal-900 px-2 py-1 rounded">
-                    ✓{t('unescaped')}
-                  </span>
-                )}
-                {!overrideOutput &&
-                  formattedOutput &&
-                  !formattedOutput.startsWith("//") && (
-                    <span className="text-xs text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900 px-2 py-1 rounded">
-                      ✓ {t("valid")}
-                    </span>
-                  )}
-                {!overrideOutput &&
-                  formattedOutput &&
-                  formattedOutput.startsWith("//") && (
-                    <span className="text-xs text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
-                      ✗ {t("formatError")}
-                    </span>
-                  )}
+                ) : null}
               </div>
-              <div className="flex items-center space-x-1">
-                {/* 工具栏图标按钮 */}
-                {rightToolbar.map((tool, index) => {
-                  const IconComponent = tool.icon;
-                  const isEscapeButton = tool.action === handleEscapeMode;
-                  const isProcessing = (tool as { processing?: boolean })
-                    .processing;
-                  const isDisabled =
-                    (tool as { disabled?: boolean }).disabled || isProcessing;
 
-                  return (
-                    <div key={index} className="relative group">
-                      <button
-                        className={`p-2 text-sm rounded transition-all duration-200 ${
-                          isDisabled
-                            ? "opacity-50 cursor-not-allowed text-gray-400 dark:text-gray-600"
-                            : isEscapeButton && tool.active
-                            ? "bg-green-500 text-white shadow-lg transform scale-105 border-2 border-green-400"
-                            : isEscapeButton
-                            ? "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900 dark:hover:text-green-300 border-2 border-transparent hover:border-green-300"
-                            : tool.active
-                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        }`}
-                        onClick={isDisabled ? undefined : tool.action}
-                        disabled={isDisabled}
-                      >
-                        {isProcessing ? (
-                          <IconSpinner className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <IconComponent className="w-4 h-4" />
-                        )}
-                        {isEscapeButton && tool.active && !isDisabled && (
-                          <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        )}
-                      </button>
-
-                      {/* Tooltip */}
-                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap z-50 shadow-lg">
-                        <div className="font-medium">{tool.tooltip}</div>
-                        {isEscapeButton && (
-                          <div className="text-xs text-gray-300 mt-1">
-                            {tool.active ? "点击取消" : "点击启用"}
-                          </div>
-                        )}
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {/* 分隔线 */}
-                <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-2"></div>
-
-                {/* 复制结果按钮 */}
-                <div className="relative group">
-                  <button
-                    onClick={() =>
-                      handleCopy(overrideOutput || formattedOutput)
-                    }
-                    disabled={!overrideOutput && !formattedOutput}
-                    className="flex items-center space-x-1 text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
-                  >
-                    <IconCopy className="w-3 h-3" />
-                    <span>{t("copy")}</span>
-                  </button>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {t("copyToClipboard")}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                  </div>
-                </div>
-
-                {/* 下载文件按钮 */}
-                <div className="relative group">
-                  <button
-                    onClick={() =>
-                      handleDownload(
-                        overrideOutput || formattedOutput,
-                        previewType === 'xml' ? "data.xml" : "data.json"
-                      )
-                    }
-                    disabled={
-                      (!overrideOutput && !formattedOutput) ||
-                      formattedOutput.startsWith("//")
-                    }
-                    className="flex items-center space-x-1 text-xs px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors disabled:opacity-50"
-                  >
-                    <IconDownload className="w-3 h-3" />
-                    <span>{t("download")}</span>
-                  </button>
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {t("downloadToLocal")}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-                  </div>
-                </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleCopy(overrideOutput || formattedOutput)}
+                  disabled={!hasOutput}
+                  className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d6d6d1] px-3 text-sm font-semibold text-[#3a3d43] transition-colors hover:bg-[#f8f8f5] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <DocumentDuplicateIcon className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden sm:inline">{t("copy")}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleDownload(
+                      overrideOutput || formattedOutput,
+                      previewType === "xml" ? "data.xml" : "data.json"
+                    )
+                  }
+                  disabled={!hasOutput || hasError}
+                  className="inline-flex h-9 items-center gap-2 rounded-md bg-[#1261ff] px-3 text-sm font-semibold text-white transition-colors hover:bg-[#064fdc] disabled:cursor-not-allowed disabled:bg-[#b9cdf8]"
+                >
+                  <ArrowDownTrayIcon className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden sm:inline">{t("download")}</span>
+                </button>
               </div>
             </div>
 
-            <div className="h-[calc(100%-108px)] border-radius-lg dark:bg-gray-900 overflow-hidden">
-               <RightPaneContent />
-
-
-
-
-
-                {/* 压缩模式：显示原始文本 */}
-
-
-
+            <div className="min-h-[400px] flex-1 overflow-hidden bg-[#fff]">
+              <RightPaneContent />
             </div>
-          </div>
+          </section>
         </div>
+
+        <ToolIntro id="jsonFormatter" />
+
+        <footer className="mt-8 flex flex-col gap-2 border-t border-[#dedede] py-5 text-xs text-[#6f7279] sm:flex-row sm:items-center sm:justify-between">
+          <span>JSON1 — {t("footerTagline")}</span>
+          <span>{t("processedLocally")} · {t("privacyNote")}</span>
+        </footer>
       </div>
 
       {/* Fixed Alert at bottom */}
       {message && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
+        <div className="fixed bottom-5 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2">
           <Alert
             variant={messageType === "success" ? "success" : "destructive"}
-            className="shadow-lg border animate-in slide-in-from-bottom-2 duration-300"
+            className="animate-in border bg-white shadow-xl slide-in-from-bottom-2 duration-300"
           >
             {messageType === "success" ? (
               <CheckCircleIcon className="h-4 w-4" />
@@ -859,6 +764,6 @@ export default function JSONFormatter() {
           </Alert>
         </div>
       )}
-    </div>
+    </main>
   );
 }
