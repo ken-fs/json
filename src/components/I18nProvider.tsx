@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import i18n from "i18next";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import { hydrateLanguage, useLanguageStore, type Language } from "@/stores/uiStore";
+import { languageForWikiPath } from "@/lib/wikiMeta";
 
 import en from "../locales/en.json";
 import zh from "../locales/zh.json";
@@ -48,15 +50,27 @@ if (!i18n.isInitialized) {
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const { language } = useLanguageStore();
+  const pathname = usePathname();
   // i18n is not React state, so track the applied language to trigger the
   // re-render that swaps translated strings in after hydration.
   const [, setActiveLanguage] = useState<Language>("en");
 
   // Read the stored/detected language only after hydration, so the first client
   // render still matches the English HTML the export produced.
+  //
+  // A wiki URL wins over both. The prose at `/wiki/cn/json-guide/` is Chinese
+  // whatever the store says, so the chrome around it has to agree — the picker
+  // used to read "English" while sitting on top of Chinese text. Runs on every
+  // pathname change, not just mount, because switching locale is a client
+  // navigation and the store has to follow the URL there too.
   useEffect(() => {
+    const fromUrl = languageForWikiPath(pathname);
+    if (fromUrl) {
+      useLanguageStore.setState({ language: fromUrl });
+      return;
+    }
     void hydrateLanguage();
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (i18n.language === language) return;

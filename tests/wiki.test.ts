@@ -27,7 +27,14 @@ import { CONTENT as CSV_CONTENT, META as CSV_META } from '../src/lib/wiki/json-t
 import { CONTENT as ESCAPE_CONTENT, META as ESCAPE_META } from '../src/lib/wiki/json-escaping';
 import { CONTENT as COMMENT_CONTENT, META as COMMENT_META } from '../src/lib/wiki/json-comments';
 
-import { WIKI_ARTICLES, WIKI_LOCALES, type WikiLocale } from '../src/lib/wikiMeta';
+import {
+  WIKI_ARTICLES,
+  WIKI_LOCALES,
+  LOCALE_FOR_LANGUAGE,
+  languageForWikiPath,
+  wikiPathForLocale,
+  type WikiLocale,
+} from '../src/lib/wikiMeta';
 import type { WikiArticleContent } from '../src/lib/wikiArticle';
 import type { WikiMetaInput } from '../src/lib/wikiMeta';
 
@@ -207,6 +214,68 @@ for (const article of ARTICLES) {
     shape.join(' | '),
   );
 }
+
+/**
+ * Language switching on the wiki.
+ *
+ * The selector used to build these paths itself and got Chinese wrong in both
+ * directions — `/wiki/cn/json-guide/` + English gave `/wiki/en/cn/json-guide/`,
+ * and English + Chinese gave `/wiki/json-guide/`. Both 404. Every case below is
+ * checked against the real route list, so a path that does not exist fails here
+ * rather than in a visitor's browser.
+ */
+console.log('\n--- locale switching ---');
+
+const ROUTES: ReadonlySet<string> = new Set([
+  '/wiki/',
+  ...WIKI_LOCALES.map((locale) => `/wiki/${locale}/`),
+  ...WIKI_LOCALES.flatMap((locale) =>
+    WIKI_ARTICLES.map((article) => `/wiki/${locale}/${article.slug}/`),
+  ),
+]);
+
+// Switching from anywhere to anywhere has to land on a route that exists.
+for (const from of WIKI_LOCALES) {
+  for (const to of WIKI_LOCALES) {
+    for (const article of WIKI_ARTICLES) {
+      const source = `/wiki/${from}/${article.slug}/`;
+      const result = wikiPathForLocale(source, to);
+      assert(
+        `${source} + ${to} -> ${result}`,
+        result === `/wiki/${to}/${article.slug}/` && ROUTES.has(result),
+        'must keep the slug and change only the locale',
+      );
+    }
+    const index = wikiPathForLocale(`/wiki/${from}/`, to);
+    assert(`/wiki/${from}/ + ${to} -> ${index}`, index === `/wiki/${to}/` && ROUTES.has(index));
+  }
+}
+
+// The edges: the bare picker, a slug that does not exist, a non-wiki path.
+const EDGES: Array<[string, WikiLocale, string]> = [
+  ['/wiki/', 'cn', '/wiki/cn/'],
+  ['/wiki', 'en', '/wiki/en/'],
+  ['/wiki/en/no-such-article/', 'cn', '/wiki/cn/'],
+  ['/wiki/cn/json-guide', 'pt', '/wiki/pt/json-guide/'],
+  ['/json-to-yaml/', 'en', '/json-to-yaml/'],
+];
+for (const [input, locale, expected] of EDGES) {
+  const result = wikiPathForLocale(input, locale);
+  assert(`edge ${input} + ${locale} -> ${result}`, result === expected, `expected ${expected}`);
+}
+
+// The store code and the directory name differ (`zh` vs `cn`); the two mappings
+// must be inverses or switching language lands one directory off.
+for (const locale of WIKI_LOCALES) {
+  const language = languageForWikiPath(`/wiki/${locale}/json-guide/`);
+  assert(
+    `${locale} round-trips through the language mapping`,
+    language !== null && LOCALE_FOR_LANGUAGE[language] === locale,
+    `got ${language}`,
+  );
+}
+assert('a non-wiki path has no locale', languageForWikiPath('/json-to-yaml/') === null);
+assert('the bare picker has no locale', languageForWikiPath('/wiki/') === null);
 
 console.log(failures === 0 ? '\nALL PASS' : `\n${failures} FAILURES`);
 if (failures > 0) process.exit(1);

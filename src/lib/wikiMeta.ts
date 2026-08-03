@@ -56,6 +56,72 @@ export const WIKI_ARTICLES = [
   { slug: 'json-comments', revised: '2026-08-03' },
 ] as const;
 
+const WIKI_SLUGS: ReadonlySet<string> = new Set(WIKI_ARTICLES.map((a) => a.slug));
+
+/**
+ * Maps the language-store code to the `/wiki/` directory name.
+ *
+ * The store says `zh` and the route is `cn`. The language selector used to carry
+ * its own idea of this mapping and got it wrong: it assumed Chinese lived at
+ * `/wiki/<slug>` with no prefix, which was true before the locale directories
+ * existed. Switching language on `/wiki/cn/json-guide/` produced
+ * `/wiki/en/cn/json-guide/` — a 404 — because `cn` was not in its whitelist of
+ * prefixes to strip. One exported mapping so there is nowhere for a second,
+ * disagreeing copy to live.
+ */
+export const LOCALE_FOR_LANGUAGE: Record<'en' | 'zh' | 'es' | 'pt', WikiLocale> = {
+  en: 'en',
+  zh: 'cn',
+  es: 'es',
+  pt: 'pt',
+};
+
+const LANGUAGE_FOR_LOCALE: Record<WikiLocale, 'en' | 'zh' | 'es' | 'pt'> = {
+  en: 'en',
+  cn: 'zh',
+  es: 'es',
+  pt: 'pt',
+};
+
+/**
+ * The language a `/wiki/` URL is written in, or null if the path does not name one.
+ *
+ * On a wiki route the URL outranks both the stored preference and the browser
+ * locale: `/wiki/cn/json-guide/` serves Chinese prose no matter what, so a picker
+ * reading "English" over Chinese text is just wrong. Everywhere else on the site
+ * one URL serves all four languages and the stored choice is the only signal.
+ */
+export function languageForWikiPath(pathname: string): 'en' | 'zh' | 'es' | 'pt' | null {
+  const parts = pathname.split('/').filter(Boolean);
+  if (parts[0] !== 'wiki') return null;
+  const dir = parts[1] as WikiLocale | undefined;
+  return dir && WIKI_LOCALES.includes(dir) ? LANGUAGE_FOR_LOCALE[dir] : null;
+}
+
+/**
+ * Rewrites a `/wiki/...` path to another locale.
+ *
+ * Returns the locale index rather than a translated article when the article does
+ * not exist in the catalogue — landing on a listing that works beats a 404. All
+ * ten articles ship in all four languages today, so that branch only fires for a
+ * stale bookmark or a hand-typed URL.
+ *
+ * Paths come back with a trailing slash: `trailingSlash: true` means anything
+ * else costs a redirect.
+ */
+export function wikiPathForLocale(pathname: string, locale: WikiLocale): string {
+  const parts = pathname.split('/').filter(Boolean); // ['wiki', 'cn', 'json-guide']
+  if (parts[0] !== 'wiki') return pathname;
+
+  // parts[1] is a locale directory on every real wiki route; on the bare
+  // `/wiki/` picker there is nothing after it.
+  const rest = WIKI_LOCALES.includes(parts[1] as WikiLocale) ? parts.slice(2) : [];
+  const slug = rest[0];
+
+  if (!slug) return `/wiki/${locale}/`;
+  return WIKI_SLUGS.has(slug) ? `/wiki/${locale}/${slug}/` : `/wiki/${locale}/`;
+}
+
 /**
  * Maps the URL segment to a BCP-47 tag for hreflang.
  *
