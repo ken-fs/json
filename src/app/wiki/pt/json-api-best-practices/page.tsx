@@ -1,29 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, CodeBracketIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "Guia de Melhores Práticas para API JSON - Padrões de Design RESTful | JSON Tools",
-  description: "Melhores práticas completas para design de API JSON: convenções de nomenclatura, uso de códigos de status, tratamento de erros, estratégias de paginação e otimização de performance. Guia profissional para melhorar a qualidade da API.",
-  keywords: "API JSON,API RESTful,design API,melhores práticas,padrões API,REST API,design interface JSON,documentação API",
-  openGraph: {
-    title: "Guia de Melhores Práticas para API JSON - Padrões de Design RESTful",
-    description: "Aprenda a projetar APIs JSON de alta qualidade com guia profissional, incluindo padrões completos e dicas práticas.",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString(),
-    "article:section": "Design de API",
-    "article:tag": "API JSON,RESTful,Design API,Melhores Práticas"
-  }
+const META: WikiMetaInput = {
+  locale: 'pt',
+  slug: 'json-api-best-practices',
+  title: 'Melhores Práticas para API JSON: Design RESTful',
+  description: 'Convenções de nomenclatura, códigos de status, formato de erros e paginação em APIs JSON, com o raciocínio por trás de cada decisão.',
+  keywords: 'API JSON,API RESTful,design API,melhores práticas,padrões API,REST API,design interface JSON,documentação API',
+  socialTitle: 'Melhores Práticas para API JSON',
+  section: 'Design de API',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONAPIBestPracticesPortuguesePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -31,7 +30,7 @@ export default function JSONAPIBestPracticesPortuguesePage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki/pt" 
+              href="/wiki/pt/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -396,8 +395,8 @@ GET /obterDadosUsuario?id=123`}
                   <h3 className="font-medium text-blue-800 dark:text-blue-200 mb-3">Ferramentas Relacionadas</h3>
                   <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
                     <li>• <Link href="/" className="hover:underline">Ferramenta de Formatação JSON</Link></li>
-                    <li>• <Link href="/wiki/pt/json-validation" className="hover:underline">Guia de Validação JSON</Link></li>
-                    <li>• <Link href="/wiki/pt/json-performance" className="hover:underline">Dicas de Otimização de Performance</Link></li>
+                    <li>• <Link href="/wiki/pt/json-validation/" className="hover:underline">Guia de Validação JSON</Link></li>
+                    <li>• <Link href="/wiki/pt/json-performance/" className="hover:underline">Dicas de Otimização de Performance</Link></li>
                     <li>• Ferramentas de Geração de Documentação de API</li>
                   </ul>
                 </div>
@@ -410,7 +409,7 @@ GET /obterDadosUsuario?id=123`}
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>Este guia fornece padrões completos e melhores práticas para projetar APIs JSON de alta qualidade, adequado para designers de API e desenvolvedores consultarem.</p>
               <p className="mt-2">
-                <Link href="/wiki/pt" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/pt/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Voltar à Base de Conhecimento
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

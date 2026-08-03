@@ -1,27 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, CodeBracketIcon, DocumentTextIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "Complete JSON Guide - Data Exchange Format Explained | JSON Tools",
-  description: "Comprehensive guide to JSON (JavaScript Object Notation): syntax rules, data types, use cases, and best practices. Detailed examples and SEO-optimized JSON tutorial.",
-  keywords: "JSON,data format,API,REST,JavaScript,data exchange,JSON tutorial,JSON syntax,JSON examples",
-  openGraph: {
-    title: "Complete JSON Guide - Data Exchange Format Explained",
-    description: "Comprehensive guide to JSON format: from basic syntax to practical applications, including rich examples and best practices.",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString()
-  }
+const META: WikiMetaInput = {
+  locale: 'en',
+  slug: 'json-guide',
+  title: 'Complete JSON Guide: Syntax, Types & Best Practices',
+  description: 'How JSON syntax works, which data types it supports, and where it fits. Worked examples of objects, arrays, nesting, and the mistakes that break parsers.',
+  keywords: 'JSON,data format,API,REST,JavaScript,data exchange,JSON tutorial,JSON syntax,JSON examples',
+  socialTitle: 'Complete JSON Guide',
+  section: 'Fundamentals',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONGuideEnglishPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -29,7 +30,7 @@ export default function JSONGuideEnglishPage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki/en" 
+              href="/wiki/en/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -402,7 +403,7 @@ export default function JSONGuideEnglishPage() {
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>This guide covers the core concepts and practical applications of JSON, suitable for beginners to learn and professional developers to reference.</p>
               <p className="mt-2">
-                <Link href="/wiki/en" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/en/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Back to Knowledge Base
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

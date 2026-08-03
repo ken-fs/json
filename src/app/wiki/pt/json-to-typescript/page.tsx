@@ -1,29 +1,35 @@
 import { Metadata } from 'next';
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from '@/components/Header';
 import Link from 'next/link';
 import { ArrowLeftIcon, CodeBracketIcon, ClipboardDocumentIcon, ArrowDownTrayIcon, CheckCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from '@heroicons/react/24/outline';
 
-export const metadata: Metadata = {
-  title: 'JSON → Interfaces TypeScript: Como Usar | JSON Tools',
-  description: 'Gere interfaces TypeScript a partir de JSON. Recursos suportados, mapeamento de tipos e passos rápidos no app JSON Tools.',
+const META: WikiMetaInput = {
+  locale: 'pt',
+  slug: 'json-to-typescript',
+  title: 'JSON para Interfaces TypeScript: Como Funciona',
+  description: 'Como o JSON se traduz em interfaces TypeScript, por que um campo opcional difere de um que aceita null, e o que o gerador infere de uma resposta real.',
   keywords: 'JSON para TypeScript,interfaces TS,geração de código,tipos TypeScript,ferramentas JSON',
-  openGraph: {
-    title: 'JSON → Interfaces TypeScript: Como Usar',
-    description: 'Gere interfaces TypeScript a partir de JSON com tipos aninhados e arrays. Guia rápido e dicas.',
-    type: 'article'
-  }
+  socialTitle: 'JSON → Interfaces TypeScript',
+  section: 'Geração de Código',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JsonToTypeScriptDocPT() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Navegação */}
           <div className="flex items-center space-x-4 mb-6">
-            <Link href="/wiki/pt" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+            <Link href="/wiki/pt/" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Voltar à Base de Conhecimento
             </Link>
@@ -99,7 +105,7 @@ export default function JsonToTypeScriptDocPT() {
             <section id="quick-start" className="mb-12">
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Como começar</h2>
               <ol className="list-decimal pl-6 space-y-2">
-                <li>Abra <Link href="/json-to-typescript" className="text-blue-600 dark:text-blue-400">/json-to-typescript</Link></li>
+                <li>Abra <Link href="/json-to-typescript/" className="text-blue-600 dark:text-blue-400">/json-to-typescript</Link></li>
                 <li>Cole o JSON no editor esquerdo</li>
                 <li>Revise as interfaces geradas no painel direito</li>
                 <li>Copie <ClipboardDocumentIcon className="inline w-4 h-4" /> ou baixe <ArrowDownTrayIcon className="inline w-4 h-4" /></li>
@@ -218,9 +224,9 @@ interface AddressInterface {
             <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">Ferramentas Relacionadas</h2>
             <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
               <li>• <Link href="/" className="hover:underline">Ferramentas de Formatação JSON</Link></li>
-              <li>• <Link href="/wiki/pt/json-guide" className="hover:underline">Guia Completo de JSON</Link></li>
-              <li>• <Link href="/wiki/pt/json-validation" className="hover:underline">Guia de Validação JSON</Link></li>
-              <li>• <Link href="/wiki/pt/json-performance" className="hover:underline">Otimização de Performance</Link></li>
+              <li>• <Link href="/wiki/pt/json-guide/" className="hover:underline">Guia Completo de JSON</Link></li>
+              <li>• <Link href="/wiki/pt/json-validation/" className="hover:underline">Guia de Validação JSON</Link></li>
+              <li>• <Link href="/wiki/pt/json-performance/" className="hover:underline">Otimização de Performance</Link></li>
             </ul>
           </section>
 
@@ -229,7 +235,7 @@ interface AddressInterface {
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>Use o conversor para criar rapidamente tipos e refine-os para seu domínio.</p>
               <p className="mt-2">
-                <Link href="/wiki/pt" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">Voltar à Base de Conhecimento</Link>
+                <Link href="/wiki/pt/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">Voltar à Base de Conhecimento</Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">Voltar às Ferramentas JSON</Link>
               </p>
             </div>

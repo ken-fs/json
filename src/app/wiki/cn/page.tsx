@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from '@/components/Header';
 import Link from 'next/link';
 import {
@@ -10,46 +12,15 @@ import {
   AcademicCapIcon,
 } from '@heroicons/react/24/outline';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const title = 'JSON工具知识库 - 开发者文档中心';
-  const description =
-    'JSON工具知识库：系统整理JSON基础与进阶内容，涵盖语法规则、数据类型、格式化/压缩、JSON Schema 校验、API 设计、性能优化、调试排错与代码生成（TypeScript/Java）。提供教程、示例与实践指南，助力高效开发。';
+const META: WikiMetaInput = {
+  locale: 'cn',
+  title: 'JSON 知识库：语法、Schema 与性能指南',
+  description: '六篇 JSON 指南：语法与数据类型、JSON Schema 校验、REST API 设计、解析性能，以及生成 TypeScript 与 Java 类型。',
+  keywords: 'JSON,JSON工具,JSON文档,JSON教程,JSON验证,JSON Schema,API设计,性能优化,代码生成,TypeScript,Java,开发者文档,最佳实践',
+  socialTitle: 'JSON 知识库',
+};
 
-  return {
-    title,
-    description,
-    keywords: [
-      'JSON',
-      'JSON工具',
-      'JSON文档',
-      'JSON教程',
-      'JSON验证',
-      'JSON Schema',
-      'API设计',
-      '性能优化',
-      '代码生成',
-      'TypeScript',
-      'Java',
-      '开发者文档',
-      '最佳实践',
-    ],
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-    },
-    alternates: {
-      canonical: '/wiki/cn',
-      languages: {
-        'en-US': '/wiki/en',
-        'zh-CN': '/wiki/cn',
-        'es-ES': '/wiki/es',
-        'pt-BR': '/wiki/pt',
-        'x-default': '/wiki/en',
-      },
-    },
-  };
-}
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function WikiChinesePage() {
   const articles = [
@@ -164,6 +135,7 @@ export default function WikiChinesePage() {
 
   return (
     <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+      <WikiJsonLd {...META} />
       <Header />
 
       <main className='container mx-auto px-4 py-8'>
@@ -265,7 +237,7 @@ export default function WikiChinesePage() {
           <section className='bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800'>
             <h2 className='text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4'>快速开始</h2>
             <div className='grid md:grid-cols-3 gap-4'>
-              <Link href='/wiki/cn/json-guide' className='block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow'>
+              <Link href='/wiki/cn/json-guide/' className='block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow'>
                 <h3 className='font-medium text-gray-900 dark:text-white mb-2'>新手入门</h3>
                 <p className='text-sm text-gray-600 dark:text-gray-300'>从 JSON 基础语法开始学习</p>
               </Link>
@@ -274,7 +246,7 @@ export default function WikiChinesePage() {
                 <p className='text-sm text-gray-600 dark:text-gray-300'>使用 JSON 格式化与校验工具</p>
               </Link>
               <Link
-                href='/wiki/cn/json-api-best-practices'
+                href='/wiki/cn/json-api-best-practices/'
                 className='block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow'
               >
                 <h3 className='font-medium text-gray-900 dark:text-white mb-2'>API 设计</h3>

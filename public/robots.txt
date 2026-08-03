@@ -1,29 +1,27 @@
-# JSON Tools - Robots.txt
+# JSON1 - Robots.txt
 # https://www.json1.org
 
 User-agent: *
 Allow: /
 
-# Sitemap location
-Sitemap: https://www.json1.org/sitemap.xml
-
-# Crawl delay for respectful crawling
-Crawl-delay: 1
-
-# Disallow irrelevant pages (if any exist)
-Disallow: /api/
-Disallow: /_next/
+# `/_next/` is NOT disallowed, on purpose. Every page references ~29 assets
+# under that path (CSS, JS, fonts). Googlebot and Bingbot have their own groups
+# below and so were unaffected, but a blanket Disallow here left GPTBot,
+# ClaudeBot, PerplexityBot, and CCBot unable to fetch styles or scripts. It
+# protected nothing — the build output is public either way.
 Disallow: /404
 Disallow: /500
 
-# Allow specific bot access to important resources
+Sitemap: https://www.json1.org/sitemap.xml
+
+# Named groups below. robots.txt applies only the single most specific matching
+# group, so a crawler listed here inherits nothing from `*` — any rule it needs
+# has to be repeated.
 User-agent: Googlebot
 Allow: /
-Allow: /favicon.ico
 
 User-agent: Bingbot
 Allow: /
-Allow: /favicon.ico
 
 User-agent: facebookexternalhit
 Allow: /

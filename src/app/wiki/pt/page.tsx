@@ -1,47 +1,19 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, DocumentTextIcon, CodeBracketIcon, GlobeAltIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const title = 'Base de Conhecimento JSON – Docs para Desenvolvedores';
-  const description =
-    'Base de conhecimento JSON: sintaxe, validação (JSON Schema), formatação/minificação, design de APIs, performance, depuração e geração de código (TypeScript/Java). Inclui tutoriais e exemplos.';
+const META: WikiMetaInput = {
+  locale: 'pt',
+  title: 'Base de Conhecimento JSON: Guias, Schema e Mais',
+  description: 'Seis guias sobre JSON: sintaxe e tipos, validação com JSON Schema, design de APIs REST, performance de parsing e geração de tipos.',
+  keywords: 'JSON,ferramentas JSON,documentação JSON,tutorial JSON,validação JSON,JSON Schema,design de API,performance,geração de código,TypeScript,Java,melhores práticas',
+  socialTitle: 'Base de Conhecimento JSON',
+};
 
-  return {
-    title,
-    description,
-    keywords: [
-      'JSON',
-      'ferramentas JSON',
-      'documentação JSON',
-      'tutorial JSON',
-      'validação JSON',
-      'JSON Schema',
-      'design de API',
-      'performance',
-      'geração de código',
-      'TypeScript',
-      'Java',
-      'melhores práticas',
-    ],
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-    },
-    alternates: {
-      canonical: '/wiki/pt',
-      languages: {
-        'en-US': '/wiki/en',
-        'zh-CN': '/wiki/cn',
-        'es-ES': '/wiki/es',
-        'pt-BR': '/wiki/pt',
-        'x-default': '/wiki/en',
-      },
-    },
-  };
-}
+export const metadata: Metadata = wikiMetadata(META);
 
 
 export default function WikiPortuguesePage() {
@@ -156,6 +128,7 @@ export default function WikiPortuguesePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -272,7 +245,7 @@ export default function WikiPortuguesePage() {
             </h2>
             <div className="grid md:grid-cols-3 gap-4">
               <Link
-                href="/wiki/pt/json-guide"
+                href="/wiki/pt/json-guide/"
                 className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
               >
                 <h3 className="font-medium text-gray-900 dark:text-white mb-2">Começando</h3>
@@ -286,7 +259,7 @@ export default function WikiPortuguesePage() {
                 <p className="text-sm text-gray-600 dark:text-gray-300">Use ferramentas de formatação e validação JSON</p>
               </Link>
               <Link
-                href="/wiki/pt/json-api-best-practices"
+                href="/wiki/pt/json-api-best-practices/"
                 className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
               >
                 <h3 className="font-medium text-gray-900 dark:text-white mb-2">Design de API</h3>

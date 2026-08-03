@@ -1,29 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, CodeBracketIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "JSON API最佳实践指南 - RESTful API设计规范 | JSON Tools",
-  description: "完整的JSON API设计最佳实践：命名规范、状态码使用、错误处理、分页策略和性能优化。提升API质量的专业指南。",
-  keywords: "JSON API,RESTful API,API设计,最佳实践,API规范,REST API,JSON接口设计,API文档",
-  openGraph: {
-    title: "JSON API最佳实践指南 - RESTful API设计规范",
-    description: "学习设计高质量JSON API的专业指南，包含完整的规范和实用技巧。",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString(),
-    "article:section": "API设计",
-    "article:tag": "JSON API,RESTful,API设计,最佳实践"
-  }
+const META: WikiMetaInput = {
+  locale: 'cn',
+  slug: 'json-api-best-practices',
+  title: 'JSON API 最佳实践：RESTful 设计规范',
+  description: 'JSON API 的命名规范、状态码、错误结构与分页策略。每条建议都说明取舍原因，而不是只给一份规则清单。',
+  keywords: 'JSON API,RESTful API,API设计,最佳实践,API规范,REST API,JSON接口设计,API文档',
+  socialTitle: 'JSON API 最佳实践',
+  section: 'API 设计',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONAPIBestPracticesPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -31,7 +30,7 @@ export default function JSONAPIBestPracticesPage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki" 
+              href="/wiki/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -454,8 +453,8 @@ GET /getUserData?id=123`}
                   <h3 className="font-medium text-blue-800 dark:text-blue-200 mb-3">相关工具</h3>
                   <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
                     <li>• <Link href="/" className="hover:underline">JSON格式化工具</Link></li>
-                    <li>• <Link href="/wiki/json-validation" className="hover:underline">JSON验证指南</Link></li>
-                    <li>• <Link href="/wiki/json-performance" className="hover:underline">性能优化技巧</Link></li>
+                    <li>• <Link href="/wiki/cn/json-validation/" className="hover:underline">JSON验证指南</Link></li>
+                    <li>• <Link href="/wiki/cn/json-performance/" className="hover:underline">性能优化技巧</Link></li>
                     <li>• API文档生成工具</li>
                   </ul>
                 </div>
@@ -468,7 +467,7 @@ GET /getUserData?id=123`}
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>本指南提供了设计高质量JSON API的完整规范和最佳实践，适合API设计者和开发者参考。</p>
               <p className="mt-2">
-                <Link href="/wiki" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   返回知识库
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

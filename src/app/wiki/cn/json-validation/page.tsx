@@ -1,29 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, AcademicCapIcon, CheckCircleIcon, ExclamationTriangleIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "JSON验证与校验完整指南 - JSON Schema使用教程 | JSON Tools",
-  description: "深入学习JSON数据验证：JSON Schema语法、验证规则、错误处理和最佳实践。确保数据质量的专业指南。",
-  keywords: "JSON验证,JSON Schema,数据验证,JSON校验,数据质量,JSON格式验证,Schema设计",
-  openGraph: {
-    title: "JSON验证与校验完整指南 - JSON Schema使用教程",
-    description: "学习使用JSON Schema进行数据验证的完整指南，包含实用示例和最佳实践。",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString(),
-    "article:section": "验证与校验",
-    "article:tag": "JSON验证,JSON Schema,数据验证,校验规则"
-  }
+const META: WikiMetaInput = {
+  locale: 'cn',
+  slug: 'json-validation',
+  title: 'JSON 校验与 Schema：实用指南',
+  description: '用 JSON Schema 校验数据：如何写 schema、哪些关键字值得掌握、错误如何上报，以及校验该放在请求链路的哪一环。',
+  keywords: 'JSON验证,JSON Schema,数据验证,JSON校验,数据质量,JSON格式验证,Schema设计',
+  socialTitle: 'JSON 校验与 Schema',
+  section: '数据校验',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONValidationPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -31,7 +30,7 @@ export default function JSONValidationPage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki" 
+              href="/wiki/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -879,7 +878,7 @@ null    // 空值`
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>本指南提供了JSON验证的完整知识体系，从基础概念到实际应用，帮助您确保数据质量。</p>
               <p className="mt-2">
-                <Link href="/wiki" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   返回知识库
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

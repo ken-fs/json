@@ -1,23 +1,34 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BoltIcon, ChartBarIcon, CpuChipIcon, ServerIcon, ClockIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "Optimización de Rendimiento JSON - Guía de Mejores Prácticas | JSON Tools",
-  description: "Aprende técnicas avanzadas de optimización de rendimiento JSON: parsing eficiente, compresión, streaming y estrategias para manejar datos masivos con mejor rendimiento.",
-  keywords: "rendimiento JSON,optimización JSON,parsing JSON,compresión JSON,streaming JSON,big data JSON"
+const META: WikiMetaInput = {
+  locale: 'es',
+  slug: 'json-performance',
+  title: 'Rendimiento JSON: Parsing, Memoria y Datos Masivos',
+  description: 'Dónde se gasta realmente el tiempo al parsear JSON, cómo evitar cargar datos masivos en memoria, cuándo conviene streaming y qué aporta comprimir.',
+  keywords: 'rendimiento JSON,optimización JSON,parsing JSON,compresión JSON,streaming JSON,big data JSON',
+  socialTitle: 'Optimización de Rendimiento JSON',
+  section: 'Rendimiento',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONPerformanceSpanishPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center space-x-4 mb-6">
-            <Link href="/wiki/es" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+            <Link href="/wiki/es/" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Volver a la Base de Conocimiento
             </Link>
@@ -435,7 +446,7 @@ console.log('Memoria:', measureMemory());`}
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>Esta guía proporciona técnicas esenciales para optimizar el rendimiento de JSON en aplicaciones modernas, desde parsing básico hasta manejo de datos masivos.</p>
               <p className="mt-2">
-                <Link href="/wiki/es" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/es/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Volver a la Base de Conocimiento
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

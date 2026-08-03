@@ -1,27 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, CodeBracketIcon, DocumentTextIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "JSON完全指南 - 数据交换格式详解 | JSON Tools",
-  description: "全面学习JSON (JavaScript Object Notation)：语法规则、应用场景、最佳实践。包含详细示例和SEO优化的JSON教程指南。",
-  keywords: "JSON,数据格式,API,REST,JavaScript,数据交换,JSON教程,JSON语法,JSON示例",
-  openGraph: {
-    title: "JSON完全指南 - 数据交换格式详解",
-    description: "全面学习JSON格式：从基础语法到实际应用，包含丰富示例和最佳实践。",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString()
-  }
+const META: WikiMetaInput = {
+  locale: 'cn',
+  slug: 'json-guide',
+  title: 'JSON 完全指南：语法、类型与实践',
+  description: 'JSON 的语法规则、支持的数据类型、适用场景。包含对象、数组、嵌套的完整示例，以及最常见的几种解析报错原因。',
+  keywords: 'JSON,数据格式,API,REST,JavaScript,数据交换,JSON教程,JSON语法,JSON示例',
+  socialTitle: 'JSON 完全指南',
+  section: '基础',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONGuidePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -29,7 +30,7 @@ export default function JSONGuidePage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki" 
+              href="/wiki/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -402,7 +403,7 @@ export default function JSONGuidePage() {
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>本指南涵盖了JSON的核心概念和实践应用，适合初学者学习和专业开发者参考。</p>
               <p className="mt-2">
-                <Link href="/wiki" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   返回知识库
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

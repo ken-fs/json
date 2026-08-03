@@ -1,29 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, AcademicCapIcon, CheckCircleIcon, ExclamationTriangleIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "Guía Completa de Validación y Schema JSON - Tutorial de JSON Schema | JSON Tools",
-  description: "Aprende validación de datos JSON en profundidad: sintaxis de JSON Schema, reglas de validación, manejo de errores y mejores prácticas. Guía profesional para asegurar calidad de datos.",
-  keywords: "validación JSON,JSON Schema,validación datos,calidad datos,validación formato JSON,diseño schema,reglas validación",
-  openGraph: {
-    title: "Guía Completa de Validación y Schema JSON - Tutorial de JSON Schema",
-    description: "Aprende a usar JSON Schema para validación de datos con guía completa, incluyendo ejemplos prácticos y mejores prácticas.",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString(),
-    "article:section": "Validación",
-    "article:tag": "Validación JSON,JSON Schema,Validación Datos,Reglas Validación"
-  }
+const META: WikiMetaInput = {
+  locale: 'es',
+  slug: 'json-validation',
+  title: 'Validación y Schema JSON: Guía Práctica',
+  description: 'Valida JSON con JSON Schema: cómo escribir schemas, qué palabras clave importan, cómo se reportan los errores y dónde encaja la validación.',
+  keywords: 'validación JSON,JSON Schema,validación datos,calidad datos,validación formato JSON,diseño schema,reglas validación',
+  socialTitle: 'Validación y Schema JSON',
+  section: 'Validación',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONValidationSpanishPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -31,7 +30,7 @@ export default function JSONValidationSpanishPage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki/es" 
+              href="/wiki/es/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -540,8 +539,8 @@ null    // Valor nulo`
                   <h3 className="font-medium text-blue-800 dark:text-blue-200 mb-3">Herramientas Relacionadas</h3>
                   <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
                     <li>• <Link href="/" className="hover:underline">Herramientas de Formateo JSON</Link></li>
-                    <li>• <Link href="/wiki/es/json-guide" className="hover:underline">Guía Completa de JSON</Link></li>
-                    <li>• <Link href="/wiki/es/json-performance" className="hover:underline">Técnicas de Optimización de Rendimiento</Link></li>
+                    <li>• <Link href="/wiki/es/json-guide/" className="hover:underline">Guía Completa de JSON</Link></li>
+                    <li>• <Link href="/wiki/es/json-performance/" className="hover:underline">Técnicas de Optimización de Rendimiento</Link></li>
                     <li>• Herramientas de Generación de Schema</li>
                   </ul>
                 </div>
@@ -554,7 +553,7 @@ null    // Valor nulo`
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>Esta guía proporciona un sistema completo de conocimiento sobre validación JSON, desde conceptos básicos hasta aplicaciones prácticas, ayudándote a asegurar la calidad de los datos.</p>
               <p className="mt-2">
-                <Link href="/wiki/es" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/es/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Volver a la Base de Conocimiento
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

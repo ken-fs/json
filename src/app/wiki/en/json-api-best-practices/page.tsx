@@ -1,29 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, CodeBracketIcon, CheckCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "JSON API Best Practices Guide - RESTful API Design Standards | JSON Tools",
-  description: "Complete JSON API design best practices: naming conventions, status code usage, error handling, pagination strategies, and performance optimization. Professional guide to improve API quality.",
-  keywords: "JSON API,RESTful API,API design,best practices,API standards,REST API,JSON interface design,API documentation",
-  openGraph: {
-    title: "JSON API Best Practices Guide - RESTful API Design Standards",
-    description: "Learn to design high-quality JSON APIs with comprehensive standards and practical tips.",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString(),
-    "article:section": "API Design",
-    "article:tag": "JSON API,RESTful,API Design,Best Practices"
-  }
+const META: WikiMetaInput = {
+  locale: 'en',
+  slug: 'json-api-best-practices',
+  title: 'JSON API Best Practices: RESTful Design Standards',
+  description: 'Naming conventions, status codes, error shapes, and pagination for JSON APIs — with the trade-offs behind each choice rather than a list of rules.',
+  keywords: 'JSON API,RESTful API,API design,best practices,API standards,REST API,JSON interface design,API documentation',
+  socialTitle: 'JSON API Best Practices',
+  section: 'API Design',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONAPIBestPracticesEnglishPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -31,7 +30,7 @@ export default function JSONAPIBestPracticesEnglishPage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki/en" 
+              href="/wiki/en/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -473,9 +472,9 @@ GET    /getUserOrders/123  # Overly complex`}
                   <h3 className="font-medium text-blue-800 dark:text-blue-200 mb-3">Related Tools</h3>
                   <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
                     <li>• <Link href="/" className="hover:underline">JSON Formatting Tools</Link></li>
-                    <li>• <Link href="/wiki/en/json-guide" className="hover:underline">Complete JSON Guide</Link></li>
-                    <li>• <Link href="/wiki/en/json-validation" className="hover:underline">JSON Validation Guide</Link></li>
-                    <li>• <Link href="/wiki/en/json-performance" className="hover:underline">Performance Optimization</Link></li>
+                    <li>• <Link href="/wiki/en/json-guide/" className="hover:underline">Complete JSON Guide</Link></li>
+                    <li>• <Link href="/wiki/en/json-validation/" className="hover:underline">JSON Validation Guide</Link></li>
+                    <li>• <Link href="/wiki/en/json-performance/" className="hover:underline">Performance Optimization</Link></li>
                   </ul>
                 </div>
               </div>
@@ -487,7 +486,7 @@ GET    /getUserOrders/123  # Overly complex`}
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>This guide provides comprehensive knowledge about JSON API best practices, from basic concepts to practical applications, helping you design professional-grade APIs.</p>
               <p className="mt-2">
-                <Link href="/wiki/en" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/en/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Back to Knowledge Base
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

@@ -1,23 +1,34 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, CodeBracketIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "Mejores Prácticas para API JSON - Guía de Diseño RESTful | JSON Tools",
-  description: "Aprende a diseñar APIs JSON de alta calidad: convenciones de nomenclatura, códigos de estado, manejo de errores y optimización de rendimiento.",
-  keywords: "API JSON,API RESTful,diseño API,mejores prácticas,estándares API,REST API"
+const META: WikiMetaInput = {
+  locale: 'es',
+  slug: 'json-api-best-practices',
+  title: 'Mejores Prácticas para API JSON: Diseño RESTful',
+  description: 'Convenciones de nomenclatura, códigos de estado, forma de los errores y paginación en APIs JSON, con el razonamiento detrás de cada decisión.',
+  keywords: 'API JSON,API RESTful,diseño API,mejores prácticas,estándares API,REST API',
+  socialTitle: 'Mejores Prácticas para API JSON',
+  section: 'Diseño de API',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONAPIBestPracticesSpanishPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center space-x-4 mb-6">
-            <Link href="/wiki/es" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+            <Link href="/wiki/es/" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Volver a la Base de Conocimiento
             </Link>
@@ -55,7 +66,7 @@ export default function JSONAPIBestPracticesSpanishPage() {
               <li>• Optimización de rendimiento y seguridad</li>
             </ul>
             <div className="space-y-4">
-              <Link href="/wiki/es/json-guide" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mr-4">
+              <Link href="/wiki/es/json-guide/" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mr-4">
                 Leer Guía Completa de JSON
               </Link>
               <Link href="/" className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
@@ -67,7 +78,7 @@ export default function JSONAPIBestPracticesSpanishPage() {
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p className="mt-2">
-                <Link href="/wiki/es" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/es/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Volver a la Base de Conocimiento
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

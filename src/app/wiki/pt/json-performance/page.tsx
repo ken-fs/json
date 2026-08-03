@@ -1,29 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, RocketLaunchIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, ChartBarIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "Guia Completo de Otimização de Performance JSON - Processamento de Big Data e Gerenciamento de Memória | JSON Tools",
-  description: "Aprenda otimização de performance JSON: otimização de parsing, gerenciamento de memória, processamento de big data, estratégias de compressão e técnicas práticas. Guia profissional para melhorar performance de aplicações.",
-  keywords: "otimização performance JSON,parsing JSON,gerenciamento memória,processamento big data,compressão JSON,ajuste performance,técnicas otimização JSON",
-  openGraph: {
-    title: "Guia Completo de Otimização de Performance JSON - Processamento de Big Data e Gerenciamento de Memória",
-    description: "Aprenda otimização de performance JSON com guia completo, incluindo otimização de parsing, gerenciamento de memória e técnicas práticas.",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString(),
-    "article:section": "Otimização de Performance",
-    "article:tag": "Performance JSON,Otimização Performance,Big Data,Gerenciamento Memória"
-  }
+const META: WikiMetaInput = {
+  locale: 'pt',
+  slug: 'json-performance',
+  title: 'Performance JSON: Parsing, Memória e Big Data',
+  description: 'Onde o tempo de parsing de JSON é realmente gasto, como evitar carregar big data na memória, quando streaming vence JSON.parse e o que a compressão traz.',
+  keywords: 'otimização performance JSON,parsing JSON,gerenciamento memória,processamento big data,compressão JSON,ajuste performance,técnicas otimização JSON',
+  socialTitle: 'Otimização de Performance JSON',
+  section: 'Performance',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONPerformancePortuguesePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -31,7 +30,7 @@ export default function JSONPerformancePortuguesePage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki/pt" 
+              href="/wiki/pt/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -435,8 +434,8 @@ function cacheResultado(objeto, resultado) {
                   <h3 className="font-medium text-blue-800 dark:text-blue-200 mb-3">Ferramentas Relacionadas</h3>
                   <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
                     <li>• <Link href="/" className="hover:underline">Ferramenta de Formatação JSON</Link></li>
-                    <li>• <Link href="/wiki/pt/json-validation" className="hover:underline">Guia de Validação JSON</Link></li>
-                    <li>• <Link href="/wiki/pt/json-api-best-practices" className="hover:underline">Melhores Práticas de API JSON</Link></li>
+                    <li>• <Link href="/wiki/pt/json-validation/" className="hover:underline">Guia de Validação JSON</Link></li>
+                    <li>• <Link href="/wiki/pt/json-api-best-practices/" className="hover:underline">Melhores Práticas de API JSON</Link></li>
                     <li>• Ferramentas de Monitoramento de Performance</li>
                   </ul>
                 </div>
@@ -449,7 +448,7 @@ function cacheResultado(objeto, resultado) {
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>Este guia fornece soluções completas para otimização de performance JSON, desde conceitos básicos até técnicas avançadas, ajudando você a construir aplicações de alta performance.</p>
               <p className="mt-2">
-                <Link href="/wiki/pt" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/pt/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Voltar à Base de Conhecimento
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

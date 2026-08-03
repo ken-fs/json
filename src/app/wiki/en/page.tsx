@@ -1,48 +1,19 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, DocumentTextIcon, CodeBracketIcon, GlobeAltIcon, AcademicCapIcon } from "@heroicons/react/24/outline";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const title = 'JSON Tools Knowledge Base – Developer Docs';
-  const description =
-    'Curated JSON knowledge base covering syntax, validation (JSON Schema), formatting/minifying, API design, performance, debugging, and code generation (TypeScript/Java). Tutorials and examples included.';
+const META: WikiMetaInput = {
+  locale: 'en',
+  title: 'JSON Knowledge Base: Guides, Schema & Performance',
+  description: 'Six guides on JSON: syntax and types, JSON Schema validation, REST API design, parsing performance, and generating TypeScript and Java types.',
+  keywords: 'JSON,JSON tools,JSON documentation,JSON tutorial,JSON validation,JSON Schema,API design,performance,code generation,TypeScript,Java,best practices,developer docs',
+  socialTitle: 'JSON Knowledge Base',
+};
 
-  return {
-    title,
-    description,
-    keywords: [
-      'JSON',
-      'JSON tools',
-      'JSON documentation',
-      'JSON tutorial',
-      'JSON validation',
-      'JSON Schema',
-      'API design',
-      'performance',
-      'code generation',
-      'TypeScript',
-      'Java',
-      'best practices',
-      'developer docs',
-    ],
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-    },
-    alternates: {
-      canonical: '/wiki/en',
-      languages: {
-        'en-US': '/wiki/en',
-        'zh-CN': '/wiki/cn',
-        'es-ES': '/wiki/es',
-        'pt-BR': '/wiki/pt',
-        'x-default': '/wiki/en',
-      },
-    },
-  };
-}
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function WikiEnglishPage() {
   const articles = [
@@ -156,6 +127,7 @@ export default function WikiEnglishPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -272,7 +244,7 @@ export default function WikiEnglishPage() {
             </h2>
             <div className="grid md:grid-cols-3 gap-4">
               <Link
-                href="/wiki/en/json-guide"
+                href="/wiki/en/json-guide/"
                 className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
               >
                 <h3 className="font-medium text-gray-900 dark:text-white mb-2">Getting Started</h3>
@@ -286,7 +258,7 @@ export default function WikiEnglishPage() {
                 <p className="text-sm text-gray-600 dark:text-gray-300">Use JSON formatting and validation tools</p>
               </Link>
               <Link
-                href="/wiki/en/json-api-best-practices"
+                href="/wiki/en/json-api-best-practices/"
                 className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow"
               >
                 <h3 className="font-medium text-gray-900 dark:text-white mb-2">API Design</h3>

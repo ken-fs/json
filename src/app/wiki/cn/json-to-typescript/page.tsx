@@ -1,29 +1,35 @@
 import { Metadata } from 'next';
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from '@/components/Header';
 import Link from 'next/link';
 import { ArrowLeftIcon, CodeBracketIcon, ClipboardDocumentIcon, ArrowDownTrayIcon, CheckCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from '@heroicons/react/24/outline';
 
-export const metadata: Metadata = {
-  title: 'JSON 转 TypeScript 接口 - 使用指南 | JSON Tools',
-  description: '将 JSON 一键生成 TypeScript 接口，支持嵌套对象与数组。了解类型映射、快速上手步骤与常见注意事项。',
+const META: WikiMetaInput = {
+  locale: 'cn',
+  slug: 'json-to-typescript',
+  title: 'JSON 转 TypeScript 接口：原理说明',
+  description: 'JSON 如何映射为 TypeScript 接口，可选字段与可为 null 的字段有何区别，以及生成器从真实接口返回中推断出了什么。',
   keywords: 'JSON 转 TypeScript, TypeScript 接口, JSON 代码生成, TS 类型, JSON 工具',
-  openGraph: {
-    title: 'JSON 转 TypeScript 接口 - 使用指南',
-    description: '从 JSON 生成 TypeScript 接口，支持嵌套与数组，提供快捷操作与实用建议。',
-    type: 'article'
-  }
+  socialTitle: 'JSON 转 TypeScript 接口',
+  section: '代码生成',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JsonToTypeScriptDocCN() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* 导航 */}
           <div className="flex items-center space-x-4 mb-6">
-            <Link href="/wiki/cn" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+            <Link href="/wiki/cn/" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               返回知识库
             </Link>
@@ -99,7 +105,7 @@ export default function JsonToTypeScriptDocCN() {
             <section id="quick-start" className="mb-12">
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">快速上手</h2>
               <ol className="list-decimal pl-6 space-y-2">
-                <li>打开 <Link href="/json-to-typescript" className="text-blue-600 dark:text-blue-400">/json-to-typescript</Link></li>
+                <li>打开 <Link href="/json-to-typescript/" className="text-blue-600 dark:text-blue-400">/json-to-typescript</Link></li>
                 <li>将 JSON 粘贴到左侧输入框</li>
                 <li>在右侧查看生成的接口</li>
                 <li>复制 <ClipboardDocumentIcon className="inline w-4 h-4" /> 或下载 <ArrowDownTrayIcon className="inline w-4 h-4" /></li>
@@ -218,9 +224,9 @@ interface AddressInterface {
             <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">相关工具</h2>
             <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
               <li>• <Link href="/" className="hover:underline">JSON 格式化工具</Link></li>
-              <li>• <Link href="/wiki/cn/json-guide" className="hover:underline">JSON 完全指南</Link></li>
-              <li>• <Link href="/wiki/cn/json-validation" className="hover:underline">JSON 校验指南</Link></li>
-              <li>• <Link href="/wiki/cn/json-performance" className="hover:underline">性能优化技巧</Link></li>
+              <li>• <Link href="/wiki/cn/json-guide/" className="hover:underline">JSON 完全指南</Link></li>
+              <li>• <Link href="/wiki/cn/json-validation/" className="hover:underline">JSON 校验指南</Link></li>
+              <li>• <Link href="/wiki/cn/json-performance/" className="hover:underline">性能优化技巧</Link></li>
             </ul>
           </section>
 
@@ -229,7 +235,7 @@ interface AddressInterface {
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>用该转换器快速搭建类型骨架，再按业务需求进行细化与完善。</p>
               <p className="mt-2">
-                <Link href="/wiki/cn" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">返回知识库</Link>
+                <Link href="/wiki/cn/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">返回知识库</Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">返回工具首页</Link>
               </p>
             </div>

@@ -1,27 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, CodeBracketIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "Guía Completa de JSON - Formato de Intercambio de Datos Explicado | JSON Tools",
-  description: "Guía completa sobre JSON (JavaScript Object Notation): reglas de sintaxis, tipos de datos, casos de uso y mejores prácticas. Ejemplos detallados y tutorial JSON optimizado para SEO.",
-  keywords: "JSON,formato datos,API,REST,JavaScript,intercambio datos,tutorial JSON,sintaxis JSON,ejemplos JSON",
-  openGraph: {
-    title: "Guía Completa de JSON - Formato de Intercambio de Datos Explicado",
-    description: "Guía completa sobre formato JSON: desde sintaxis básica hasta aplicaciones prácticas, incluyendo ejemplos ricos y mejores prácticas.",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString()
-  }
+const META: WikiMetaInput = {
+  locale: 'es',
+  slug: 'json-guide',
+  title: 'Guía Completa de JSON: Sintaxis, Tipos y Práctica',
+  description: 'Cómo funciona la sintaxis de JSON, qué tipos de datos admite y dónde encaja. Ejemplos de objetos, arrays, anidamiento y los errores que rompen un parser.',
+  keywords: 'JSON,formato datos,API,REST,JavaScript,intercambio datos,tutorial JSON,sintaxis JSON,ejemplos JSON',
+  socialTitle: 'Guía Completa de JSON',
+  section: 'Fundamentos',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONGuideSpanishPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -29,7 +30,7 @@ export default function JSONGuideSpanishPage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki/es" 
+              href="/wiki/es/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -173,9 +174,9 @@ export default function JSONGuideSpanishPage() {
                   <h3 className="font-medium text-blue-800 dark:text-blue-200 mb-3">Herramientas Relacionadas</h3>
                   <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
                     <li>• <Link href="/" className="hover:underline">Formateador JSON</Link></li>
-                    <li>• <Link href="/wiki/es/json-validation" className="hover:underline">Guía de Validación JSON</Link></li>
-                    <li>• <Link href="/wiki/es/json-performance" className="hover:underline">Optimización de Rendimiento</Link></li>
-                    <li>• <Link href="/wiki/es/json-api-best-practices" className="hover:underline">Mejores Prácticas de API</Link></li>
+                    <li>• <Link href="/wiki/es/json-validation/" className="hover:underline">Guía de Validación JSON</Link></li>
+                    <li>• <Link href="/wiki/es/json-performance/" className="hover:underline">Optimización de Rendimiento</Link></li>
+                    <li>• <Link href="/wiki/es/json-api-best-practices/" className="hover:underline">Mejores Prácticas de API</Link></li>
                   </ul>
                 </div>
               </div>
@@ -187,7 +188,7 @@ export default function JSONGuideSpanishPage() {
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>Esta guía cubre los conceptos fundamentales y aplicaciones prácticas de JSON, adecuada para que principiantes aprendan y desarrolladores profesionales consulten.</p>
               <p className="mt-2">
-                <Link href="/wiki/es" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/es/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Volver a la Base de Conocimiento
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

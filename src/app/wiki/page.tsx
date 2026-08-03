@@ -1,290 +1,158 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
 import Link from 'next/link';
-import {
-  ArrowLeftIcon,
-  BookOpenIcon,
-  DocumentTextIcon,
-  CodeBracketIcon,
-  GlobeAltIcon,
-  AcademicCapIcon,
-} from '@heroicons/react/24/outline';
+import Header from '@/components/Header';
+import { SITE_URL, breadcrumbStructuredData } from '@/components/StructuredData';
+import { TOOLS } from '@/lib/tools';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const title = 'JSON工具知识库 - 开发者文档中心';
-  const description =
-    'JSON工具知识库：系统整理JSON基础与进阶内容，涵盖语法规则、数据类型、格式化/压缩、JSON Schema 校验、API 设计、性能优化、调试排错与代码生成（TypeScript/Java）。提供教程、示例与实践指南，助力高效开发。';
+/**
+ * The wiki's language picker.
+ *
+ * This file used to be a byte-for-byte copy of `/wiki/cn/page.tsx` — same
+ * Chinese copy, same six cards, every link pointing into `/wiki/cn/`. Two URLs
+ * serving identical content is a duplicate Google has to pick between, and
+ * `canonical: '/wiki'` told it to index this one, so the copy that was actually
+ * linked from the sidebar was the one being suppressed.
+ *
+ * Static export has no redirects, so `/wiki/` has to stay a page. It earns its
+ * place by doing the one thing no locale index can: pointing at all four.
+ */
 
-  return {
-    title,
-    description,
-    keywords: [
-      'JSON',
-      'JSON工具',
-      'JSON文档',
-      'JSON教程',
-      'JSON验证',
-      'JSON Schema',
-      'API设计',
-      '性能优化',
-      '代码生成',
-      'TypeScript',
-      'Java',
-      '开发者文档',
-      '最佳实践',
-    ],
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-    },
-    alternates: {
-      canonical: '/wiki',
-      languages: {
-        'en-US': '/wiki/en',
-        'zh-CN': '/wiki/cn',
-        'es-ES': '/wiki/es',
-        'pt-BR': '/wiki/pt',
-        'x-default': '/wiki/en',
-      },
-    },
-  };
-}
+const LOCALES = [
+  {
+    dir: 'en',
+    name: 'English',
+    native: 'English',
+    blurb: 'Six guides, from syntax to parsing performance.',
+  },
+  {
+    dir: 'cn',
+    name: 'Chinese',
+    native: '简体中文',
+    blurb: '六篇指南，从语法到解析性能。',
+  },
+  {
+    dir: 'es',
+    name: 'Spanish',
+    native: 'Español',
+    blurb: 'Seis guías, de la sintaxis al rendimiento.',
+  },
+  {
+    dir: 'pt',
+    name: 'Portuguese',
+    native: 'Português',
+    blurb: 'Seis guias, da sintaxe à performance.',
+  },
+] as const;
 
-export default function WikiPage() {
-  const articles = [
-    {
-      id: 'json-guide',
-      title: 'JSON 完全指南',
-      description:
-        '深入了解 JSON 格式：语法规则、数据类型、应用场景与最佳实践',
-      category: 'foundation',
-      categoryName: '基础知识',
-      icon: DocumentTextIcon,
-      href: '/wiki/cn/json-guide',
-      tags: ['基础', '语法', '数据格式'],
-      readTime: '15 分钟',
-      difficulty: 'beginner',
-    },
-    {
-      id: 'json-api-best-practices',
-      title: 'JSON API 最佳实践',
-      description: '设计高质量 JSON API 的原则、规范与实用技巧',
-      category: 'api',
-      categoryName: 'API 设计',
-      icon: CodeBracketIcon,
-      href: '/wiki/cn/json-api-best-practices',
-      tags: ['API', '设计模式', '规范'],
-      readTime: '12 分钟',
-      difficulty: 'intermediate',
-    },
-    {
-      id: 'json-validation',
-      title: 'JSON 验证与校验',
-      description: 'JSON Schema 使用指南、数据验证规则与错误处理',
-      category: 'validation',
-      categoryName: '验证与校验',
-      icon: AcademicCapIcon,
-      href: '/wiki/cn/json-validation',
-      tags: ['验证', 'Schema', '错误处理'],
-      readTime: '10 分钟',
-      difficulty: 'intermediate',
-    },
-    {
-      id: 'json-performance',
-      title: 'JSON 性能优化',
-      description: 'JSON 解析优化、内存管理与大数据处理技巧',
-      category: 'performance',
-      categoryName: '性能优化',
-      icon: GlobeAltIcon,
-      href: '/wiki/cn/json-performance',
-      tags: ['性能', '优化', '大数据'],
-      readTime: '8 分钟',
-      difficulty: 'advanced',
-    },
-    {
-      id: 'json-to-typescript',
-      title: 'JSON 转 TypeScript 接口',
-      description: '一键从 JSON 生成 TypeScript 接口，支持嵌套对象与数组',
-      category: 'conversion',
-      categoryName: '格式转换',
-      icon: CodeBracketIcon,
-      href: '/wiki/cn/json-to-typescript',
-      tags: ['代码生成', 'TypeScript', '接口'],
-      readTime: '5 分钟',
-      difficulty: 'beginner',
-    },
-    {
-      id: 'json-to-java',
-      title: 'JSON 转 Java 类',
-      description: '从 JSON 生成 Java POJO 类，包括嵌套对象与集合',
-      category: 'conversion',
-      categoryName: '格式转换',
-      icon: CodeBracketIcon,
-      href: '/wiki/cn/json-to-java',
-      tags: ['代码生成', 'Java', '类型'],
-      readTime: '5 分钟',
-      difficulty: 'beginner',
-    },
-  ];
+const TOPICS = [
+  { slug: 'json-guide', label: 'Syntax and data types' },
+  { slug: 'json-validation', label: 'JSON Schema validation' },
+  { slug: 'json-api-best-practices', label: 'REST API design' },
+  { slug: 'json-performance', label: 'Parsing performance' },
+  { slug: 'json-to-typescript', label: 'TypeScript interfaces' },
+  { slug: 'json-to-java', label: 'Java classes' },
+] as const;
 
-  const categories = [
-    { id: 'foundation', name: '基础知识', description: 'JSON 基础概念与语法' },
-    { id: 'api', name: 'API 设计', description: 'RESTful API 与 JSON 数据交换' },
-    { id: 'validation', name: '验证与校验', description: '数据验证与错误处理' },
-    { id: 'performance', name: '性能优化', description: '性能调优与最佳实践' },
-    { id: 'conversion', name: '格式转换', description: '格式转换与代码生成' },
-  ];
+export const metadata: Metadata = {
+  title: { absolute: 'JSON Knowledge Base — Pick a Language' },
+  description:
+    'Six JSON guides in English, Chinese, Spanish, and Portuguese: syntax, JSON Schema, REST API design, parsing performance, and type generation.',
+  keywords: 'JSON guides,JSON documentation,JSON knowledge base,JSON tutorial,multilingual',
+  alternates: {
+    // No hreflang here. This page has no translation — it is the page you land
+    // on *before* choosing one. The four locale indexes reference each other.
+    canonical: '/wiki/',
+  },
+  openGraph: {
+    title: 'JSON Knowledge Base',
+    description: 'Six JSON guides in four languages.',
+    url: `${SITE_URL}/wiki/`,
+    siteName: 'JSON1',
+    type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'JSON1 knowledge base' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'JSON Knowledge Base',
+    description: 'Six JSON guides in four languages.',
+    images: ['/og-image.png'],
+  },
+};
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
-      case 'intermediate':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400';
-      case 'advanced':
-        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400';
-    }
-  };
-
-  const getDifficultyText = (difficulty: string) => {
-    switch (difficulty) {
-      case 'beginner':
-        return '初级';
-      case 'intermediate':
-        return '中级';
-      case 'advanced':
-        return '高级';
-      default:
-        return '未知';
-    }
-  };
+export default function WikiHubPage() {
+  const breadcrumb = breadcrumbStructuredData([{ name: 'Knowledge base', path: '/wiki/' }]);
 
   return (
-    <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+    <div className="min-h-screen bg-[#f7f7f4] text-[#141414]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+      />
       <Header />
 
-      <main className='container mx-auto px-4 py-8'>
-        <div className='max-w-6xl mx-auto'>
-          {/* Navigation */}
-          <Link
-            href='/'
-            className='inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mb-6'
-          >
-            <ArrowLeftIcon className='w-4 h-4 mr-2' />
-            返回 JSON 工具
-          </Link>
+      <main className="mx-auto max-w-4xl px-6 py-16">
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-[#141414]/50">
+          Knowledge base
+        </p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+          Six JSON guides, four languages.
+        </h1>
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#141414]/70">
+          The same six articles are written in each language — not machine-translated from
+          one original. Pick the one you read fastest.
+        </p>
 
-          {/* Header */}
-          <header className='mb-12'>
-            <h1 className='text-4xl font-bold text-gray-900 dark:text-white mb-4 flex items-center'>
-              <BookOpenIcon className='w-10 h-10 mr-4 text-blue-600' />
-              JSON 工具知识库
-            </h1>
-            <p className='text-xl text-gray-600 dark:text-gray-300 leading-relaxed'>
-              完整的 JSON 学习资源与开发者文档，从基础语法到高级应用，助您成为 JSON 专家
-            </p>
-          </header>
-
-          {/* Categories Overview */}
-          <section className='mb-12'>
-            <h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-6'>知识分类</h2>
-            <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-6'>
-              {categories.map((category) => {
-                const firstArticle = articles.find((article) => article.category === category.id);
-                const articleCount = articles.filter((article) => article.category === category.id).length;
-
-                return (
-                  <Link key={category.id} href={firstArticle?.href || '#'}>
-                    <div className='bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer h-full flex flex-col'>
-                      <h3 className='text-lg font-semibold text-gray-900 dark:text-white mb-2'>{category.name}</h3>
-                      <p className='text-sm text-gray-600 dark:text-gray-300 mb-4 flex-1'>{category.description}</p>
-                      <div className='text-sm text-blue-600 dark:text-blue-400'>{articleCount} 篇文章</div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* Articles List */}
-          <section className='mb-12'>
-            <h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-6'>所有文章</h2>
-            <div className='space-y-6'>
-              {articles.map((article) => {
-                const IconComponent = article.icon;
-                return (
-                  <Link key={article.id} href={article.href}>
-                    <article className='bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer'>
-                      <div className='flex items-start space-x-4'>
-                        <div className='flex-shrink-0'>
-                          <div className='w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center'>
-                            <IconComponent className='w-6 h-6 text-blue-600 dark:text-blue-400' />
-                          </div>
-                        </div>
-
-                        <div className='flex-1 min-w-0'>
-                          <div className='flex items-center space-x-3 mb-2'>
-                            <h3 className='text-xl font-semibold text-gray-900 dark:text-white'>{article.title}</h3>
-                            <span className={`px-2 py-1 text-xs font-medium rounded-full ${getDifficultyColor(article.difficulty)}`}>
-                              {getDifficultyText(article.difficulty)}
-                            </span>
-                          </div>
-
-                          <p className='text-gray-600 dark:text-gray-300 mb-3'>{article.description}</p>
-
-                          <div className='flex items-center justify-between'>
-                            <div className='flex items-center space-x-4'>
-                              <span className='text-sm text-blue-600 dark:text-blue-400 font-medium'>{article.categoryName}</span>
-                              <span className='text-sm text-gray-500 dark:text-gray-400'>阅读时间：{article.readTime}</span>
-                            </div>
-
-                            <div className='flex items-center space-x-2'>
-                              {article.tags.map((tag) => (
-                                <span
-                                  key={tag}
-                                  className='px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded'
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </article>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* Quick Links */}
-          <section className='bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800'>
-            <h2 className='text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4'>快速开始</h2>
-            <div className='grid md:grid-cols-3 gap-4'>
-              <Link href='/wiki/cn/json-guide' className='block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow'>
-                <h3 className='font-medium text-gray-900 dark:text-white mb-2'>新手入门</h3>
-                <p className='text-sm text-gray-600 dark:text-gray-300'>从 JSON 基础语法开始学习</p>
-              </Link>
-              <Link href='/' className='block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow'>
-                <h3 className='font-medium text-gray-900 dark:text-white mb-2'>在线工具</h3>
-                <p className='text-sm text-gray-600 dark:text-gray-300'>使用 JSON 格式化与校验工具</p>
-              </Link>
+        <ul className="mt-12 divide-y divide-[#dedede] border-y border-[#dedede]">
+          {LOCALES.map((locale) => (
+            <li key={locale.dir}>
               <Link
-                href='/wiki/cn/json-api-best-practices'
-                className='block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow'
+                href={`/wiki/${locale.dir}/`}
+                hrefLang={locale.dir === 'cn' ? 'zh-CN' : locale.dir}
+                className="group flex items-baseline gap-6 py-5 transition-colors hover:bg-white focus-visible:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1261ff]"
               >
-                <h3 className='font-medium text-gray-900 dark:text-white mb-2'>API 设计</h3>
-                <p className='text-sm text-gray-600 dark:text-gray-300'>学习 JSON API 最佳实践</p>
+                <span className="w-32 shrink-0 text-lg font-medium group-hover:text-[#1261ff]">
+                  {locale.native}
+                </span>
+                <span className="flex-1 text-[#141414]/70">{locale.blurb}</span>
+                <span className="font-mono text-xs uppercase tracking-wider text-[#141414]/40">
+                  {locale.dir === 'cn' ? 'zh' : locale.dir}
+                </span>
               </Link>
-            </div>
-          </section>
-        </div>
+            </li>
+          ))}
+        </ul>
+
+        <section className="mt-16">
+          <h2 className="text-sm font-medium uppercase tracking-[0.14em] text-[#141414]/50">
+            What the guides cover
+          </h2>
+          {/* Links go to the English set: this hub is written in English, so a
+              reader who skips the picker gets a language they can already read. */}
+          <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
+            {TOPICS.map((topic) => (
+              <li key={topic.slug}>
+                <Link
+                  href={`/wiki/en/${topic.slug}/`}
+                  className="text-[#141414] underline decoration-[#dedede] decoration-2 underline-offset-4 transition-colors hover:decoration-[#1261ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1261ff]"
+                >
+                  {topic.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <p className="mt-16 border-t border-[#dedede] pt-6 text-sm text-[#141414]/60">
+          Want the tools instead?{' '}
+          <Link
+            href="/tools/"
+            className="text-[#1261ff] underline decoration-2 underline-offset-4"
+          >
+            All {TOOLS.length + 1} JSON tools
+          </Link>{' '}
+          run in your browser, no uploads.
+        </p>
       </main>
     </div>
   );
 }
-

@@ -1,29 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, RocketLaunchIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, ChartBarIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "JSON性能优化完整指南 - 大数据处理与内存管理 | JSON Tools",
-  description: "深入学习JSON性能优化：解析优化、内存管理、大数据处理、压缩策略和实用技巧。提升应用性能的专业指南。",
-  keywords: "JSON性能优化,JSON解析,内存管理,大数据处理,JSON压缩,性能调优,JSON优化技巧",
-  openGraph: {
-    title: "JSON性能优化完整指南 - 大数据处理与内存管理",
-    description: "学习JSON性能优化的完整指南，包含解析优化、内存管理和实用技巧。",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString(),
-    "article:section": "性能优化",
-    "article:tag": "JSON性能,性能优化,大数据,内存管理"
-  }
+const META: WikiMetaInput = {
+  locale: 'cn',
+  slug: 'json-performance',
+  title: 'JSON 性能优化：解析、内存与大数据量',
+  description: 'JSON 解析的时间到底花在哪，如何避免把大数据量整体读入内存，什么时候流式解析优于 JSON.parse，以及压缩能带来多少收益。',
+  keywords: 'JSON性能优化,JSON解析,内存管理,大数据处理,JSON压缩,性能调优,JSON优化技巧',
+  socialTitle: 'JSON 性能优化',
+  section: '性能',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONPerformancePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -31,7 +30,7 @@ export default function JSONPerformancePage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki" 
+              href="/wiki/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -906,7 +905,7 @@ const data = profiler.profile(() => JSON.parse(largeJSON), 'JSON解析');`}
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>本指南提供了JSON性能优化的完整方案，从基础概念到高级技巧，帮助您构建高性能应用。</p>
               <p className="mt-2">
-                <Link href="/wiki" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   返回知识库
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">

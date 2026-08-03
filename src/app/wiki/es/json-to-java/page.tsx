@@ -1,29 +1,35 @@
 import { Metadata } from 'next';
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from '@/components/Header';
 import Link from 'next/link';
 import { ArrowLeftIcon, CodeBracketIcon, ClipboardDocumentIcon, ArrowDownTrayIcon, CheckCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from '@heroicons/react/24/outline';
 
-export const metadata: Metadata = {
-  title: 'JSON → Clases Java: Cómo Usar | JSON Tools',
-  description: 'Genera clases Java (POJOs) desde JSON. Funcionalidades soportadas, mapeo de tipos y exportación de código.',
+const META: WikiMetaInput = {
+  locale: 'es',
+  slug: 'json-to-java',
+  title: 'JSON a Clases Java (POJOs): Cómo Funciona',
+  description: 'Cómo se traduce JSON a POJOs de Java, por qué un contador puede ser Long aquí y long en otro sitio, y qué hace el generador con objetos anidados.',
   keywords: 'JSON a Java,POJO,generación de código,clases Java,herramientas JSON',
-  openGraph: {
-    title: 'JSON → Clases Java: Cómo Usar',
-    description: 'Genera clases Java desde JSON, incluyendo objetos anidados y listas genéricas. Pasos rápidos y consejos.',
-    type: 'article'
-  }
+  socialTitle: 'JSON → Clases Java',
+  section: 'Generación de Código',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JsonToJavaDocES() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Navegación */}
           <div className="flex items-center space-x-4 mb-6">
-            <Link href="/wiki/es" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+            <Link href="/wiki/es/" className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Volver a la Base de Conocimiento
             </Link>
@@ -99,7 +105,7 @@ export default function JsonToJavaDocES() {
             <section id="quick-start" className="mb-12">
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Inicio rápido</h2>
               <ol className="list-decimal pl-6 space-y-2">
-                <li>Abre <Link href="/json-to-java" className="text-blue-600 dark:text-blue-400">/json-to-java</Link></li>
+                <li>Abre <Link href="/json-to-java/" className="text-blue-600 dark:text-blue-400">/json-to-java</Link></li>
                 <li>Pega el JSON en el editor izquierdo</li>
                 <li>Revisa las clases generadas en el panel derecho</li>
                 <li>Copia <ClipboardDocumentIcon className="inline w-4 h-4" /> o descarga <ArrowDownTrayIcon className="inline w-4 h-4" /> el archivo <code>.java</code></li>
@@ -227,9 +233,9 @@ public class Author {
             <h2 className="text-xl font-semibold text-blue-800 dark:text-blue-200 mb-4">Herramientas relacionadas</h2>
             <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
               <li>• <Link href="/" className="hover:underline">Herramientas de Formato JSON</Link></li>
-              <li>• <Link href="/wiki/es/json-guide" className="hover:underline">Guía Completa de JSON</Link></li>
-              <li>• <Link href="/wiki/es/json-validation" className="hover:underline">Guía de Validación JSON</Link></li>
-              <li>• <Link href="/wiki/es/json-performance" className="hover:underline">Optimización de Rendimiento</Link></li>
+              <li>• <Link href="/wiki/es/json-guide/" className="hover:underline">Guía Completa de JSON</Link></li>
+              <li>• <Link href="/wiki/es/json-validation/" className="hover:underline">Guía de Validación JSON</Link></li>
+              <li>• <Link href="/wiki/es/json-performance/" className="hover:underline">Optimización de Rendimiento</Link></li>
             </ul>
           </section>
 
@@ -238,7 +244,7 @@ public class Author {
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>Genera POJOs rápidamente y luego ajusta modificadores, paquetes y anotaciones para producción.</p>
               <p className="mt-2">
-                <Link href="/wiki/es" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">Volver a la Base de Conocimiento</Link>
+                <Link href="/wiki/es/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">Volver a la Base de Conocimiento</Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">Volver a Herramientas JSON</Link>
               </p>
             </div>

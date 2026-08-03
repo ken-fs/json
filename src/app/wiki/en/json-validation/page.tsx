@@ -1,29 +1,28 @@
 import { Metadata } from "next";
+import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
+import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, AcademicCapIcon, CheckCircleIcon, ExclamationTriangleIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 
-export const metadata: Metadata = {
-  title: "Complete JSON Validation & Schema Guide - JSON Schema Tutorial | JSON Tools",
-  description: "Deep dive into JSON data validation: JSON Schema syntax, validation rules, error handling, and best practices. Professional guide to ensure data quality.",
-  keywords: "JSON validation,JSON Schema,data validation,JSON verification,data quality,JSON format validation,schema design,validation rules",
-  openGraph: {
-    title: "Complete JSON Validation & Schema Guide - JSON Schema Tutorial",
-    description: "Learn to use JSON Schema for data validation with comprehensive guide, including practical examples and best practices.",
-    type: "article"
-  },
-  other: {
-    "article:author": "JSON Tools",
-    "article:published_time": "2024-01-01",
-    "article:modified_time": new Date().toISOString(),
-    "article:section": "Validation",
-    "article:tag": "JSON Validation,JSON Schema,Data Validation,Validation Rules"
-  }
+const META: WikiMetaInput = {
+  locale: 'en',
+  slug: 'json-validation',
+  title: 'JSON Validation & Schema: A Practical Guide',
+  description: 'Validate JSON with JSON Schema: writing schemas, the keywords worth knowing, how errors are reported, and where validation belongs in a request pipeline.',
+  keywords: 'JSON validation,JSON Schema,data validation,JSON verification,data quality,JSON format validation,schema design,validation rules',
+  socialTitle: 'JSON Validation & Schema',
+  section: 'Validation',
+  publishedTime: '2025-01-15',
+  modifiedTime: '2026-08-03',
 };
+
+export const metadata: Metadata = wikiMetadata(META);
 
 export default function JSONValidationEnglishPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <WikiJsonLd {...META} />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -31,7 +30,7 @@ export default function JSONValidationEnglishPage() {
           {/* Navigation */}
           <div className="flex items-center space-x-4 mb-6">
             <Link 
-              href="/wiki/en" 
+              href="/wiki/en/" 
               className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
             >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
@@ -540,8 +539,8 @@ null    // Null value`
                   <h3 className="font-medium text-blue-800 dark:text-blue-200 mb-3">Related Tools</h3>
                   <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
                     <li>• <Link href="/" className="hover:underline">JSON Formatting Tools</Link></li>
-                    <li>• <Link href="/wiki/en/json-guide" className="hover:underline">Complete JSON Guide</Link></li>
-                    <li>• <Link href="/wiki/en/json-performance" className="hover:underline">Performance Optimization Techniques</Link></li>
+                    <li>• <Link href="/wiki/en/json-guide/" className="hover:underline">Complete JSON Guide</Link></li>
+                    <li>• <Link href="/wiki/en/json-performance/" className="hover:underline">Performance Optimization Techniques</Link></li>
                     <li>• Schema Generation Tools</li>
                   </ul>
                 </div>
@@ -554,7 +553,7 @@ null    // Null value`
             <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
               <p>This guide provides comprehensive knowledge about JSON validation, from basic concepts to practical applications, helping you ensure data quality.</p>
               <p className="mt-2">
-                <Link href="/wiki/en" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
+                <Link href="/wiki/en/" className="text-blue-600 dark:text-blue-400 hover:underline mr-4">
                   Back to Knowledge Base
                 </Link>
                 <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline">
