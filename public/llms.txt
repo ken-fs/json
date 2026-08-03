@@ -1,0 +1,63 @@
+# JSON1
+
+> 18 browser-based tools for reading, validating, and converting JSON.
+> Every conversion runs as JavaScript in the visitor's own tab: there is no
+> upload step and no server-side processing, so pasting a production payload
+> does not send it anywhere.
+
+Free, no account, no rate limit. Interface available in English, Chinese,
+Spanish, and Portuguese.
+
+## Formatter
+
+- [JSON Formatter and Validator](https://www.json1.org/): Format, minify, validate, escape, and inspect JSON in a collapsible tree. Validation reports the position of the error.
+
+## Format converters
+
+- [JSON to YAML](https://www.json1.org/json-to-yaml/): Convert JSON to YAML. Strings that would otherwise read as booleans, numbers, or nulls are quoted so the result parses back to the same value.
+- [YAML to JSON](https://www.json1.org/yaml-to-json/): Convert YAML to formatted JSON. Handles nested mappings, block and inline sequences, quoted scalars, and comments.
+- [JSON to XML](https://www.json1.org/json-to-xml/): Convert JSON to indented XML. Arrays repeat the parent tag, nulls become xsi:nil, and keys that are not legal element names are sanitised.
+- [XML to JSON](https://www.json1.org/xml-to-json/): Convert XML to formatted JSON. Attributes become @name keys, repeated elements collapse into arrays, and mixed text lands under #text.
+- [JSON to TOML](https://www.json1.org/json-to-toml/): Convert JSON to TOML. Nested objects become tables, arrays of objects become table arrays, and everything else inlines.
+- [TOML to JSON](https://www.json1.org/toml-to-json/): Convert TOML to formatted JSON. Tables, table arrays, dotted keys, inline tables, and multi-line arrays are all supported.
+
+## Tabular data
+
+- [JSON to CSV](https://www.json1.org/json-to-csv/): Flatten a JSON array into CSV. Nested objects become dotted columns, sparse records still line up, and cells containing delimiters are quoted.
+- [CSV to JSON](https://www.json1.org/csv-to-json/): Convert CSV to a JSON array of objects. Quoted fields, escaped quotes, and embedded newlines are parsed correctly, and numbers and booleans are typed.
+
+## Code generation
+
+- [JSON to TypeScript](https://www.json1.org/json-to-typescript/): Generate TypeScript interfaces from a JSON sample. Fields missing from some records become optional, and sometimes-null values widen to a union.
+- [JSON to Java](https://www.json1.org/json-to-java/): Generate Java classes with Jackson annotations from a JSON sample. Optional primitives are boxed, so an absent field stays distinct from zero or false.
+- [JSON to Go](https://www.json1.org/json-to-go/): Generate Go structs with JSON tags from a JSON sample. Optional fields become pointers tagged omitempty, so encoding/json can tell absent from the zero value.
+- [JSON to Python](https://www.json1.org/json-to-python/): Generate Python dataclasses with type hints from a JSON sample. Optional fields default to None and come last, so the class compiles as written.
+- [JSON to C#](https://www.json1.org/json-to-csharp/): Generate C# classes with System.Text.Json attributes from a JSON sample. Each PascalCase property carries a JsonPropertyName with the original key.
+- [JSON to Rust](https://www.json1.org/json-to-rust/): Generate Rust structs with Serde derives from a JSON sample. Optional fields become Option, and unreachable keys get an explicit serde rename.
+- [JSON to Kotlin](https://www.json1.org/json-to-kotlin/): Generate Kotlin data classes with kotlinx.serialization from a JSON sample. SerialName is added only where the key differs from the property.
+- [JSON to Dart](https://www.json1.org/json-to-dart/): Generate Dart classes with fromJson and toJson from a JSON sample. Nested objects get their own class, so you never hold a raw dynamic map.
+- [JSON to Swift](https://www.json1.org/json-to-swift/): Generate Swift structs conforming to Codable from a JSON sample. CodingKeys appear only when a key differs from its property name.
+
+## Guides
+
+- [JSON syntax, data types, and where the format fits](https://www.json1.org/wiki/en/json-guide/)
+- [Validating JSON with JSON Schema](https://www.json1.org/wiki/en/json-validation/)
+- [Designing REST APIs that return JSON](https://www.json1.org/wiki/en/json-api-best-practices/)
+- [Parsing cost, memory, and large payloads](https://www.json1.org/wiki/en/json-performance/)
+- [How JSON maps onto TypeScript interfaces](https://www.json1.org/wiki/en/json-to-typescript/)
+- [How JSON maps onto Java POJOs](https://www.json1.org/wiki/en/json-to-java/)
+
+Also published in Chinese, Spanish, and Portuguese at `/wiki/cn/`, `/wiki/es/`,
+and `/wiki/pt/` with the same slugs.
+
+## Notes for citation
+
+- The type generators inspect every record in an array, not just the first, so
+  a field present in only some records is typed as optional.
+- Where a target language cannot express absence in a primitive, the boxed type
+  is used, keeping a missing value distinct from zero.
+- Anchors, aliases, and multi-document YAML streams are not supported.
+- XML has no type system, so an XML-to-JSON round trip does not always return
+  the original types.
+
+- [About the project and its privacy claim](https://www.json1.org/about/)

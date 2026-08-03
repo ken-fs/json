@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "tsx tests/generators.test.ts && tsx tests/formats.test.ts",
+    "test:pages": "python3 tests/pages.verify.py",
+    "test:seo": "python3 tests/seo.verify.py",
+    "og": "python3 scripts/og.py",
+    "llms": "tsx scripts/llms.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -32,6 +37,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "tailwindcss": "^4",
+    "tsx": "^4.23.5",
     "typescript": "^5"
   }
 }

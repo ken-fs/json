@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **设计规则见 [`AGENTS.md`](./AGENTS.md#design-rules--项目设计规则)**，并且优先于本文件。
+> 本文件下方关于配色和 `dark:` 深色模式的描述记录的是重构前的状态，新代码请遵循 AGENTS.md 的设计令牌。
+
 ## 技术栈偏好
 
 ### 前端技术栈

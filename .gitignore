@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local screenshots from the design/QA passes
+/artifacts/
+
+# One-off measurement scripts and notes from the redesign. They hardcode local
+# absolute paths and answered a question that is already answered — the checks
+# worth keeping went into `tests/`.
+/analyze_visual.py
+/detailed_measurements.py
+/measure_prose_fonts.py
+/design-qa.md
