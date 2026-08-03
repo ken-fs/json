@@ -37,10 +37,19 @@ committed because a static export has nothing to build them at request time.
 - Components: PascalCase files (e.g., `Header.tsx`). Utils/hooks: camelCase (e.g., `useLanguageStore`).
 - Tailwind CSS 4 utility‑first classes; keep class lists readable and consistent.
 - Run `pnpm lint` before pushing; fix warnings where reasonable.
+- Icon‑only controls go through `ui/IconButton.tsx`. Never ship a bare icon with only
+  a native `title` — it needs ~1s of holding still, styles itself as the OS, and does
+  not exist for keyboard users. `label` is the action and the accessible name; `hint`
+  is optional and should say something `label` does not, so skip it rather than
+  restate the label.
 
 ## Testing Guidelines
 - `pnpm test` — converter and generator suites (`tests/*.test.ts`, run with `tsx`). No framework; each file asserts and prints.
-- `pnpm test:pages` — Playwright pass over the static export. Needs a build first: `pnpm build && (cd out && python3 -m http.server 4321)`.
+- `pnpm test:pages` — Playwright pass over the static export. Needs a build first:
+  `pnpm build && (cd out && python3 -m http.server 4321)`. Covers tool‑page content,
+  i18n, mobile overflow, and the toolbar tooltips (hover, keyboard focus, viewport
+  clamping, and that a touch tap does not leave one stuck on screen). Contexts must
+  pin `locale="en-US"` — labels are translated and the detector reads the locale.
 - `pnpm test:seo` — Asserts the SEO invariants against the same server: canonical
   correctness and uniqueness, title/description limits, hreflang only on the wiki's
   per‑locale routes, JSON‑LD validity, and that every referenced asset resolves.

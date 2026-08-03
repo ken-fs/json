@@ -37,3 +37,22 @@ textarea {
   scrollbar-color: #c9c9c3 transparent;
   scrollbar-width: thin;
 }
+
+/* 工具栏 tooltip 的入场动画。往上抬 3px 而不是缩放：气泡是从按钮里长出来的，
+   位移读起来就是这个意思，缩放只是在提醒你有个东西弹出来了。曲线收得很快
+   (0.16,1,0.3,1)，120ms 内基本落位，不会让人等着看动画。
+
+   动的是 `translate` 属性而不是 `transform`：Tailwind 4 的 `-translate-x-1/2`
+   编译成 `translate`，两者是各自独立的属性，会叠加。写成 transform 的话首帧
+   会横向多偏一个身位 —— 视觉上一闪而过，但 IconButton 的边界测量正好在那一帧
+   读位置，于是永远量不到真正的溢出。 */
+@keyframes tooltip-rise {
+  from {
+    opacity: 0;
+    translate: -50% 3px;
+  }
+  to {
+    opacity: 1;
+    translate: -50% 0;
+  }
+}

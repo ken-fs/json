@@ -7,6 +7,7 @@ import { supportsDelimiter, supportsRootName, type ToolDefinition } from "@/lib/
 import JSONEditor from "./JSONEditor";
 import ToolIntro from "./ToolIntro";
 import { Alert, AlertDescription } from "./ui/alert";
+import IconButton from "./ui/IconButton";
 import {
   ArrowDownTrayIcon,
   ArrowUpTrayIcon,
@@ -202,29 +203,18 @@ export default function ConverterWorkspace({ tool }: ConverterWorkspaceProps) {
               </label>
             ) : null}
 
-            <button
-              type="button"
+            <IconButton
+              icon={ListBulletIcon}
+              label={showLineNumbers ? t("hideLineNumbers") : t("showLineNumbers")}
               onClick={() => setShowLineNumbers(!showLineNumbers)}
-              title={showLineNumbers ? t("hideLineNumbers") : t("showLineNumbers")}
-              aria-label={t("lineNumbers")}
-              aria-pressed={showLineNumbers}
-              className={`inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
-                showLineNumbers
-                  ? "bg-[#edf3ff] text-[#1261ff]"
-                  : "text-[#555961] hover:bg-white hover:text-[#111]"
-              }`}
-            >
-              <ListBulletIcon className="h-[18px] w-[18px]" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
+              active={showLineNumbers}
+            />
+            <IconButton
+              icon={TrashIcon}
+              label={t("clear")}
+              hint={t("clearTooltip")}
               onClick={() => setInput("")}
-              title={t("clear")}
-              aria-label={t("clear")}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-[#555961] transition-colors hover:bg-white hover:text-[#111]"
-            >
-              <TrashIcon className="h-[18px] w-[18px]" aria-hidden="true" />
-            </button>
+            />
           </div>
         </div>
 

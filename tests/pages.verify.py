@@ -187,6 +187,71 @@ with sync_playwright() as p:
             print(f"ok   i18n {path} translates under zh")
         ctx.close()
 
+    # --- icon-only toolbar buttons must explain themselves
+    #
+    # The toolbar is eight bare icons. They carried a native `title`, which is
+    # near-useless: it takes almost a second of holding still, renders in the OS
+    # style, and never appears for keyboard users at all. `IconButton` draws its
+    # own, so the checks are that it appears on hover, appears on keyboard focus,
+    # stays inside the viewport (the rightmost one overflowed), goes away again,
+    # and does not linger after a tap on touch.
+    visit(page, "/")
+    page.fill("textarea", '{"a":1,"b":[2,3]}')
+    page.wait_for_timeout(300)
+
+    if page.locator('[role="tooltip"]').count():
+        failures.append("a tooltip is visible with no hover or focus")
+        print("FAIL tooltip visible at rest")
+    else:
+        print("ok   no tooltip at rest")
+
+    for label in ["Copy Input", "Compress", "Clear", "To XML", "Example"]:
+        button = page.locator(f'button[aria-label="{label}"]')
+        button.hover()
+        page.wait_for_timeout(320)
+        tip = page.locator('[role="tooltip"]')
+        if tip.count() != 1 or label not in tip.inner_text():
+            failures.append(f"toolbar {label!r}: no tooltip on hover")
+            print(f"FAIL tooltip {label!r} on hover")
+            continue
+        box = tip.bounding_box()
+        if box["x"] < 0 or box["x"] + box["width"] > 1440:
+            failures.append(f"toolbar {label!r}: tooltip runs off the viewport ({box})")
+            print(f"FAIL tooltip {label!r} clipped: {box}")
+        else:
+            print(f"ok   tooltip {label!r} ({int(box['width'])}px wide)")
+        page.locator("h1").hover()
+        page.wait_for_timeout(200)
+        if page.locator('[role="tooltip"]').count():
+            failures.append(f"toolbar {label!r}: tooltip survives pointer leave")
+            print(f"FAIL tooltip {label!r} does not hide")
+
+    # A disabled button is exactly the one a user needs explained.
+    page.locator('button[aria-label="Escape"]').click()
+    page.wait_for_timeout(300)
+    xml = page.locator('button[aria-label="To XML"]')
+    xml.hover(force=True)
+    page.wait_for_timeout(320)
+    if page.locator('[role="tooltip"]').count() != 1:
+        failures.append("disabled To XML button gives no reason why")
+        print("FAIL disabled button has no tooltip")
+    else:
+        print("ok   disabled button explains itself")
+    page.locator("h1").hover()
+    page.wait_for_timeout(200)
+
+    # `:focus-visible` only matches under real keyboard navigation, so Tab in
+    # rather than calling .focus().
+    page.locator('button[aria-label="Copy Input"]').evaluate("e => e.focus()")
+    page.keyboard.press("Tab")
+    page.wait_for_timeout(320)
+    focused = page.evaluate("document.activeElement.getAttribute('aria-label')")
+    if page.locator('[role="tooltip"]').count() != 1 or focused != "Compress":
+        failures.append("keyboard focus shows no tooltip")
+        print(f"FAIL keyboard focus tooltip (focused={focused!r})")
+    else:
+        print("ok   keyboard focus shows tooltip")
+
     # --- sidebar links resolve (orphan-page check)
     visit(page, "/tools/")
     hrefs = page.eval_on_selector_all("a[href]", "els => els.map(e => e.getAttribute('href'))")
@@ -210,6 +275,37 @@ with sync_playwright() as p:
             print(f"FAIL mobile {path}: scrollWidth={sw}")
         else:
             print(f"ok   mobile {path}: scrollWidth={sw}")
+
+    # A tap fires pointerenter too, but the finger then rests on the button so
+    # pointerleave never comes — an unguarded hover tooltip would stay stuck on
+    # screen for the rest of the session.
+    # locale matters: the labels are translated, and the language detector reads
+    # it, so without pinning en-US the selectors below look for the wrong strings.
+    touch = browser.new_context(
+        viewport={"width": 390, "height": 844},
+        has_touch=True,
+        is_mobile=True,
+        locale="en-US",
+    ).new_page()
+    block_third_party(touch)
+    touch.goto(BASE, wait_until="domcontentloaded")
+    # The labels are translated, so wait for i18n to settle before selecting on one.
+    touch.wait_for_selector('button[aria-label="Compress"]')
+    touch.fill("textarea", '{"a":1}')
+    touch.wait_for_timeout(300)
+    touch.locator('button[aria-label="Compress"]').tap()
+    touch.wait_for_timeout(400)
+    compressed = '{"a":1}' in touch.locator("section").nth(1).inner_text().replace(" ", "")
+    lingering = touch.locator('[role="tooltip"]').count()
+    if not compressed:
+        failures.append("tap on a toolbar button did not run its action")
+        print("FAIL touch tap does not trigger action")
+    elif lingering:
+        failures.append("tooltip stays on screen after a tap")
+        print("FAIL touch tap leaves a tooltip behind")
+    else:
+        print("ok   touch tap acts and leaves no tooltip")
+    touch.close()
 
     mobile.screenshot(path="artifacts/tools-mobile-390.png", full_page=True)
     visit(page, "/tools/")

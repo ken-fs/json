@@ -6,6 +6,7 @@ import { jsonToXML, escapeJSON, unescapeJSON, isEscapedJSON } from "@/lib/utils"
 import JSONEditor from "./JSONEditor";
 import ToolIntro from "./ToolIntro";
 import { Alert, AlertDescription } from "./ui/alert";
+import IconButton from "./ui/IconButton";
 import {
   ArrowDownTrayIcon,
   ArrowPathIcon,
@@ -109,8 +110,10 @@ const formatXML = (xml: string): string => {
 
 interface ToolbarButton {
   icon: React.ElementType;
-  text: string;
-  tooltip: string;
+  /** 按钮做什么。tooltip 的标题，也是无障碍名称。 */
+  label: string;
+  /** 补充一句 label 说不完的事，没有就不写。 */
+  hint?: string;
   action: () => void;
   active?: boolean;
   disabled?: boolean;
@@ -304,25 +307,28 @@ export default function JSONFormatter() {
     showMessage(t("exampleAdded"));
   };
 
+  // 每个按钮的 label 说清它做什么，hint 只在还有话要说时出现 —— 「示例 / 添加
+  // 示例 JSON 数据」这种把同一句话说两遍的气泡，读起来就是没在说话。
+  // 开关型按钮的文案跟着状态走：正在看 XML 时它说的是「退出」，不是「转 XML」。
   const rightToolbar: ToolbarButton[] = [
     {
       icon: DocumentDuplicateIcon,
-      text: t("copyInput"),
-      tooltip: t("pasteFromClipboard"),
+      label: t("copyInput"),
+      hint: t("copyInputTooltip"),
       action: () => handleCopy(input),
     },
     {
       icon:
         viewMode === "compressed" ? ArrowsPointingOutIcon : ArrowsPointingInIcon,
-      text: viewMode === "compressed" ? t("expand") : t("compress"),
-      tooltip: viewMode === "compressed" ? t("expandJson") : t("compressJson"),
+      label: viewMode === "compressed" ? t("expand") : t("compress"),
+      hint: viewMode === "compressed" ? t("expandJson") : t("compressJson"),
       action: handleCompress,
       active: viewMode === "compressed",
     },
     {
       icon: TrashIcon,
-      text: t("clear"),
-      tooltip: "清空所有内容",
+      label: t("clear"),
+      hint: t("clearTooltip"),
       action: () => {
         setInput("");
         setViewMode("formatted");
@@ -330,15 +336,14 @@ export default function JSONFormatter() {
     },
     {
       icon: ListBulletIcon,
-      text: t("lineNumbers"),
-      tooltip: showLineNumbers ? t("hideLineNumbers") : t("showLineNumbers"),
+      label: showLineNumbers ? t("hideLineNumbers") : t("showLineNumbers"),
       action: () => setShowLineNumbers(!showLineNumbers),
       active: showLineNumbers,
     },
     {
       icon: CodeBracketIcon,
-      text: viewMode === "xml" ? t("cancelXmlConversion") : t("toXML"),
-      tooltip:
+      label: viewMode === "xml" ? t("returnToJsonView") : t("toXML"),
+      hint:
         viewMode === "escaped"
           ? t("xmlModeActive")
           : viewMode === "xml"
@@ -350,30 +355,25 @@ export default function JSONFormatter() {
     },
     {
       icon: ArrowPathIcon,
-      text:
-        viewMode === "unescaped"
-          ? t("returnToJsonView")
-          : t("removeEscapes") || t("unescape"),
-      tooltip:
-        viewMode === "unescaped"
-          ? t("returnToJsonView")
-          : t("removeEscapesTooltip") || t("unescapeJsonString"),
+      label:
+        viewMode === "unescaped" ? t("returnToJsonView") : t("removeEscapes"),
+      hint:
+        viewMode === "unescaped" ? undefined : t("removeEscapesTooltip"),
       action: handleUnescape,
       active: viewMode === "unescaped",
       disabled: !isEscapedJSON(input) && viewMode !== "unescaped",
     },
     {
       icon: SparklesIcon,
-      text: viewMode === "escaped" ? t("unescape") : t("escape"),
-      tooltip:
-        viewMode === "escaped" ? t("unescapeJsonString") : t("escapeJsonString"),
+      label: viewMode === "escaped" ? t("returnToJsonView") : t("escape"),
+      hint: viewMode === "escaped" ? undefined : t("escapeJsonString"),
       action: handleEscape,
       active: viewMode === "escaped",
     },
     {
       icon: PlusIcon,
-      text: t("addExample"),
-      tooltip: t("addExampleData"),
+      label: t("addExample"),
+      hint: t("addExampleData"),
       action: handleAddExample,
     },
   ];
@@ -476,32 +476,17 @@ export default function JSONFormatter() {
           </div>
 
           <div className="flex flex-wrap items-center gap-1">
-            {rightToolbar.map((tool, index) => {
-              const IconComponent = tool.icon;
-
-              return (
-                <button
-                  key={`${tool.text}-${index}`}
-                  type="button"
-                  onClick={tool.disabled ? undefined : tool.action}
-                  disabled={tool.disabled}
-                  title={tool.tooltip}
-                  aria-label={tool.text}
-                  className={`inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
-                    tool.disabled
-                      ? "cursor-not-allowed text-[#c5c5c0]"
-                      : tool.active
-                      ? "bg-[#edf3ff] text-[#1261ff]"
-                      : "text-[#555961] hover:bg-white hover:text-[#111]"
-                  }`}
-                >
-                  <IconComponent
-                    className="h-[18px] w-[18px]"
-                    aria-hidden="true"
-                  />
-                </button>
-              );
-            })}
+            {rightToolbar.map((tool, index) => (
+              <IconButton
+                key={index}
+                icon={tool.icon}
+                label={tool.label}
+                hint={tool.hint}
+                onClick={tool.action}
+                active={tool.active}
+                disabled={tool.disabled}
+              />
+            ))}
           </div>
         </div>
 
