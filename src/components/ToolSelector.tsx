@@ -43,17 +43,23 @@ export default function ToolSelector() {
   });
   const [isOpen, setIsOpen] = useState(false);
 
-  // 当路径变化时更新选中项
-  useEffect(() => {
-    const currentPath = normalizePath(pathname);
+  // 路径是选中项的最终依据，但 handleToolChange 会在导航前先乐观更新一次，
+  // 所以这里不能直接派生，只能在两者不一致时纠正。
+  //
+  // 原来写成 useEffect：先用旧值渲染一帧，再由 effect 触发第二次渲染，导航时
+  // 高亮会闪一下旧选项。改成渲染期对比 —— React 会立即重跑本次渲染而不提交
+  // 中间结果，所以没有可见的中间态，也不会级联。
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname);
     const tool = toolOptions.find(
-      (option) => normalizePath(option.path) === currentPath
+      (option) => normalizePath(option.path) === normalizePath(pathname)
     );
-    // 未匹配到时不进行重置，保持当前选择
-    if (tool) {
+    // 未匹配到时不重置，保持当前选择
+    if (tool && tool.value !== selectedValue) {
       setSelectedValue(tool.value);
     }
-  }, [pathname]);
+  }
 
   // 点击外部关闭下拉
   useEffect(() => {

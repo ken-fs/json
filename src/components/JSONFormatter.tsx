@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { jsonToXML, escapeJSON, unescapeJSON, isEscapedJSON } from "@/lib/utils";
 import JSONEditor from "./JSONEditor";
@@ -23,21 +23,109 @@ import {
   TrashIcon,
 } from "@heroicons/react/24/outline";
 
+/**
+ * 右侧面板当前显示哪一种转换结果。
+ *
+ * 原来这是四个互相纠缠的开关 —— collapsed、escapeMode、previewType，外加一个
+ * overrideOutput 存着算好的字符串。它们的组合大半是无意义的（escapeMode 为真同时
+ * previewType 是 'xml'），而 overrideOutput 更麻烦：它是一份快照，左侧输入一变就
+ * 过期，而原来的 useEffect 在 overrideOutput 非空时直接 return，于是右侧会一直冻结
+ * 在旧内容上。改成一个模式枚举，输出全部在渲染期从「输入 + 模式」算出来，就没有
+ * 能过期的东西 —— 任何模式下看到的都是当前输入的转换结果。
+ */
+type ViewMode = "formatted" | "compressed" | "xml" | "unescaped" | "escaped";
+
+/** 以 JSON 树渲染的模式。其余模式的输出是纯文本：单行 JSON、XML、转义后的字符串。 */
+const TREE_MODES = new Set<ViewMode>(["formatted", "unescaped"]);
+
+const errorText = (error: unknown) =>
+  error instanceof Error ? error.message : "Unknown error";
+
+/**
+ * 按几种常见笔误依次尝试解析。全部失败时抛出最初那个错误 —— 它指向用户真正写下的
+ * 位置，修复尝试produce的错误只会把人带偏。
+ */
+const parseLoose = (source: string): unknown => {
+  try {
+    return JSON.parse(source);
+  } catch (firstError) {
+    // 1. 补上没转义的反斜杠，同时保留合法的转义序列
+    try {
+      return JSON.parse(source.replace(/\\(?!["\\/bfnrt]|u[0-9a-fA-F]{4})/g, "\\\\"));
+    } catch {
+      // 2. 补上单边缺失的引号
+      try {
+        let quoted = source;
+        if (source.startsWith('"') && !source.endsWith('"')) {
+          quoted = source + '"';
+        } else if (!source.startsWith('"') && source.endsWith('"')) {
+          quoted = '"' + source;
+        }
+        return JSON.parse(quoted);
+      } catch {
+        throw firstError;
+      }
+    }
+  }
+};
+
+/**
+ * 引擎报错命中的已知模式对应的文案 key；null 表示只能原样展示引擎的说法。
+ * 返回 key 而不是译文，这样这个函数就不需要拿到 t。
+ */
+const parseErrorKey = (raw: string): string | null => {
+  if (raw.includes("Unexpected token")) {
+    if (raw.includes("'/'")) return "unexpectedBackslash";
+    if (raw.includes("in JSON")) return "jsonFormatError";
+    return null;
+  }
+  if (raw.includes("Unterminated string")) return "unterminatedString";
+  if (raw.includes("Expected property name")) return "expectedPropertyName";
+  return null;
+};
+
+/** 给 XML 加缩进。 */
+const formatXML = (xml: string): string => {
+  let formatted = "";
+  let indent = 0;
+  const tab = "  ";
+
+  xml.split(/(<[^>]*>)/g).forEach((node) => {
+    if (node.match(/^<\/?\w/)) {
+      if (node.match(/^<\//)) {
+        indent--;
+      }
+      formatted += tab.repeat(indent) + node + "\n";
+      if (node.match(/^<\w/) && !node.match(/\/>$/)) {
+        indent++;
+      }
+    } else if (node.trim()) {
+      formatted += tab.repeat(indent) + node.trim() + "\n";
+    }
+  });
+
+  return formatted.trim();
+};
+
+interface ToolbarButton {
+  icon: React.ElementType;
+  text: string;
+  tooltip: string;
+  action: () => void;
+  active?: boolean;
+  disabled?: boolean;
+}
+
 export default function JSONFormatter() {
   const { t } = useTranslation();
   const [input, setInput] = useState("");
-  const [formattedOutput, setFormattedOutput] = useState("");
+  const [viewMode, setViewMode] = useState<ViewMode>("formatted");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error">(
     "success"
   );
   const [showLineNumbers, setShowLineNumbers] = useState(true);
-  const [collapsed, setCollapsed] = useState(false);
-  const [escapeMode, setEscapeMode] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [overrideOutput, setOverrideOutput] = useState<string>(""); // 手动设置的输出，为空时使用自动格式化
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  // const { language } = useLanguageStore(); // 保留用于未来的国际化功能
 
   const showMessage = (text: string, type: "success" | "error" = "success") => {
     setMessage(text);
@@ -45,133 +133,81 @@ export default function JSONFormatter() {
     setTimeout(() => setMessage(""), 3000);
   };
 
+  // 输入和模式就能完全决定右侧内容，全部在浏览器里同步算完，没有要等的东西，
+  // 所以在渲染期派生，不经过 state。
+  const { output, error } = useMemo<{ output: string; error: string }>(() => {
+    const source = input.trim();
+    if (!source) return { output: "", error: "" };
 
-  // 实时格式化JSON和手动输出处理
-  useEffect(() => {
-    if (!input.trim()) {
-      setFormattedOutput("");
-      setOverrideOutput(""); // 清空手动输出
-      setCollapsed(false);
-      return;
-    }
-
-    // 如果有手动设置的输出，直接使用它（跳过JSON解析）
-    if (overrideOutput) {
-      return;
-    }
-
-    // 否则进行自动格式化
-    try {
-      // 预处理输入，尝试修复常见的JSON格式问题
-      const processedInput = input.trim();
-
-      // 尝试解析原始输入
-      let parsed;
+    // 转义和去转义处理的是字符串本身，不要求输入是合法 JSON。
+    if (viewMode === "escaped" || viewMode === "unescaped") {
       try {
-        parsed = JSON.parse(processedInput);
-      } catch (firstError) {
-        // 如果直接解析失败，尝试一些修复策略
-        try {
-          // 1. 尝试修复未转义的反斜杠（但保留有效的转义序列）
-          const fixedInput = processedInput.replace(
-            /\\(?!["\\/bfnrt]|u[0-9a-fA-F]{4})/g,
-            "\\\\"
-          );
-          parsed = JSON.parse(fixedInput);
-        } catch {
-          // 2. 尝试修复未闭合的字符串（添加缺失的引号）
-          try {
-            let quotedInput = processedInput;
-            if (
-              processedInput.startsWith('"') &&
-              !processedInput.endsWith('"')
-            ) {
-              quotedInput = processedInput + '"';
-            } else if (
-              !processedInput.startsWith('"') &&
-              processedInput.endsWith('"')
-            ) {
-              quotedInput = '"' + processedInput;
-            }
-            parsed = JSON.parse(quotedInput);
-          } catch {
-            // 3. 如果都失败了，抛出最原始的错误
-            throw firstError;
-          }
-        }
+        const convert = viewMode === "escaped" ? escapeJSON : unescapeJSON;
+        return { output: convert(input), error: "" };
+      } catch (caught) {
+        return { output: "", error: errorText(caught) };
       }
-
-      const formatted = JSON.stringify(parsed, null, 2);
-      setFormattedOutput(formatted);
-      setCollapsed(false);
-      setMessage("");
-
-      // 自动检测转义的JSON并提示
-      if (!escapeMode && isEscapedJSON(input)) {
-        showMessage(t("detectedEscapedJson"), "success");
-      }
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-
-      // 提供更友好的错误信息和修复建议
-      let friendlyMessage = errorMessage;
-      if (errorMessage.includes("Unexpected token")) {
-        if (errorMessage.includes("'/'")) {
-          friendlyMessage = t("unexpectedBackslash");
-        } else if (errorMessage.includes("in JSON")) {
-          friendlyMessage = t("jsonFormatError");
-        }
-      } else if (errorMessage.includes("Unterminated string")) {
-        friendlyMessage = t("unterminatedString");
-      } else if (errorMessage.includes("Expected property name")) {
-        friendlyMessage = t("expectedPropertyName");
-      }
-
-      setFormattedOutput(
-        `// ${t("jsonParseError")}: ${friendlyMessage}\n// ${t(
-          "originalError"
-        )}: ${errorMessage}`
-      );
-      setCollapsed(false);
     }
-  }, [input, overrideOutput, escapeMode, t]);
 
-  // 工具栏功能函数
+    let parsed: unknown;
+    try {
+      parsed = parseLoose(source);
+    } catch (caught) {
+      const raw = errorText(caught);
+      const key = parseErrorKey(raw);
+      return {
+        output: "",
+        error: key
+          ? `${t("jsonParseError")}: ${t(key)}\n${t("originalError")}: ${raw}`
+          : raw,
+      };
+    }
+
+    if (viewMode === "xml") {
+      try {
+        return { output: formatXML(jsonToXML(input)), error: "" };
+      } catch (caught) {
+        return { output: "", error: errorText(caught) };
+      }
+    }
+
+    return {
+      output: JSON.stringify(parsed, null, viewMode === "compressed" ? 0 : 2),
+      error: "",
+    };
+  }, [input, viewMode, t]);
+
+  /**
+   * 输入变了。输出是派生的，所以这里没有要清理的输出状态 —— 唯一要做的是「检测到
+   * 转义过的 JSON」这条提示：它是对用户这次输入动作的反馈，推不出来，只能在事件里发。
+   */
+  const applyInput = (next: string) => {
+    setInput(next);
+    if (viewMode !== "escaped" && next.trim() && isEscapedJSON(next)) {
+      showMessage(t("detectedEscapedJson"));
+    }
+  };
+
   const handleCompress = () => {
-    if (!formattedOutput || formattedOutput.startsWith("//")) {
+    if (!input.trim()) {
       showMessage(t("enterJsonDataFirst"), "error");
       return;
     }
-
-    try {
-      // 使用右侧格式化的输出数据进行压缩/展开操作
-      const parsed = JSON.parse(formattedOutput);
-
-      if (collapsed) {
-        // 展开：格式化为带缩进的 JSON
-        const formatted = JSON.stringify(parsed, null, 2);
-        setOverrideOutput(formatted); // useEffect会自动设置formattedOutput
-        setCollapsed(false);
-        showMessage(t("jsonExpanded"), "success");
-      } else {
-        // 压缩：压缩为单行 JSON
-        const compressed = JSON.stringify(parsed);
-        setOverrideOutput(compressed); // useEffect会自动设置formattedOutput
-        setCollapsed(true);
-        showMessage(t("jsonCompressed"), "success");
-      }
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      showMessage(`${t("compressionFailed")}: ${errorMessage}`, "error");
+    if (error) {
+      // 报错文案可能有两行，提示条里只放第一行。
+      showMessage(`${t("compressionFailed")}: ${error.split("\n")[0]}`, "error");
+      return;
     }
+
+    const collapsing = viewMode !== "compressed";
+    setViewMode(collapsing ? "compressed" : "formatted");
+    showMessage(collapsing ? t("jsonCompressed") : t("jsonExpanded"));
   };
 
   const handleCopy = async (content: string) => {
     try {
       await navigator.clipboard.writeText(content);
-      showMessage(t("copiedToClipboard"), "success");
+      showMessage(t("copiedToClipboard"));
     } catch {
       showMessage(t("copyFailed"), "error");
     }
@@ -187,127 +223,69 @@ export default function JSONFormatter() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showMessage(t("fileDownloaded"), "success");
+    showMessage(t("fileDownloaded"));
   };
 
-  // 去除转义（预览）：将被转义的 JSON 字符串还原为正常 JSON，显示在右侧预览，不替换输入
-  const [previewType, setPreviewType] = useState<null | 'xml' | 'unescape'>(null);
-  const handleUnescapePreview = () => {
+  /**
+   * 切到某个转换模式，或者从它切回来。
+   *
+   * 转换在这里先跑一遍只为了拿失败信息 —— 派生逻辑会再跑一次，但这是一次点击，
+   * 代价可以忽略，而换来的是「转不了就弹提示、并且停在原来的视图」而不是把一个
+   * 报错面板顶到用户面前。
+   */
+  const enterMode = (
+    mode: ViewMode,
+    convert: (source: string) => string,
+    successMessage: string,
+    failurePrefix: string
+  ) => {
+    if (viewMode === mode) {
+      setViewMode("formatted");
+      showMessage(t("returnToJsonView"));
+      return;
+    }
     if (!input.trim()) {
       showMessage(t("enterJsonDataFirst"), "error");
       return;
     }
     try {
-      if (previewType === 'unescape') {
-        setOverrideOutput("");
-        setPreviewType(null);
-        showMessage(t("returnToJsonView"), "success");
-        return;
-      }
-      const unescaped = unescapeJSON(input);
-      setOverrideOutput(unescaped);
-      setCollapsed(false);
-      setEscapeMode(false);
-      setPreviewType('unescape');
-      showMessage(t("unescapeCompleted"), "success");
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      showMessage(`${t("escapeOperationFailed")}: ${errorMessage}`, "error");
-    }
-  };
-
-  const handleToXML = () => {
-    try {
-      // 如果处于转义模式，不允许XML转换
-      if (escapeMode) {
-        showMessage(t("xmlModeActive"), "error");
-        return;
-      }
-
-      if (overrideOutput) {
-        // 如果当前是XML模式，取消XML转换，回到JSON模式
-        setOverrideOutput("");
-        showMessage(t("returnToJsonView"), "success");
-        return;
-      }
-
-      if (!input.trim()) {
-        showMessage(t("enterJsonDataFirst"), "error");
-        return;
-      }
-      const xml = jsonToXML(input);
-      // 格式化 XML 输出，添加适当的缩进
-      const formattedXml = formatXML(xml);
-      setOverrideOutput(formattedXml);
-      showMessage(t("convertedToXml"), "success");
-    } catch (error: unknown) {
-      showMessage(
-        `${t("xmlConversionFailed")}: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-        "error"
-      );
-    }
-  };
-
-  // XML 格式化辅助函数
-  const formatXML = (xml: string): string => {
-    let formatted = "";
-    let indent = 0;
-    const tab = "  ";
-
-    xml.split(/(<[^>]*>)/g).forEach((node) => {
-      if (node.match(/^<\/?\w/)) {
-        if (node.match(/^<\//)) {
-          indent--;
-        }
-        formatted += tab.repeat(indent) + node + "\n";
-        if (node.match(/^<\w/) && !node.match(/\/>$/)) {
-          indent++;
-        }
-      } else if (node.trim()) {
-        formatted += tab.repeat(indent) + node.trim() + "\n";
-      }
-    });
-
-    return formatted.trim();
-  };
-
-  const handleEscapeMode = async () => {
-    if (!input.trim()) {
-      showMessage(t("enterJsonDataFirst"), "error");
+      convert(input);
+    } catch (caught) {
+      showMessage(`${failurePrefix}: ${errorText(caught)}`, "error");
       return;
     }
+    setViewMode(mode);
+    showMessage(successMessage);
+  };
 
-    setIsProcessing(true);
+  const handleToXML = () =>
+    enterMode(
+      "xml",
+      (source) => formatXML(jsonToXML(source)),
+      t("convertedToXml"),
+      t("xmlConversionFailed")
+    );
 
-    try {
-      if (escapeMode) {
-        // 取消转义模式：清除右侧的转义输出，恢复正常JSON格式化
-        setOverrideOutput("");
-        setEscapeMode(false);
-        setPreviewType(null);
-        showMessage(t("unescapeCompleted"), "success");
-      } else {
-        // 如果处于XML模式，先取消XML模式
-        if (overrideOutput && !escapeMode) {
-          setOverrideOutput("");
-        }
+  const handleUnescape = () =>
+    enterMode(
+      "unescaped",
+      unescapeJSON,
+      t("unescapeCompleted"),
+      t("escapeOperationFailed")
+    );
 
-        // 开启转义模式：将左侧JSON转义后显示在右侧
-        const escaped = escapeJSON(input);
-        setOverrideOutput(escaped);
-        setEscapeMode(true);
-        setPreviewType(null);
-        showMessage(t("escapeCompleted"), "success");
-      }
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
-      showMessage(`${t("escapeOperationFailed")}: ${errorMessage}`, "error");
-    } finally {
-      setIsProcessing(false);
+  const handleEscape = () => {
+    if (viewMode === "escaped") {
+      setViewMode("formatted");
+      showMessage(t("unescapeCompleted"));
+      return;
     }
+    enterMode(
+      "escaped",
+      escapeJSON,
+      t("escapeCompleted"),
+      t("escapeOperationFailed")
+    );
   };
 
   const handleAddExample = () => {
@@ -322,25 +300,11 @@ export default function JSONFormatter() {
       },
     };
     setInput(JSON.stringify(example, null, 2));
-    setCollapsed(false);
-    setOverrideOutput(""); // 重置手动输出
-    showMessage(t("exampleAdded"), "success");
+    setViewMode("formatted");
+    showMessage(t("exampleAdded"));
   };
 
-
-  const rightToolbar = [
-    // {
-    //   icon: ArrowDownTrayIcon,
-    //   text: 'Download JSON',
-    //   tooltip: '下载JSON文件到本地',
-    //   action: () => handleDownload(formattedOutput || input)
-    // },
-    // {
-    //   icon: ClipboardDocumentIcon,
-    //   text: 'Copy Output',
-    //   tooltip: '复制格式化后的结果',
-    //   action: () => handleCopy(formattedOutput)
-    // },
+  const rightToolbar: ToolbarButton[] = [
     {
       icon: DocumentDuplicateIcon,
       text: t("copyInput"),
@@ -348,11 +312,12 @@ export default function JSONFormatter() {
       action: () => handleCopy(input),
     },
     {
-      icon: collapsed ? ArrowsPointingOutIcon : ArrowsPointingInIcon,
-      text: collapsed ? t("expand") : t("compress"),
-      tooltip: collapsed ? t("expandJson") : t("compressJson"),
+      icon:
+        viewMode === "compressed" ? ArrowsPointingOutIcon : ArrowsPointingInIcon,
+      text: viewMode === "compressed" ? t("expand") : t("compress"),
+      tooltip: viewMode === "compressed" ? t("expandJson") : t("compressJson"),
       action: handleCompress,
-      active: collapsed,
+      active: viewMode === "compressed",
     },
     {
       icon: TrashIcon,
@@ -360,12 +325,9 @@ export default function JSONFormatter() {
       tooltip: "清空所有内容",
       action: () => {
         setInput("");
-        setFormattedOutput("");
-        setCollapsed(false);
-        setOverrideOutput("");
+        setViewMode("formatted");
       },
     },
-
     {
       icon: ListBulletIcon,
       text: t("lineNumbers"),
@@ -375,40 +337,38 @@ export default function JSONFormatter() {
     },
     {
       icon: CodeBracketIcon,
-      text: previewType === 'xml' ? t("cancelXmlConversion") : t("toXML"),
-      tooltip: escapeMode
-        ? t("xmlModeActive")
-        : previewType === 'xml'
-        ? t("cancelXmlConversion")
-        : t("convertToXml"),
-      action: () => {
-        if (previewType === 'xml') {
-          setOverrideOutput("");
-          setPreviewType(null);
-          showMessage(t("returnToJsonView"), "success");
-          return;
-        }
-        handleToXML();
-        setPreviewType('xml');
-      },
-      active: previewType === 'xml',
-      disabled: escapeMode,
+      text: viewMode === "xml" ? t("cancelXmlConversion") : t("toXML"),
+      tooltip:
+        viewMode === "escaped"
+          ? t("xmlModeActive")
+          : viewMode === "xml"
+          ? t("cancelXmlConversion")
+          : t("convertToXml"),
+      action: handleToXML,
+      active: viewMode === "xml",
+      disabled: viewMode === "escaped",
     },
     {
       icon: ArrowPathIcon,
-      text: previewType === 'unescape' ? t("returnToJsonView") : (t("removeEscapes") || t("unescape")),
-      tooltip: previewType === 'unescape' ? t("returnToJsonView") : (t("removeEscapesTooltip") || t("unescapeJsonString")),
-      action: handleUnescapePreview,
-      active: previewType === 'unescape',
-      disabled: !isEscapedJSON(input) && previewType !== 'unescape',
+      text:
+        viewMode === "unescaped"
+          ? t("returnToJsonView")
+          : t("removeEscapes") || t("unescape"),
+      tooltip:
+        viewMode === "unescaped"
+          ? t("returnToJsonView")
+          : t("removeEscapesTooltip") || t("unescapeJsonString"),
+      action: handleUnescape,
+      active: viewMode === "unescaped",
+      disabled: !isEscapedJSON(input) && viewMode !== "unescaped",
     },
     {
       icon: SparklesIcon,
-      text: escapeMode ? t("unescape") : t("escape"),
-      tooltip: escapeMode ? t("unescapeJsonString") : t("escapeJsonString"),
-      action: handleEscapeMode,
-      active: escapeMode,
-      processing: isProcessing,
+      text: viewMode === "escaped" ? t("unescape") : t("escape"),
+      tooltip:
+        viewMode === "escaped" ? t("unescapeJsonString") : t("escapeJsonString"),
+      action: handleEscape,
+      active: viewMode === "escaped",
     },
     {
       icon: PlusIcon,
@@ -416,40 +376,11 @@ export default function JSONFormatter() {
       tooltip: t("addExampleData"),
       action: handleAddExample,
     },
-    // {
-    //   icon: WrenchScrewdriverIcon,
-    //   text: "Fix JSON",
-    //   tooltip: "自动修复常见的JSON格式错误（转义字符、缺少引号、尾随逗号等）",
-    //   action: handleFixJSON,
-    // },
-    // {
-    //   icon: ArrowUturnLeftIcon,
-    //   text: "Undo",
-    //   tooltip: "撤销操作",
-    //   action: () => {},
-    // },
-    // {
-    //   icon: ArrowUturnRightIcon,
-    //   text: "Redo",
-    //   tooltip: "重做操作",
-    //   action: () => {},
-    // },
-    // {
-    //   icon: QuestionMarkCircleIcon,
-    //   text: "Help",
-    //   tooltip: "查看使用帮助",
-    //   action: () =>
-    //     showMessage(
-    //       "JSON Formatter Help: Paste or type JSON on the left, see formatted result on the right",
-    //       "success"
-    //     ),
-    // },
   ];
 
   const handlePaste = async () => {
     try {
-      const text = await navigator.clipboard.readText();
-      setInput(text);
+      applyInput(await navigator.clipboard.readText());
     } catch {
       showMessage("Paste failed", "error");
     }
@@ -460,90 +391,10 @@ export default function JSONFormatter() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setInput(e.target?.result as string);
+        applyInput(e.target?.result as string);
       };
       reader.readAsText(file);
     }
-  };
-
-  // Extracted to simplify deeply nested JSX/ternaries in the right pane
-  const RightPaneContent = () => {
-    if (overrideOutput) {
-      return (
-        <>
-          {previewType === 'unescape' && (
-            <JSONEditor
-              value={overrideOutput}
-              showLineNumbers={showLineNumbers}
-              readOnly={true}
-            />
-          )}
-          <div
-            className="p-4 font-mono text-sm overflow-auto h-full bg-transparent"
-            style={{ display: previewType === 'unescape' ? 'none' : undefined }}
-          >
-            {showLineNumbers ? (
-              <div className="flex items-start min-w-0">
-                <div
-                  className="text-gray-400 dark:text-gray-500 text-xs mr-4 select-none flex-shrink-0"
-                  style={{ minWidth: '3ch' }}
-                >
-                  {overrideOutput.split('\n').map((_, i) => (
-                    <div key={i} style={{ textAlign: 'right' }}>
-                      {i + 1}
-                    </div>
-                  ))}
-                </div>
-                <div className="flex-1 min-w-0 overflow-hidden">
-                  <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
-                    {overrideOutput}
-                  </pre>
-                </div>
-              </div>
-            ) : (
-              <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
-                {overrideOutput}
-              </pre>
-            )}
-          </div>
-        </>
-      );
-    }
-
-    if (collapsed && formattedOutput && !formattedOutput.startsWith('//')) {
-      return (
-        <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
-          {showLineNumbers && (
-            <div className="flex items-start min-w-0">
-              <span
-                className="text-gray-400 dark:text-gray-500 text-xs mr-2 select-none flex-shrink-0"
-                style={{ minWidth: '3ch', textAlign: 'right' }}
-              >
-                1
-              </span>
-              <div className="flex-1 min-w-0 overflow-hidden">
-                <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
-                  {formattedOutput}
-                </pre>
-              </div>
-            </div>
-          )}
-          {!showLineNumbers && (
-            <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
-              {formattedOutput}
-            </pre>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <JSONEditor
-        value={formattedOutput}
-        showLineNumbers={showLineNumbers}
-        readOnly={false}
-      />
-    );
   };
 
   const handleFormat = () => {
@@ -553,17 +404,17 @@ export default function JSONFormatter() {
       return;
     }
 
-    if (formattedOutput.startsWith("//")) {
+    if (error) {
       showMessage(t("formatError"), "error");
       return;
     }
 
-    showMessage(t("formatCompleted"), "success");
+    showMessage(t("formatCompleted"));
   };
 
-  const hasOutput = Boolean(overrideOutput || formattedOutput);
-  const hasError = formattedOutput.startsWith("//");
-  const isValid = Boolean(input.trim() && formattedOutput && !hasError);
+  const hasOutput = Boolean(output);
+  const hasError = Boolean(error);
+  const isValid = Boolean(input.trim() && hasOutput && !hasError);
 
   return (
     <main className="relative flex-1 bg-[#f7f7f4] px-4 py-6 sm:px-6 lg:px-9 lg:py-7">
@@ -627,20 +478,17 @@ export default function JSONFormatter() {
           <div className="flex flex-wrap items-center gap-1">
             {rightToolbar.map((tool, index) => {
               const IconComponent = tool.icon;
-              const processing = (tool as { processing?: boolean }).processing;
-              const disabled =
-                (tool as { disabled?: boolean }).disabled || processing;
 
               return (
                 <button
                   key={`${tool.text}-${index}`}
                   type="button"
-                  onClick={disabled ? undefined : tool.action}
-                  disabled={disabled}
+                  onClick={tool.disabled ? undefined : tool.action}
+                  disabled={tool.disabled}
                   title={tool.tooltip}
                   aria-label={tool.text}
                   className={`inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
-                    disabled
+                    tool.disabled
                       ? "cursor-not-allowed text-[#c5c5c0]"
                       : tool.active
                       ? "bg-[#edf3ff] text-[#1261ff]"
@@ -648,7 +496,7 @@ export default function JSONFormatter() {
                   }`}
                 >
                   <IconComponent
-                    className={`h-[18px] w-[18px] ${processing ? "animate-spin" : ""}`}
+                    className="h-[18px] w-[18px]"
                     aria-hidden="true"
                   />
                 </button>
@@ -667,7 +515,7 @@ export default function JSONFormatter() {
                 <span className="rounded bg-[#f0f0ec] px-2 py-1 text-xs font-medium text-[#666a72]">
                   JSON
                 </span>
-                {escapeMode ? (
+                {viewMode === "escaped" ? (
                   <span className="text-xs font-semibold text-[#1261ff]">
                     {t("escapeMode")}
                   </span>
@@ -681,7 +529,7 @@ export default function JSONFormatter() {
             <textarea
               ref={textareaRef}
               value={input}
-              onChange={(event) => setInput(event.target.value)}
+              onChange={(event) => applyInput(event.target.value)}
               className="min-h-[400px] flex-1 resize-none overflow-auto border-none bg-white p-5 font-mono text-[13px] leading-6 text-[#25282d] outline-none placeholder:font-sans placeholder:text-[#9a9da3] focus:bg-[#fefeff]"
               placeholder={t("enterJsonData")}
               spellCheck={false}
@@ -696,7 +544,7 @@ export default function JSONFormatter() {
                   {t("outputLabel")}
                 </span>
                 <span className="rounded bg-[#f0f0ec] px-2 py-1 text-xs font-medium text-[#666a72]">
-                  {previewType === "xml" ? "XML" : t("formatted")}
+                  {viewMode === "xml" ? "XML" : t("formatted")}
                 </span>
                 {hasError ? (
                   <span className="text-xs font-semibold text-[#cf3030]">
@@ -708,7 +556,7 @@ export default function JSONFormatter() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => handleCopy(overrideOutput || formattedOutput)}
+                  onClick={() => handleCopy(output)}
                   disabled={!hasOutput}
                   className="inline-flex h-9 items-center gap-2 rounded-md border border-[#d6d6d1] px-3 text-sm font-semibold text-[#3a3d43] transition-colors hover:bg-[#f8f8f5] disabled:cursor-not-allowed disabled:opacity-40"
                 >
@@ -719,8 +567,8 @@ export default function JSONFormatter() {
                   type="button"
                   onClick={() =>
                     handleDownload(
-                      overrideOutput || formattedOutput,
-                      previewType === "xml" ? "data.xml" : "data.json"
+                      output,
+                      viewMode === "xml" ? "data.xml" : "data.json"
                     )
                   }
                   disabled={!hasOutput || hasError}
@@ -733,7 +581,13 @@ export default function JSONFormatter() {
             </div>
 
             <div className="min-h-[400px] flex-1 overflow-hidden bg-[#fff]">
-              <RightPaneContent />
+              <OutputPane
+                output={output}
+                error={error}
+                viewMode={viewMode}
+                showLineNumbers={showLineNumbers}
+                emptyHint={t("formattedJsonDisplay")}
+              />
             </div>
           </section>
         </div>
@@ -765,5 +619,76 @@ export default function JSONFormatter() {
         </div>
       )}
     </main>
+  );
+}
+
+interface OutputPaneProps {
+  output: string;
+  error: string;
+  viewMode: ViewMode;
+  showLineNumbers: boolean;
+  emptyHint: string;
+}
+
+/**
+ * 右侧面板。声明在组件外面：原来它是 JSONFormatter 里的一个箭头函数，每次渲染都是
+ * 一个新的组件类型，React 会卸载旧的再挂载新的，里面 JSONEditor 的折叠状态因此
+ * 每敲一个键就丢一次。
+ */
+function OutputPane({
+  output,
+  error,
+  viewMode,
+  showLineNumbers,
+  emptyHint,
+}: OutputPaneProps) {
+  if (error) {
+    return (
+      <div className="flex h-full items-start gap-3 p-5">
+        <ExclamationCircleIcon
+          className="mt-0.5 h-5 w-5 shrink-0 text-[#cf3030]"
+          aria-hidden="true"
+        />
+        <p className="whitespace-pre-wrap font-mono text-[13px] leading-6 text-[#a52020]">
+          {error}
+        </p>
+      </div>
+    );
+  }
+
+  if (!output) {
+    return <p className="p-5 text-sm text-[#9a9da3]">{emptyHint}</p>;
+  }
+
+  if (TREE_MODES.has(viewMode)) {
+    return <JSONEditor value={output} showLineNumbers={showLineNumbers} />;
+  }
+
+  const lines = output.split("\n");
+
+  return (
+    <div className="p-4 font-mono text-sm overflow-auto h-full bg-transparent">
+      {showLineNumbers ? (
+        <div className="flex items-start min-w-0">
+          <div
+            className="text-gray-400 dark:text-gray-500 text-xs leading-5 mr-4 select-none flex-shrink-0"
+            style={{ minWidth: "3ch", textAlign: "right" }}
+          >
+            {lines.map((_, index) => (
+              <div key={index}>{index + 1}</div>
+            ))}
+          </div>
+          <div className="flex-1 min-w-0 overflow-hidden">
+            <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white">
+              {output}
+            </pre>
+          </div>
+        </div>
+      ) : (
+        <pre className="whitespace-pre-wrap break-all text-gray-900 dark:text-white overflow-hidden">
+          {output}
+        </pre>
+      )}
+    </div>
   );
 }

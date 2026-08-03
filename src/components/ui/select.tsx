@@ -38,36 +38,38 @@ const getFirstSelectValue = (children: React.ReactNode): string | undefined => {
   return firstValue;
 };
 
-const SelectWithStorage: React.FC<SelectWithStorageProps> = ({ storageKey, defaultValue, onValueChange, children, value, ...props }) => {
-  const [internalValue, setInternalValue] = React.useState<string>("");
-  const [isClient, setIsClient] = React.useState(false);
+const subscribeToStorage = (onStoreChange: () => void) => {
+  // 只有别的标签页写入时才会触发；同一标签页的写入由 handleValueChange 自己记账。
+  window.addEventListener("storage", onStoreChange);
+  return () => window.removeEventListener("storage", onStoreChange);
+};
 
-  React.useEffect(() => {
-    setIsClient(true);
-    const stored = localStorage.getItem(storageKey);
-    if (stored) {
-      setInternalValue(stored);
-    } else {
-      const fallbackValue = defaultValue || getFirstSelectValue(children);
-      if (fallbackValue) {
-        setInternalValue(fallbackValue);
-      }
-    }
-  }, [storageKey, defaultValue, children]);
+const SelectWithStorage: React.FC<SelectWithStorageProps> = ({ storageKey, defaultValue, onValueChange, children, value, ...props }) => {
+  // 本次会话里用户自己选过的值。null 表示还没选过，以 localStorage 为准。
+  const [override, setOverride] = React.useState<string | null>(null);
+
+  // localStorage 是 React 之外的状态，所以用 useSyncExternalStore 读取，而不是
+  // useEffect + setState。
+  //
+  // 原来的写法在 effect 里先 setIsClient(true) 再 setInternalValue(stored)：挂载
+  // 时必然多渲染两轮，而且在 isClient 变 true 之前整个组件返回 null —— 服务端
+  // 产物里没有这个下拉框，客户端接管后才凭空出现。useSyncExternalStore 有专门的
+  // getServerSnapshot，服务端和 hydration 首帧读同一个值，之后 React 自己切换到
+  // 真实值，既不需要 isClient 这个标志位，也不会级联渲染。
+  const stored = React.useSyncExternalStore(
+    subscribeToStorage,
+    () => localStorage.getItem(storageKey),
+    () => null,
+  );
 
   const handleValueChange = React.useCallback((newValue: string) => {
-    setInternalValue(newValue);
-    if (isClient) {
-      localStorage.setItem(storageKey, newValue);
-    }
+    setOverride(newValue);
+    localStorage.setItem(storageKey, newValue);
     onValueChange?.(newValue);
-  }, [storageKey, onValueChange, isClient]);
+  }, [storageKey, onValueChange]);
 
-  const currentValue = value !== undefined ? value : internalValue;
-
-  if (!isClient) {
-    return null;
-  }
+  const currentValue =
+    value ?? override ?? stored ?? defaultValue ?? getFirstSelectValue(children) ?? "";
 
   return (
     <SelectPrimitive.Root

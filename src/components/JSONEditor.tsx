@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface JSONEditorProps {
@@ -15,24 +15,33 @@ export default function JSONEditor({
   showLineNumbers = true 
 }: JSONEditorProps) {
   const { t } = useTranslation();
-  const [parsedData, setParsedData] = useState<unknown>(null);
   const [collapsedPaths, setCollapsedPaths] = useState<Set<string>>(new Set());
-  const [error, setError] = useState<string>('');
   const editorRef = useRef<HTMLDivElement>(null);
-  const lineNumberRef = useRef<{ current: number }>({ current: 1 });
 
-  useEffect(() => {
+  /**
+   * 行号计数器。
+   *
+   * 原来是一个 useRef，在渲染期读写（`lineNumberRef.current.current++`），并在
+   * return 之前重置回 1 —— 渲染期读写 ref 会在 StrictMode 双渲染或并发渲染下
+   * 算出重复/跳号的行号。它本质上只是一次渲染内的局部计数，不需要跨渲染留存，
+   * 所以就用局部变量。
+   */
+  const lineCounter = { next: 1 };
+
+  // `value` 是唯一输入，所以解析结果在渲染期算即可，不需要 state + effect。
+  //
+  // 原来的 effect 版本还有个 bug：输入清空时只重置了 parsedData，没有清 error，
+  // 于是报错文案会留在屏幕上 —— 组件同时处于「没有数据」和「有错误」两种状态。
+  // 一次性计算两个值就不可能不同步。
+  const { parsedData, error } = useMemo(() => {
+    if (!value.trim()) return { parsedData: null, error: '' };
     try {
-      if (value.trim()) {
-        const parsed = JSON.parse(value);
-        setParsedData(parsed);
-        setError('');
-      } else {
-        setParsedData(null);
-      }
+      return { parsedData: JSON.parse(value) as unknown, error: '' };
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
-      setParsedData(null);
+      return {
+        parsedData: null,
+        error: err instanceof Error ? err.message : 'Unknown error',
+      };
     }
   }, [value]);
 
@@ -67,7 +76,7 @@ export default function JSONEditor({
     const isCollapsed = collapsedPaths.has(path);
 
     const createLine = (content: React.ReactNode, showComma: boolean = false) => {
-      const lineNumber = showLineNumbers ? lineNumberRef.current.current++ : undefined;
+      const lineNumber = showLineNumbers ? lineCounter.next++ : undefined;
       return (
         <div className="flex items-start font-mono text-sm hover:bg-gray-100 dark:hover:bg-gray-700 px-1 py-0.5 rounded min-w-0">
           {showLineNumbers && lineNumber !== undefined && (
@@ -276,9 +285,6 @@ export default function JSONEditor({
       </div>
     );
   }
-
-  // Reset line number counter before rendering
-  lineNumberRef.current.current = 1;
 
   return (
     <div 

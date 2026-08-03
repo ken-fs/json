@@ -27,7 +27,8 @@ function MyComponent() {
 2. **页面刷新持久化**: 页面刷新后会自动从 localStorage 恢复之前的选择
 3. **自动默认值**: 如果 localStorage 中没有值，会自动选择第一个选项
 4. **多语言支持**: placeholder 文本会根据当前语言自动翻译
-5. **SSR 兼容**: 正确处理服务端渲染和客户端水合
+5. **SSR 兼容**: 通过 `useSyncExternalStore` 读取 localStorage，服务端和 hydration 首帧用同一个值，之后自动切到已保存的值 —— 静态产物里就有这个下拉框，不是客户端接管后才出现
+6. **跨标签页同步**: 别的标签页改了同一个 `storageKey`，这里会跟着更新
 
 ## API 参数
 

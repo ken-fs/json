@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getConverter } from "@/lib/json/convert";
 import { supportsDelimiter, supportsRootName, type ToolDefinition } from "@/lib/tools";
@@ -27,8 +27,6 @@ interface ConverterWorkspaceProps {
 export default function ConverterWorkspace({ tool }: ConverterWorkspaceProps) {
   const { t } = useTranslation();
   const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-  const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState<"success" | "error">("success");
   const [showLineNumbers, setShowLineNumbers] = useState(true);
@@ -49,27 +47,28 @@ export default function ConverterWorkspace({ tool }: ConverterWorkspaceProps) {
 
   // Convert as the user types. Everything runs in the browser, so there is no
   // request to debounce and the result stays in step with the input.
-  useEffect(() => {
-    if (!input.trim()) {
-      setOutput("");
-      setError("");
-      return;
-    }
+  //
+  // Derived during render rather than pushed into state from an effect. The old
+  // shape held `output` and `error` in `useState` and wrote them from a
+  // `useEffect` on `input`, which meant every keystroke rendered twice — once
+  // with the stale conversion, then again with the new one — and left a frame
+  // where the output pane disagreed with the textarea beside it. There is nothing
+  // asynchronous here to wait for, so there is nothing for an effect to do.
+  const { output, error } = useMemo(() => {
+    if (!input.trim()) return { output: "", error: "" };
 
     const convert = getConverter(tool.id);
     if (!convert) {
-      setOutput("");
-      setError(`No converter registered for "${tool.id}".`);
-      return;
+      return { output: "", error: `No converter registered for "${tool.id}".` };
     }
 
     try {
-      setOutput(convert(input, { rootName, delimiter }));
-      setError("");
+      return { output: convert(input, { rootName, delimiter }), error: "" };
     } catch (caught) {
-      const detail = caught instanceof Error ? caught.message : String(caught);
-      setOutput("");
-      setError(detail);
+      return {
+        output: "",
+        error: caught instanceof Error ? caught.message : String(caught),
+      };
     }
   }, [input, rootName, delimiter, tool.id]);
 
