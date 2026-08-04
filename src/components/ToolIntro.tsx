@@ -24,6 +24,7 @@ export default function ToolIntro({ id }: ToolIntroProps) {
 
   const key = `intros.${id}`;
   const bullets: IntroBullet[] = intro.bullets ?? [];
+  const after: string[] = intro.paragraphsAfterBullets ?? [];
   const questions: IntroQuestion[] = intro.questions;
 
   return (
@@ -58,6 +59,14 @@ export default function ToolIntro({ id }: ToolIntroProps) {
             ))}
           </ul>
         ) : null}
+
+        {after.map((paragraph, index) => (
+          <p key={index} className="mb-3.5 text-sm leading-7 text-[#4c5057]">
+            {withInlineCode(
+              t(`${key}.paragraphsAfterBullets.${index}`, { defaultValue: paragraph })
+            )}
+          </p>
+        ))}
 
         <dl className="mt-6 space-y-5">
           {questions.map((question, index) => (
