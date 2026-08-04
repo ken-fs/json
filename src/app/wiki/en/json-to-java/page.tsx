@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
 import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from '@/components/Header';
+import WikiTranslations from '@/components/WikiTranslations';
 import Link from 'next/link';
 import { ArrowLeftIcon, CodeBracketIcon, ClipboardDocumentIcon, ArrowDownTrayIcon, CheckCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from '@heroicons/react/24/outline';
 
@@ -238,6 +239,8 @@ public class Author {
               <li>• <Link href="/wiki/en/json-performance/" className="hover:underline">Performance Optimization</Link></li>
             </ul>
           </section>
+
+          <WikiTranslations locale="en" slug="json-to-java" />
 
           {/* Footer */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">

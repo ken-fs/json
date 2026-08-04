@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { getConverter } from "@/lib/json/convert";
 import { supportsDelimiter, supportsRootName, type ToolDefinition } from "@/lib/tools";
 import JSONEditor from "./JSONEditor";
+import RelatedTools from "./RelatedTools";
 import ToolIntro from "./ToolIntro";
 import { Alert, AlertDescription } from "./ui/alert";
 import IconButton from "./ui/IconButton";
@@ -314,6 +315,7 @@ export default function ConverterWorkspace({ tool }: ConverterWorkspaceProps) {
 
         <ToolIntro id={tool.id} />
 
+        <RelatedTools id={tool.id} />
         <footer className="mt-8 flex flex-col gap-2 border-t border-[#dedede] py-5 text-xs text-[#6f7279] sm:flex-row sm:items-center sm:justify-between">
           <span>JSON1 — {t("footerTagline")}</span>
           <span>

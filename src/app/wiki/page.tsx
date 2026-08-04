@@ -3,9 +3,10 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import { SITE_URL, breadcrumbStructuredData } from '@/components/StructuredData';
 import { TOOLS } from '@/lib/tools';
+import { WIKI_ARTICLES } from '@/lib/wikiMeta';
 
 /**
- * The wiki's language picker.
+ * The wiki's language picker, and the only page that links every article.
  *
  * This file used to be a byte-for-byte copy of `/wiki/cn/page.tsx` — same
  * Chinese copy, same six cards, every link pointing into `/wiki/cn/`. Two URLs
@@ -15,6 +16,13 @@ import { TOOLS } from '@/lib/tools';
  *
  * Static export has no redirects, so `/wiki/` has to stay a page. It earns its
  * place by doing the one thing no locale index can: pointing at all four.
+ *
+ * The topic table is why all forty article URLs are reachable in two clicks.
+ * Before it, this page listed six English slugs, so the thirty translated
+ * articles were only reachable through their own locale index — three clicks
+ * from the homepage, and Search Console had exactly thirty URLs sitting in
+ * "discovered, not indexed". Crawl depth is a priority signal, and a page nobody
+ * links to except one listing reads as one nobody thinks is important.
  */
 
 const LOCALES = [
@@ -22,41 +30,60 @@ const LOCALES = [
     dir: 'en',
     name: 'English',
     native: 'English',
-    blurb: 'Six guides, from syntax to parsing performance.',
+    blurb: 'From syntax to parsing performance.',
   },
   {
     dir: 'cn',
     name: 'Chinese',
     native: '简体中文',
-    blurb: '六篇指南，从语法到解析性能。',
+    blurb: '从语法到解析性能。',
   },
   {
     dir: 'es',
     name: 'Spanish',
     native: 'Español',
-    blurb: 'Seis guías, de la sintaxis al rendimiento.',
+    blurb: 'De la sintaxis al rendimiento.',
   },
   {
     dir: 'pt',
     name: 'Portuguese',
     native: 'Português',
-    blurb: 'Seis guias, da sintaxe à performance.',
+    blurb: 'Da sintaxe à performance.',
   },
 ] as const;
 
-const TOPICS = [
-  { slug: 'json-guide', label: 'Syntax and data types' },
-  { slug: 'json-validation', label: 'JSON Schema validation' },
-  { slug: 'json-api-best-practices', label: 'REST API design' },
-  { slug: 'json-performance', label: 'Parsing performance' },
-  { slug: 'json-to-typescript', label: 'TypeScript interfaces' },
-  { slug: 'json-to-java', label: 'Java classes' },
-] as const;
+/**
+ * English labels for every slug in the catalogue.
+ *
+ * Keyed off `WIKI_ARTICLES` rather than repeating the slug list: this page
+ * hardcoded six of the ten, so the four newest articles had no link here at all
+ * and the copy still said "six guides". A missing key is now a type error.
+ */
+const TOPIC_LABELS: Record<(typeof WIKI_ARTICLES)[number]['slug'], string> = {
+  'json-guide': 'Syntax and data types',
+  'json-validation': 'JSON Schema validation',
+  'json-api-best-practices': 'REST API design',
+  'json-performance': 'Parsing performance',
+  'json-to-typescript': 'TypeScript interfaces',
+  'json-to-java': 'Java classes',
+  'json-vs-yaml': 'JSON vs YAML',
+  'json-to-csv-nested': 'Nested JSON to CSV',
+  'json-escaping': 'Escaping and nested strings',
+  'json-comments': 'Comments in JSON',
+};
+
+/** Short label for each locale column, in the language it links to. */
+const COLUMN_LABEL: Record<(typeof LOCALES)[number]['dir'], string> = {
+  en: 'EN',
+  cn: '中文',
+  es: 'ES',
+  pt: 'PT',
+};
 
 export const metadata: Metadata = {
   title: { absolute: 'JSON Knowledge Base — Pick a Language' },
   description:
-    'Six JSON guides in English, Chinese, Spanish, and Portuguese: syntax, JSON Schema, REST API design, parsing performance, and type generation.',
+    'Ten JSON guides in English, Chinese, Spanish, and Portuguese: syntax, escaping, JSON Schema, REST APIs, parsing performance, and type generation.',
   keywords: 'JSON guides,JSON documentation,JSON knowledge base,JSON tutorial,multilingual',
   alternates: {
     // No hreflang here. This page has no translation — it is the page you land
@@ -65,7 +92,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'JSON Knowledge Base',
-    description: 'Six JSON guides in four languages.',
+    description: 'Ten JSON guides in four languages.',
     url: `${SITE_URL}/wiki/`,
     siteName: 'JSON1',
     type: 'website',
@@ -74,7 +101,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'JSON Knowledge Base',
-    description: 'Six JSON guides in four languages.',
+    description: 'Ten JSON guides in four languages.',
     images: ['/og-image.png'],
   },
 };
@@ -95,10 +122,10 @@ export default function WikiHubPage() {
           Knowledge base
         </p>
         <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
-          Six JSON guides, four languages.
+          Ten JSON guides, four languages.
         </h1>
         <p className="mt-4 max-w-2xl text-lg leading-relaxed text-[#141414]/70">
-          The same six articles are written in each language — not machine-translated from
+          The same ten articles are written in each language — not machine-translated from
           one original. Pick the one you read fastest.
         </p>
 
@@ -124,19 +151,38 @@ export default function WikiHubPage() {
 
         <section className="mt-16">
           <h2 className="text-sm font-medium uppercase tracking-[0.14em] text-[#141414]/50">
-            What the guides cover
+            Every guide, every language
           </h2>
-          {/* Links go to the English set: this hub is written in English, so a
-              reader who skips the picker gets a language they can already read. */}
-          <ul className="mt-5 grid gap-x-10 gap-y-3 sm:grid-cols-2">
-            {TOPICS.map((topic) => (
-              <li key={topic.slug}>
+          {/* The title links English, because this hub is written in English and a
+              reader who skips the picker should land on a language they can
+              already read. The three short links after it are the direct route
+              to each translation — without them those thirty URLs are one hop
+              further from the homepage than the English ten. */}
+          <ul className="mt-5 divide-y divide-[#ececea]">
+            {WIKI_ARTICLES.map((article) => (
+              <li
+                key={article.slug}
+                className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-3"
+              >
                 <Link
-                  href={`/wiki/en/${topic.slug}/`}
+                  href={`/wiki/en/${article.slug}/`}
                   className="text-[#141414] underline decoration-[#dedede] decoration-2 underline-offset-4 transition-colors hover:decoration-[#1261ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1261ff]"
                 >
-                  {topic.label}
+                  {TOPIC_LABELS[article.slug]}
                 </Link>
+                <span className="flex shrink-0 gap-3 font-mono text-xs uppercase tracking-wider">
+                  {LOCALES.filter((locale) => locale.dir !== 'en').map((locale) => (
+                    <Link
+                      key={locale.dir}
+                      href={`/wiki/${locale.dir}/${article.slug}/`}
+                      hrefLang={locale.dir === 'cn' ? 'zh-CN' : locale.dir}
+                      aria-label={`${TOPIC_LABELS[article.slug]} in ${locale.name}`}
+                      className="text-[#141414]/40 transition-colors hover:text-[#1261ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1261ff]"
+                    >
+                      {COLUMN_LABEL[locale.dir]}
+                    </Link>
+                  ))}
+                </span>
               </li>
             ))}
           </ul>

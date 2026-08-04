@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
 import WikiJsonLd from '@/components/WikiJsonLd';
+import WikiTranslations from '@/components/WikiTranslations';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, CodeBracketIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from "@heroicons/react/24/outline";
@@ -403,6 +404,8 @@ GET /obterDadosUsuario?id=123`}
               </div>
             </section>
           </article>
+
+          <WikiTranslations locale="pt" slug="json-api-best-practices" />
 
           {/* Footer */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">

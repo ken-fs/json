@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
 import WikiJsonLd from '@/components/WikiJsonLd';
+import WikiTranslations from '@/components/WikiTranslations';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, BookOpenIcon, CodeBracketIcon, DocumentTextIcon } from "@heroicons/react/24/outline";
@@ -182,6 +183,8 @@ export default function JSONGuidePortuguesePage() {
               </div>
             </section>
           </article>
+
+          <WikiTranslations locale="pt" slug="json-guide" />
 
           {/* Footer */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">

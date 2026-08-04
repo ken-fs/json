@@ -265,6 +265,7 @@ const FORMAT_TOOLS: ToolDefinition[] = [
     example: XML_EXAMPLE,
     notes: [
       'XML has no type system, so values are guessed: "10001" becomes the number 10001 and an empty element becomes null. Round-tripping JSON through XML will not always return the original types.',
+      'Namespace declarations are markup rather than content, so xmlns and xmlns:* are not carried through as keys.',
     ],
   },
   {
@@ -339,6 +340,91 @@ export function toolsByCategory(category: ToolCategory): ToolDefinition[] {
 }
 
 export const CATEGORY_ORDER: ToolCategory[] = ['format', 'data', 'code'];
+
+/**
+ * Wiki articles worth reading beside a given tool.
+ *
+ * Hand-mapped, not derived. A tool page should only send a reader to a guide
+ * that actually covers that conversion; a fuzzy slug match would have pointed
+ * `json-to-toml` at `json-vs-yaml` because both contain "json".
+ */
+const TOOL_GUIDES: Record<string, string> = {
+  'json-to-yaml': 'json-vs-yaml',
+  'yaml-to-json': 'json-vs-yaml',
+  'json-to-csv': 'json-to-csv-nested',
+  'csv-to-json': 'json-to-csv-nested',
+  'json-to-typescript': 'json-to-typescript',
+  'json-to-java': 'json-to-java',
+};
+
+/** Wiki slug for a tool's companion guide, if one exists. */
+export function guideForTool(id: string): string | undefined {
+  return TOOL_GUIDES[id];
+}
+
+/**
+ * The counterpart that converts the other way, e.g. `json-to-yaml` →
+ * `yaml-to-json`. Undefined for the code generators, which are one-way.
+ */
+function reverseOf(id: string): string | undefined {
+  const match = /^(.+)-to-(.+)$/.exec(id);
+  if (!match) return undefined;
+  const reverse = `${match[2]}-to-${match[1]}`;
+  return TOOL_IDS.includes(reverse) ? reverse : undefined;
+}
+
+/**
+ * Sibling tools to link from a tool page.
+ *
+ * Fixes a crawl problem as much as a navigation one. Every tool page was a leaf:
+ * reachable from the sidebar and the index, linking onward to nothing. Search
+ * Console had 14 URLs as "crawled, not indexed" — fetched, judged not worth
+ * keeping — and a page with no outbound links inside the site gives a crawler no
+ * reason to treat it as part of a topic.
+ *
+ * The order is deliberate. The reverse converter comes first because it is the
+ * link a reader actually wants: anyone on `json-to-yaml` is one bad round-trip
+ * away from needing `yaml-to-json`. Same-category siblings follow, walked as a
+ * rotation starting just past this tool rather than from the top of the list —
+ * starting from the top would funnel all nine code pages into the same three
+ * targets.
+ *
+ * The last slot is always held for a tool from another category. Without it the
+ * two `data` tools were linked only by each other: the six format pages filled
+ * every slot from their own six, and nothing outside the pair pointed in. It
+ * also stops `format` and `code` from becoming two clusters a crawler has to
+ * reach separately through the index.
+ */
+export function relatedTools(id: string, count = 3): ToolDefinition[] {
+  const tool = getTool(id);
+  if (!tool) return [];
+
+  const picked: string[] = [];
+  const add = (candidate: string | undefined, limit = count) => {
+    if (!candidate || candidate === id || picked.includes(candidate)) return;
+    if (picked.length >= limit) return;
+    picked.push(candidate);
+  };
+
+  /** Walk a pool from just past `id`, wrapping, so neighbours differ per page. */
+  const rotate = (pool: ToolDefinition[], from: number, limit: number) => {
+    for (let step = 1; step <= pool.length; step += 1) {
+      add(pool[(from + step) % pool.length].id, limit);
+    }
+  };
+
+  const siblings = toolsByCategory(tool.category);
+  const others = TOOLS.filter((entry) => entry.category !== tool.category);
+  const globalIndex = TOOLS.findIndex((entry) => entry.id === id);
+
+  add(reverseOf(id));
+  rotate(siblings, siblings.findIndex((entry) => entry.id === id), count - 1);
+  // Offset by the global index so consecutive pages reach for different
+  // out-of-category targets instead of all landing on the first one.
+  rotate(others, globalIndex, count);
+
+  return picked.map((pickedId) => getTool(pickedId)!).filter(Boolean);
+}
 
 /** Tools that read or write a delimited format expose a delimiter control. */
 export function supportsDelimiter(tool: ToolDefinition): boolean {

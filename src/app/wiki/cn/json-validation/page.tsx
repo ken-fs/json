@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
 import WikiJsonLd from '@/components/WikiJsonLd';
+import WikiTranslations from '@/components/WikiTranslations';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, AcademicCapIcon, CheckCircleIcon, ExclamationTriangleIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
@@ -872,6 +873,8 @@ null    // 空值`
               </div>
             </section>
           </article>
+
+          <WikiTranslations locale="cn" slug="json-validation" />
 
           {/* Footer */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Header from "@/components/Header";
 import WikiJsonLd from "@/components/WikiJsonLd";
+import WikiTranslations from "@/components/WikiTranslations";
 import { withInlineCode } from "@/components/inlineCode";
 import type { WikiArticleContent, WikiSample, WikiTable } from "@/lib/wikiArticle";
 import type { WikiMetaInput, WikiLocale } from "@/lib/wikiMeta";
@@ -156,6 +157,8 @@ export default function WikiArticle({ meta, content }: WikiArticleProps) {
                   ))}
                 </ul>
               </section>
+
+              {meta.slug ? <WikiTranslations locale={locale} slug={meta.slug} /> : null}
             </article>
           </div>
         </div>

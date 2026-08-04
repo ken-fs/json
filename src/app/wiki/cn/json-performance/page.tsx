@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
 import WikiJsonLd from '@/components/WikiJsonLd';
+import WikiTranslations from '@/components/WikiTranslations';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, RocketLaunchIcon, CheckCircleIcon, XCircleIcon, ExclamationTriangleIcon, ChartBarIcon } from "@heroicons/react/24/outline";
@@ -899,6 +900,8 @@ const data = profiler.profile(() => JSON.parse(largeJSON), 'JSON解析');`}
               </div>
             </section>
           </article>
+
+          <WikiTranslations locale="cn" slug="json-performance" />
 
           {/* Footer */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">

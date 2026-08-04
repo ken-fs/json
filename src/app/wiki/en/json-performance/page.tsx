@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
 import WikiJsonLd from '@/components/WikiJsonLd';
+import WikiTranslations from '@/components/WikiTranslations';
 import Header from "@/components/Header";
 import Link from "next/link";
 import { ArrowLeftIcon, RocketLaunchIcon, CheckCircleIcon, ChartBarIcon } from "@heroicons/react/24/outline";
@@ -570,6 +571,8 @@ console.log('Memory usage:', {
               </div>
             </section>
           </article>
+
+          <WikiTranslations locale="en" slug="json-performance" />
 
           {/* Footer */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">

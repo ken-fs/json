@@ -7,6 +7,7 @@ import { CATEGORY_ORDER, toolsByCategory, type ToolCategory } from "@/lib/tools"
 import {
   ArrowPathRoundedSquareIcon,
   BookOpenIcon,
+  InformationCircleIcon,
   Squares2X2Icon,
 } from "@heroicons/react/24/outline";
 
@@ -79,8 +80,11 @@ export default function AppSidebar() {
         ))}
       </nav>
 
-      {/* One link to the wiki, not two. The header already offers Help, and the
-          second entry here was labelled About while pointing at a guide. */}
+      {/* Guides and About, each pointing where its label says. The old second
+          entry read About and went to a guide.
+          About is here because it was otherwise an orphan: nothing on the site
+          linked to it, so it was only reachable from the sitemap, and the
+          Organization schema named a URL a crawler had no path to. */}
       <div className="shrink-0 border-t border-[#e6e6e1] px-4 py-3">
         <Link
           href="/wiki/"
@@ -88,6 +92,13 @@ export default function AppSidebar() {
         >
           <BookOpenIcon className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
           {t("guides", { defaultValue: "Guides" })}
+        </Link>
+        <Link
+          href="/about/"
+          className="flex items-center gap-2.5 rounded-md px-3 py-2 text-[13px] text-[#5d6067] hover:bg-[#f0f0ec] hover:text-[#141414]"
+        >
+          <InformationCircleIcon className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
+          {t("aboutJSON1", { defaultValue: "About" })}
         </Link>
       </div>
     </aside>

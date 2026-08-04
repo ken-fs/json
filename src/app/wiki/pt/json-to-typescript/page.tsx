@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { wikiMetadata, type WikiMetaInput } from '@/lib/wikiMeta';
 import WikiJsonLd from '@/components/WikiJsonLd';
 import Header from '@/components/Header';
+import WikiTranslations from '@/components/WikiTranslations';
 import Link from 'next/link';
 import { ArrowLeftIcon, CodeBracketIcon, ClipboardDocumentIcon, ArrowDownTrayIcon, CheckCircleIcon, ExclamationTriangleIcon, LightBulbIcon } from '@heroicons/react/24/outline';
 
@@ -229,6 +230,8 @@ interface AddressInterface {
               <li>• <Link href="/wiki/pt/json-performance/" className="hover:underline">Otimização de Performance</Link></li>
             </ul>
           </section>
+
+          <WikiTranslations locale="pt" slug="json-to-typescript" />
 
           {/* Rodapé */}
           <footer className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
