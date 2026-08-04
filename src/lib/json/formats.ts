@@ -15,9 +15,44 @@
 // YAML
 // ---------------------------------------------------------------------------
 
-/** Keys/scalars that would be ambiguous unquoted in YAML. */
-const YAML_NEEDS_QUOTES =
-  /^(?:|~|null|Null|NULL|true|True|TRUE|false|False|FALSE|yes|Yes|no|No|on|On|off|Off|-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)$/;
+/**
+ * Keys/scalars that would be ambiguous unquoted in YAML.
+ *
+ * The boolean words are matched case-insensitively because YAML 1.1 — which
+ * PyYAML and most Go and Ruby loaders still implement — reads `NO`, `Yes`, and
+ * `ON` as booleans just as readily as the lowercase spellings. Listing only
+ * `no`, `No`, and `NO`-minus-one-case is the actual Norway problem: a country
+ * code written in caps, which is how country codes are written, came back as
+ * `false`.
+ *
+ * The numeric alternatives cover more than decimal, for the same reason. A real
+ * parser resolves `0x1A` to 26, `1_000` to 1000, `.5` to 0.5, `+5` to 5, and
+ * `.inf`/`.nan` to floats, so all of them have to be quoted to survive the
+ * round trip.
+ */
+const YAML_NEEDS_QUOTES = new RegExp(
+  '^(?:' +
+    [
+      '', // the empty string loads as null
+      '~',
+      'null',
+      'true',
+      'false',
+      'yes',
+      'no',
+      'on',
+      'off',
+      '[-+]?\\.(?:inf|nan)', // .inf, -.INF, .NaN
+      '[-+]?0[xX][0-9a-fA-F_]+', // hex
+      '[-+]?0[oO]?[0-7_]+', // octal, both spellings
+      '[-+]?0[bB][01_]+', // binary
+      '[-+]?[0-9][0-9_]*(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?', // decimal, incl. 1_000
+      '[-+]?\\.[0-9_]+(?:[eE][-+]?[0-9]+)?', // leading-dot float
+      '[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+(?:\\.[0-9_]*)?', // sexagesimal: 1:30 is 90
+    ].join('|') +
+    ')$',
+  'i'
+);
 
 function yamlScalar(value: string | number | boolean | null): string {
   if (value === null) return 'null';
@@ -35,9 +70,20 @@ function yamlScalar(value: string | number | boolean | null): string {
   return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n')}"`;
 }
 
+/**
+ * A YAML timestamp, which loads as a date rather than a string.
+ *
+ * Only consulted for keys. A value containing a `-` or `:` is already quoted by
+ * `yamlScalar` for being structurally risky, but the key pattern deliberately
+ * allows `-`, so `"2026-08-04"` as a key was coming back as a date object.
+ */
+const YAML_TIMESTAMP = /^\d{4}-\d{1,2}-\d{1,2}(?:[Tt ].*)?$/;
+
 function yamlKey(key: string): string {
   if (key.length === 0) return '""';
-  return /^[A-Za-z0-9_][A-Za-z0-9_.\-]*$/.test(key) && !YAML_NEEDS_QUOTES.test(key)
+  return /^[A-Za-z0-9_][A-Za-z0-9_.\-]*$/.test(key) &&
+    !YAML_NEEDS_QUOTES.test(key) &&
+    !YAML_TIMESTAMP.test(key)
     ? key
     : `"${key.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
@@ -329,14 +375,25 @@ function xmlTagName(key: string): string {
   return /^[A-Za-z_]/.test(cleaned) ? cleaned : `_${cleaned}`;
 }
 
+/** Where `xsi:nil` comes from. Undeclared, the prefix is a namespace error. */
+const XSI_NAMESPACE = 'http://www.w3.org/2001/XMLSchema-instance';
+
 export function jsonToXML(text: string, rootName = 'root'): string {
   const parsed = JSON.parse(text);
+
+  // Declared on the root element, but only when a null actually appears —
+  // otherwise every document would carry a namespace it never uses. Tracked
+  // during the walk because the root line is written after the body.
+  let usesNil = false;
 
   function build(value: unknown, tag: string, depth: number): string[] {
     const pad = '  '.repeat(depth);
     const name = xmlTagName(tag);
 
-    if (value === null) return [`${pad}<${name} xsi:nil="true"/>`];
+    if (value === null) {
+      usesNil = true;
+      return [`${pad}<${name} xsi:nil="true"/>`];
+    }
 
     if (typeof value !== 'object') {
       return [`${pad}<${name}>${escapeXmlText(String(value))}</${name}>`];
@@ -368,6 +425,15 @@ export function jsonToXML(text: string, rootName = 'root'): string {
         `</${xmlTagName(rootName)}>`,
       ]
     : build(parsed, rootName, 0);
+
+  // Splice the declaration into the opening tag, which is the first line
+  // whatever shape the input had — `<root>`, `<root/>`, or a nil root.
+  if (usesNil && body.length > 0) {
+    body[0] = body[0].replace(
+      /^(\s*<[^\s/>]+)/,
+      `$1 xmlns:xsi="${XSI_NAMESPACE}"`
+    );
+  }
 
   return `<?xml version="1.0" encoding="UTF-8"?>\n${body.join('\n')}`;
 }
@@ -424,6 +490,12 @@ export function xmlToJSON(text: string): string {
       const attrPattern = /([\w.\-:]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/g;
       let attr: RegExpExecArray | null;
       while ((attr = attrPattern.exec(rawAttributes)) !== null) {
+        // `xmlns` and `xmlns:*` declare namespaces; they are markup, not
+        // content, and carrying them through as `@xmlns:xsi` keys puts a
+        // schema URL in the data. Since `jsonToXML` declares `xsi` whenever it
+        // writes a null, keeping them would also mean no document with a null
+        // could survive a round trip.
+        if (attr[1] === 'xmlns' || attr[1].startsWith('xmlns:')) continue;
         attributes[attr[1]] = decodeXmlText(attr[2] ?? attr[3] ?? '');
       }
     }
@@ -458,7 +530,11 @@ export function xmlToJSON(text: string): string {
     const hasAttributes = Object.keys(node.attributes).length > 0;
 
     if (node.children.length === 0) {
-      if (!hasAttributes) return node.selfClosing && node.text === '' ? null : coerce(node.text);
+      // `<a/>` and `<a></a>` are the same element to XML, so they have to give
+      // the same JSON. This used to key off `selfClosing`, which made the
+      // spelling of the tag decide between null and "" — a difference the
+      // document does not contain.
+      if (!hasAttributes) return node.text === '' ? null : coerce(node.text);
       const leaf: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(node.attributes)) leaf[`@${key}`] = coerce(value);
       if (node.text !== '') leaf['#text'] = coerce(node.text);
@@ -675,6 +751,9 @@ export function csvToJSON(text: string, options: CsvOptions = {}): string {
 // ---------------------------------------------------------------------------
 
 function tomlValue(value: unknown): string {
+  // Reached only for a null inside an array, where there is no key to omit and
+  // no way to shorten the list without changing its length. A key whose value
+  // is null is dropped before it gets here — see `nullComment`.
   if (value === null) return '""';
   if (typeof value === 'boolean' || typeof value === 'number') return String(value);
   if (typeof value === 'string') {
@@ -686,6 +765,19 @@ function tomlValue(value: unknown): string {
 
 function tomlKey(key: string): string {
   return /^[A-Za-z0-9_-]+$/.test(key) ? key : `"${key.replace(/"/g, '\\"')}"`;
+}
+
+/**
+ * TOML has no null, so a null-valued key is commented out rather than written.
+ *
+ * It used to be emitted as `key = ""`, which is a different value: reading the
+ * file back gives an empty string where the JSON said null, and a config reader
+ * checking `if key:` cannot tell the two apart. Omission is what TOML means by
+ * absent, and the comment keeps the key visible so nobody concludes the
+ * converter lost it.
+ */
+function nullComment(key: string): string {
+  return `# ${tomlKey(key)} = null  # omitted: TOML has no null`;
 }
 
 export function jsonToTOML(text: string): string {
@@ -716,7 +808,9 @@ export function jsonToTOML(text: string): string {
         tableArrays.push([key, value as Record<string, unknown>[]]);
         continue;
       }
-      scalars.push(`${tomlKey(key)} = ${tomlValue(value)}`);
+      scalars.push(
+        value === null ? nullComment(key) : `${tomlKey(key)} = ${tomlValue(value)}`
+      );
     }
 
     if (path.length > 0 && (scalars.length > 0 || (tables.length === 0 && tableArrays.length === 0))) {
@@ -749,6 +843,8 @@ export function jsonToTOML(text: string): string {
         for (const [childKey, childValue] of Object.entries(item)) {
           if (childValue !== null && typeof childValue === 'object' && !Array.isArray(childValue)) {
             deeper.push([childKey, childValue as Record<string, unknown>]);
+          } else if (childValue === null) {
+            inner.push(nullComment(childKey));
           } else {
             inner.push(`${tomlKey(childKey)} = ${tomlValue(childValue)}`);
           }

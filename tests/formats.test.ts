@@ -74,6 +74,67 @@ const toml = jsonToTOML(JSON.stringify(tomlSrc));
 console.log('--- TOML ---\n' + toml + '\n');
 check('toml round-trip', JSON.parse(tomlToJSON(toml)), tomlSrc);
 
+// Strings a YAML 1.1 loader would resolve to another type. Checked against
+// PyYAML's actual behaviour, not just this file's own reader — our parser is
+// stricter than the loaders these files get fed to, so a round trip through it
+// would pass while `NO` came back as `false` in production.
+//
+// `NO` is the Norway problem proper: the case that matters is the one country
+// codes are written in.
+const YAML_TRAPS = [
+  'NO', 'YES', 'ON', 'OFF', 'TRUE', 'False', 'no', 'Yes', 'null', 'NULL', '~',
+  '0x1A', '-0x1f', '0b101', '0o17', '017', '1_000', '.inf', '-.INF', '.nan',
+  '+5', '.5', '1e3', '1:30', '12:30:00', '2026-08-04', '2026-08-04T10:00:00Z',
+];
+for (const trap of YAML_TRAPS) {
+  const emitted = jsonToYAML(JSON.stringify({ [trap]: trap }));
+  // Both sides have to be quoted: the key is as exposed as the value.
+  check(`yaml quotes ${trap}`, emitted.trim(), `"${trap}": "${trap}"`);
+}
+// ...and plain strings are still left alone, or the output is unreadable.
+for (const plain of ['Ada', 'hello', 'v1.0', 'x_y', 'NORWAY', 'onward', 'nullable']) {
+  check(`yaml leaves ${plain} bare`, jsonToYAML(JSON.stringify({ [plain]: plain })).trim(), `${plain}: ${plain}`);
+}
+
+// `xsi:nil` needs its prefix declared or the document is a namespace error, and
+// the declaration should not appear on documents that never use it.
+const xmlNil = jsonToXML('{"a":null,"b":{"c":null}}');
+check(
+  'xml declares xsi when nil is used',
+  xmlNil.includes('xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'),
+  true
+);
+check('xml omits xsi when unused', jsonToXML('{"a":1}').includes('xmlns:xsi'), false);
+// The declaration is markup. Reading it back as an `@xmlns:xsi` key would put a
+// schema URL in the data and break the round trip for every document with a null.
+check('xml null round-trips', JSON.parse(xmlToJSON(jsonToXML('{"a":null,"b":1}'))), {
+  root: { a: null, b: 1 },
+});
+check(
+  'xml drops namespace declarations',
+  JSON.parse(xmlToJSON('<r xmlns="urn:x" xmlns:p="urn:y" id="3"><a>1</a></r>')),
+  { r: { '@id': 3, a: 1 } }
+);
+// `<a/>` and `<a></a>` are the same element, so they cannot give different JSON.
+check('xml empty element forms agree', JSON.parse(xmlToJSON('<r><a></a><b/></r>')), {
+  r: { a: null, b: null },
+});
+check(
+  'xml declares xsi on a nil root',
+  jsonToXML('null').includes('xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"'),
+  true
+);
+
+// TOML has no null. A null-valued key is commented out, not written as "" —
+// an empty string is a different value and reads back as one.
+const tomlNull = jsonToTOML('{"a":null,"b":1,"t":{"c":null,"d":2},"p":[{"e":null,"f":3}]}');
+check('toml drops null keys', JSON.parse(tomlToJSON(tomlNull)), {
+  b: 1,
+  t: { d: 2 },
+  p: [{ f: 3 }],
+});
+check('toml notes the dropped key', tomlNull.includes('# a = null'), true);
+
 const edges: Array<[string, () => unknown]> = [
   ['yaml root array', () => JSON.parse(yamlToJSON(jsonToYAML('[1,2,3]')))],
   ['yaml root scalar', () => JSON.parse(yamlToJSON(jsonToYAML('42')))],
