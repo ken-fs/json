@@ -578,11 +578,6 @@ export default function JSONFormatter() {
         </div>
 
         <ToolIntro id="jsonFormatter" />
-
-        <footer className="mt-8 flex flex-col gap-2 border-t border-[#dedede] py-5 text-xs text-[#6f7279] sm:flex-row sm:items-center sm:justify-between">
-          <span>JSON1 — {t("footerTagline")}</span>
-          <span>{t("processedLocally")} · {t("privacyNote")}</span>
-        </footer>
       </div>
 
       {/* Fixed Alert at bottom */}

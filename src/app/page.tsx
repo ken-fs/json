@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import AppSidebar from "@/components/AppSidebar";
 import Header from "@/components/Header";
 import JSONFormatter from "@/components/JSONFormatter";
+import SiteFooter from "@/components/SiteFooter";
 import { SITE_URL } from "@/components/StructuredData";
 import { faqStructuredData } from "@/lib/intros";
 
@@ -68,6 +69,7 @@ export default function Home() {
       <div className="relative flex min-w-0 flex-1 flex-col">
         <Header />
         <JSONFormatter />
+        <SiteFooter />
       </div>
     </div>
   );

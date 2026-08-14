@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Header from '@/components/Header';
+import SiteFooter from '@/components/SiteFooter';
 import { SITE_URL, breadcrumbStructuredData } from '@/components/StructuredData';
 import { TOOLS } from '@/lib/tools';
 import { WIKI_ARTICLES } from '@/lib/wikiMeta';
@@ -199,6 +200,8 @@ export default function WikiHubPage() {
           run in your browser, no uploads.
         </p>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

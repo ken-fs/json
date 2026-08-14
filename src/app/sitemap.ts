@@ -53,6 +53,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    // Policy pages. Low priority — they exist for readers and for AdSense, not
+    // to rank — but they are real routes, so they belong in the sitemap.
+    {
+      url: `${baseUrl}/privacy/`,
+      lastModified: TOOLS_REVISED,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/terms/`,
+      lastModified: TOOLS_REVISED,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/contact/`,
+      lastModified: TOOLS_REVISED,
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
     // The language picker. Not a locale index — see `src/app/wiki/page.tsx`.
     {
       url: `${baseUrl}/wiki/`,

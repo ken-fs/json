@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import AppSidebar from "@/components/AppSidebar";
 import Header from "@/components/Header";
 import ToolsIndex from "@/components/ToolsIndex";
+import SiteFooter from "@/components/SiteFooter";
 import { SITE_URL, breadcrumbStructuredData } from "@/components/StructuredData";
 import { TOOLS } from "@/lib/tools";
 
@@ -77,6 +78,7 @@ export default function ToolsIndexPage() {
       <div className="relative flex min-w-0 flex-1 flex-col">
         <Header />
         <ToolsIndex />
+        <SiteFooter />
       </div>
     </div>
   );

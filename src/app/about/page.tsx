@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import AppSidebar from "@/components/AppSidebar";
 import Header from "@/components/Header";
+import SiteFooter from "@/components/SiteFooter";
 import { SITE_URL, breadcrumbStructuredData } from "@/components/StructuredData";
 import { TOOLS } from "@/lib/tools";
 
@@ -242,6 +243,8 @@ export default function AboutPage() {
             </nav>
           </div>
         </main>
+
+        <SiteFooter />
       </div>
     </div>
   );
