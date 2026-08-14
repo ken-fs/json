@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JSON1
 
-## Getting Started
+Free, private JSON tools that run entirely in your browser — **[www.json1.org](https://www.json1.org)**
 
-First, run the development server:
+JSON1 is 18 tools for reading, checking, and converting JSON: a formatter/validator, eight format converters, and nine type generators. Everything runs in JavaScript on your machine. There is no server to upload to, no account, and no data store — you can paste a production payload, then switch to airplane mode and keep working.
+
+## What's inside
+
+- **Formatter & validator** — beautify, minify, and validate JSON with error positions, in a collapsible tree view.
+- **Format converters (8)** — JSON ⇄ YAML, JSON ⇄ XML, JSON ⇄ TOML, JSON ⇄ CSV. The YAML converter quotes every scalar a YAML 1.1 loader would otherwise mistype (the Norway problem, sexagesimals, bare dates), checked against a real loader rather than its own reader.
+- **Type generators (9)** — JSON → TypeScript, Java, Go, Python, C#, Rust, Kotlin, Dart, Swift. Every generator reads *all* records in an array, not just the first, so a field present in only some of them comes out optional instead of silently wrong.
+- **Knowledge base** — 10 in-depth guides (syntax, escaping, JSON Schema, REST API design, parsing performance, type generation) in English, 简体中文, Español, and Português. Each language is written, not machine-translated.
+- **Privacy pages** — [Privacy](https://www.json1.org/privacy/), [Terms](https://www.json1.org/terms/), and [Contact](https://www.json1.org/contact/).
+
+## Tech stack
+
+- **Next.js 15** (App Router) + **React 19** + **TypeScript**, exported as static files.
+- **Tailwind CSS 4** for styling, **@heroicons/react** for icons.
+- **Zustand** for language/theme state, persisted to `localStorage`.
+- **i18next / react-i18next** for the four-language interface.
+- **pnpm** as the package manager.
+
+## Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev        # dev server (Turbopack) at http://localhost:3000
+pnpm build      # static export to out/
+pnpm lint       # ESLint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Tests
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm test       # generator + format converter correctness
+pnpm test:wiki  # wiki content checks
+pnpm test:pages # rendered-page verification (Python)
+pnpm test:seo   # SEO/metadata verification (Python)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The generator and converter claims shown under each tool are checked against real output rather than proofread — that practice has caught real bugs.
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Deployed on Vercel. Pushing to `main` triggers a production build to `www.json1.org` (the apex `json1.org` 308-redirects to `www`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Privacy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Nothing you paste into a tool leaves the browser. The site loads three third-party scripts — Google AdSense, Google Analytics, and Microsoft Clarity — none of which receives editor contents; the full breakdown is on the [About](https://www.json1.org/about/) and [Privacy](https://www.json1.org/privacy/) pages. An ad blocker removes all three and every tool still works.
