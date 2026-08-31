@@ -2,7 +2,7 @@
   // Cloudflare Workers 静态站点配置：托管 Next.js 静态导出产物 out/
   // 与 Git 集成的 Workers Builds 配合：push 到 main 后自动 pnpm build 并部署
   "name": "json",
-  "compatibility_date": "2026-08-31",
+  "compatibility_date": "2025-01-01",
   "assets": {
     "directory": "./out/",
     // 目录结构为 dir/index.html，默认 auto-trailing-slash 行为与旧站一致
