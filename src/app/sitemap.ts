@@ -32,7 +32,7 @@ export const dynamic = 'force-static';
 const TOOLS_REVISED = '2026-08-03';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://www.json1.org';
+  const baseUrl = 'https://www.json.how';
 
   const routes: MetadataRoute.Sitemap = [
     {

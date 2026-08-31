@@ -25,7 +25,7 @@
  * Put any of them back only alongside the thing it describes.
  */
 
-export const SITE_URL = "https://www.json1.org";
+export const SITE_URL = "https://www.json.how";
 
 /** One crumb in the trail: a name and the page it points at. */
 export interface Crumb {

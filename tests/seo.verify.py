@@ -89,11 +89,11 @@ ns = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 sitemap_urls = [u.text for u in root.iter(f"{ns}loc")]
 print(f"sitemap: {len(sitemap_urls)} URLs, status {status}")
 
-paths = [u.replace("https://www.json1.org", "") or "/" for u in sitemap_urls]
+paths = [u.replace("https://www.json.how", "") or "/" for u in sitemap_urls]
 
 # `lastmod` per path, for the freshness cross-check further down.
 lastmod = {
-    (e.findtext(f"{ns}loc") or "").replace("https://www.json1.org", "") or "/":
+    (e.findtext(f"{ns}loc") or "").replace("https://www.json.how", "") or "/":
         (e.findtext(f"{ns}lastmod") or "")
     for e in root.iter(f"{ns}url")
 }
@@ -115,7 +115,7 @@ for p in sorted(set(paths)):
     m = Meta()
     m.feed(html)
     title = (m.title or "").strip()
-    expected_canon = f"https://www.json1.org{p}"
+    expected_canon = f"https://www.json.how{p}"
     if m.modified:
         page_modified[p] = m.modified
 

@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://www.json1.org"),
+  metadataBase: new URL("https://www.json.how"),
   // No `alternates` here on purpose.
   //
   // `canonical` is inherited by every route that does not set its own, so a
@@ -80,7 +80,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.json1.org",
+    url: "https://www.json.how",
     title: "JSON1 — Free Online JSON Formatter, Validator & Converter",
     description:
       SITE_DESCRIPTION,

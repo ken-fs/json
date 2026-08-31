@@ -14,7 +14,7 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { CATEGORY_ORDER, TOOLS, toolsByCategory } from '../src/lib/tools';
 
-const SITE = 'https://www.json1.org';
+const SITE = 'https://www.json.how';
 
 const CATEGORY_TITLES: Record<string, string> = {
   format: 'Format converters',

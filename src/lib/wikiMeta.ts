@@ -21,7 +21,7 @@ import type { Metadata } from 'next';
  * was revised on every deploy.
  */
 
-const SITE_URL = 'https://www.json1.org';
+const SITE_URL = 'https://www.json.how';
 
 /** Directory names under `/wiki/`. `cn` is the legacy spelling of `zh`. */
 export type WikiLocale = 'en' | 'cn' | 'es' | 'pt';

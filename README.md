@@ -1,6 +1,6 @@
 # JSON1
 
-Free, private JSON tools that run entirely in your browser — **[www.json1.org](https://www.json1.org)**
+Free, private JSON tools that run entirely in your browser — **[www.json.how](https://www.json.how)**
 
 JSON1 is 18 tools for reading, checking, and converting JSON: a formatter/validator, eight format converters, and nine type generators. Everything runs in JavaScript on your machine. There is no server to upload to, no account, and no data store — you can paste a production payload, then switch to airplane mode and keep working.
 
@@ -10,7 +10,7 @@ JSON1 is 18 tools for reading, checking, and converting JSON: a formatter/valida
 - **Format converters (8)** — JSON ⇄ YAML, JSON ⇄ XML, JSON ⇄ TOML, JSON ⇄ CSV. The YAML converter quotes every scalar a YAML 1.1 loader would otherwise mistype (the Norway problem, sexagesimals, bare dates), checked against a real loader rather than its own reader.
 - **Type generators (9)** — JSON → TypeScript, Java, Go, Python, C#, Rust, Kotlin, Dart, Swift. Every generator reads *all* records in an array, not just the first, so a field present in only some of them comes out optional instead of silently wrong.
 - **Knowledge base** — 10 in-depth guides (syntax, escaping, JSON Schema, REST API design, parsing performance, type generation) in English, 简体中文, Español, and Português. Each language is written, not machine-translated.
-- **Privacy pages** — [Privacy](https://www.json1.org/privacy/), [Terms](https://www.json1.org/terms/), and [Contact](https://www.json1.org/contact/).
+- **Privacy pages** — [Privacy](https://www.json.how/privacy/), [Terms](https://www.json.how/terms/), and [Contact](https://www.json.how/contact/).
 
 ## Tech stack
 
@@ -42,8 +42,8 @@ The generator and converter claims shown under each tool are checked against rea
 
 ## Deployment
 
-Deployed on Vercel. Pushing to `main` triggers a production build to `www.json1.org` (the apex `json1.org` 308-redirects to `www`).
+Deployed on Vercel. Pushing to `main` triggers a production build to `www.json.how` (the apex `json.how` 308-redirects to `www`).
 
 ## Privacy
 
-Nothing you paste into a tool leaves the browser. The site loads three third-party scripts — Google AdSense, Google Analytics, and Microsoft Clarity — none of which receives editor contents; the full breakdown is on the [About](https://www.json1.org/about/) and [Privacy](https://www.json1.org/privacy/) pages. An ad blocker removes all three and every tool still works.
+Nothing you paste into a tool leaves the browser. The site loads three third-party scripts — Google AdSense, Google Analytics, and Microsoft Clarity — none of which receives editor contents; the full breakdown is on the [About](https://www.json.how/about/) and [Privacy](https://www.json.how/privacy/) pages. An ad blocker removes all three and every tool still works.

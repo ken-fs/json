@@ -1,5 +1,5 @@
 # JSON1 - Robots.txt
-# https://www.json1.org
+# https://www.json.how
 
 User-agent: *
 Allow: /
@@ -12,7 +12,7 @@ Allow: /
 Disallow: /404
 Disallow: /500
 
-Sitemap: https://www.json1.org/sitemap.xml
+Sitemap: https://www.json.how/sitemap.xml
 
 # Named groups below. robots.txt applies only the single most specific matching
 # group, so a crawler listed here inherits nothing from `*` — any rule it needs

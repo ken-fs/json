@@ -11,7 +11,7 @@ import { TOOLS } from '../src/lib/tools';
 const cards = [
   {
     out: 'og-image.png',
-    eyebrow: 'json1.org',
+    eyebrow: 'json.how',
     title: 'JSON, formatted\nand converted.',
     sub: `${TOOLS.length + 1} tools. Nothing uploads.`,
     from: null,
@@ -19,7 +19,7 @@ const cards = [
   },
   {
     out: 'og/tools.png',
-    eyebrow: 'json1.org / all tools',
+    eyebrow: 'json.how / all tools',
     title: `${TOOLS.length + 1} tools,\nno uploads.`,
     sub: 'Format, validate, convert, generate types.',
     from: null,
@@ -30,7 +30,7 @@ const cards = [
   // a two-line from/to pair instead of one being an arrow and the other prose.
   ...TOOLS.map((tool) => ({
     out: `og/${tool.id}.png`,
-    eyebrow: 'json1.org',
+    eyebrow: 'json.how',
     title: `${tool.inputLabel} →\n${tool.outputLabel}`,
     sub: tool.description.split('. ')[0].replace(/\.$/, '') + '.',
     from: tool.inputLabel,
