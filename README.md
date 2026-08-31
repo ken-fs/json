@@ -42,7 +42,7 @@ The generator and converter claims shown under each tool are checked against rea
 
 ## Deployment
 
-Deployed on Vercel. Pushing to `main` triggers a production build to `www.json.how` (the apex `json.how` 308-redirects to `www`).
+Deployed on Cloudflare Workers (static assets from `out/`). Pushing to `main` triggers a production build to `www.json.how` (the apex `json.how` redirects to `www`). The legacy `json1.org` domain 308-redirects here until it expires; its redirect lives on the old Vercel project.
 
 ## Privacy
 
