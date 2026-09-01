@@ -3,8 +3,10 @@
   // 与 Git 集成的 Workers Builds 配合：push 到 main 后自动 pnpm build 并部署
   "name": "json",
   "compatibility_date": "2025-01-01",
+  "main": "worker.js",
   "assets": {
     "directory": "./out/",
+    "binding": "ASSETS",
     // 目录结构为 dir/index.html，默认 auto-trailing-slash 行为与旧站一致
     // 未匹配路径返回 404 状态并渲染 out/404.html
     "not_found_handling": "404-page"
