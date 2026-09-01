@@ -18,7 +18,7 @@ import { SITE_URL, breadcrumbStructuredData } from "@/components/StructuredData"
 export const metadata: Metadata = {
   title: { absolute: "Privacy Policy — JSON1" },
   description:
-    "What JSON1 collects (nothing you paste), which third-party scripts set cookies — Google AdSense, Analytics, Microsoft Clarity — and how to opt out of personalised ads.",
+    "What JSON1 collects (nothing you paste), which third-party scripts set cookies — Google AdSense, Analytics, Microsoft Clarity, and an ad partner on wiki pages — and how to opt out of personalised ads.",
   keywords: [
     "json1 privacy policy",
     "adsense privacy",
@@ -92,7 +92,7 @@ export default function PrivacyPage() {
             <section className="mt-12">
               <h2 className="text-xl font-black tracking-[-0.03em]">Cookies and third-party scripts</h2>
               <p className="mt-4 text-sm leading-7 text-[#4a4d54] sm:text-base">
-                The site loads three third-party scripts. Each is listed below with what it
+                The site loads four third-party scripts. Each is listed below with what it
                 does and the data it sees. None of them receives the contents of your editor.
               </p>
 
@@ -155,6 +155,17 @@ export default function PrivacyPage() {
                 </div>
 
                 <div className="border-t border-[#e4e4df] pt-4">
+                  <h3 className="text-base font-bold">Adsterra (highrevenueformat.com)</h3>
+                  <p className="mt-2 text-sm leading-7 text-[#4a4d54] sm:text-base">
+                    Serves additional banner ads on the wiki (knowledge base) pages only — the
+                    tools themselves carry no units from this network. It runs inside a
+                    sandboxed iframe, sets its own cookies for frequency capping and fraud
+                    checks, and reports the URL of the page it appears on. It cannot read the
+                    rest of the page.
+                  </p>
+                </div>
+
+                <div className="border-t border-[#e4e4df] pt-4">
                   <h3 className="text-base font-bold">Microsoft Clarity</h3>
                   <p className="mt-2 text-sm leading-7 text-[#4a4d54]">
                     Aggregates how pages are used — clicks and scrolling — to find layout
@@ -175,7 +186,7 @@ export default function PrivacyPage() {
 
               <p className="mt-6 text-sm leading-7 text-[#4a4d54]">
                 If you would rather none of these run, an ad blocker or your browser&apos;s
-                tracking protection removes all three, and every tool on the site keeps
+                tracking protection removes all four, and every tool on the site keeps
                 working. The full, plain-language version of what crosses the network is on
                 the{" "}
                 <Link href="/about/" className="font-semibold text-[#1261ff] hover:underline">

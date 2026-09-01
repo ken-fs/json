@@ -46,4 +46,4 @@ Deployed on Cloudflare Workers (static assets from `out/`). Pushing to `main` tr
 
 ## Privacy
 
-Nothing you paste into a tool leaves the browser. The site loads three third-party scripts — Google AdSense, Google Analytics, and Microsoft Clarity — none of which receives editor contents; the full breakdown is on the [About](https://www.json.how/about/) and [Privacy](https://www.json.how/privacy/) pages. An ad blocker removes all three and every tool still works.
+Nothing you paste into a tool leaves the browser. The site loads four third-party scripts — Google AdSense, Google Analytics, Microsoft Clarity, and Adsterra banners on wiki pages only — none of which receives editor contents; the full breakdown is on the [About](https://www.json.how/about/) and [Privacy](https://www.json.how/privacy/) pages. An ad blocker removes all four and every tool still works.
