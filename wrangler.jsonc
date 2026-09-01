@@ -7,6 +7,8 @@
   "assets": {
     "directory": "./out/",
     "binding": "ASSETS",
+    // worker.js 要对每个请求先执行（做域名规范化跳转），否则静态命中会跳过脚本
+    "run_worker_first": true,
     // 目录结构为 dir/index.html，默认 auto-trailing-slash 行为与旧站一致
     // 未匹配路径返回 404 状态并渲染 out/404.html
     "not_found_handling": "404-page"
