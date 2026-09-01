@@ -1,10 +1,38 @@
 import type { NextConfig } from "next";
 
+// Vercel 构建环境（VERCEL=1）不做静态导出：旧域名 json1.org 由 Vercel 全权 308
+// 到 www.json.how，站点本体已由 Cloudflare Workers 托管（Vercel 项目仅作跳转器）。
+// Cloudflare Workers Builds 环境没有 VERCEL 变量，仍走静态导出。
+const isVercel = !!process.env.VERCEL;
+
 const nextConfig: NextConfig = {
-  // Enable static exports for better SEO (disabled in development)
-  ...(process.env.NODE_ENV === 'production' && {
+  // 两种构建模式都保持尾部斜杠，与线上 URL 结构一致（避免跳转链中多一跳）
+  trailingSlash: true,
+
+  // Enable static exports for better SEO (disabled in development and on Vercel)
+  ...(process.env.NODE_ENV === 'production' && !isVercel && {
     output: "export",
-    trailingSlash: true,
+  }),
+
+  // On Vercel: 308 every request on the legacy domains to www.json.how.
+  // next.config redirects 运行在路由层，目录路径也能命中（vercel.json 只覆盖文件路径）。
+  ...(isVercel && {
+    async redirects() {
+      return [
+        {
+          source: "/:path*",
+          has: [{ type: "host" as const, value: "json1.org" }],
+          destination: "https://www.json.how/:path*",
+          permanent: true,
+        },
+        {
+          source: "/:path*",
+          has: [{ type: "host" as const, value: "www.json1.org" }],
+          destination: "https://www.json.how/:path*",
+          permanent: true,
+        },
+      ];
+    },
   }),
 
   // Image optimization
