@@ -301,6 +301,54 @@ const FORMAT_INTROS: Record<string, ToolIntro> = {
       },
     ],
   },
+  'json-to-json-schema': {
+    paragraphs: [
+      'JSON Schema describes what a JSON document is allowed to look like — which keys exist, what type each holds, and which are required. Validators like Ajv check payloads against it, OpenAPI embeds it, and code generators consume it. Writing one by hand from a real payload is tedious, so this tool infers it: paste a sample, get a schema that sample already validates against.',
+      'The inference walks every element of every array, not just the first record. A field missing from some records is left out of `required`, a value that is sometimes `null` widens to a type union, and whole numbers come out as `integer` while decimals come out as `number` — the distinctions a schema is actually for.',
+    ],
+    questions: [
+      {
+        q: 'Which draft does the output follow?',
+        a: 'It declares draft 2020-12 in the `$schema` line. Only the structural keywords are emitted — `type`, `properties`, `required`, `items`, `anyOf` — and those have been stable since draft-04, so the schema works with older tooling too; delete the `$schema` line if your validator predates the declaration.',
+      },
+      {
+        q: 'Why is a field missing from `required`?',
+        a: 'Because it was absent from at least one record in the sample. A schema that required it would reject some of the very data it was inferred from, which is the failure mode of generators that only read the first array element.',
+      },
+      {
+        q: 'Why does an always-null field accept any type?',
+        a: 'A `null` sample carries no type information, so there is nothing to infer — the schema leaves that field open rather than pretending the type is known. Add one real value to the sample and the field gets a proper type.',
+      },
+      {
+        q: 'Are string lengths and numeric ranges included?',
+        a: 'No. Constraints the sample never exercises — `minLength`, `minimum`, `pattern`, `format` — are left open instead of guessed, because a guess would reject valid data. Tighten those by hand once the structure is in place.',
+      },
+    ],
+  },
+  'json-schema-to-json': {
+    paragraphs: [
+      'The reverse direction: given a JSON Schema, produce one document that validates against it. The use is fixtures and mocks — a concrete example for documentation, a payload to seed a test, or a quick check that a schema you wrote admits what you meant it to admit.',
+      'Values are chosen deterministically. `const` wins, then the first `enum` entry, then `default`, then the first of `examples`; failing all of those, a placeholder follows the type — strings honour a recognised `format` like `date-time` or `email`, numbers take `minimum` if one is set, objects fill in every property, and arrays hold a single item.',
+    ],
+    questions: [
+      {
+        q: 'How are `$ref` pointers handled?',
+        a: 'Local pointers like `#/definitions/Address` and `#/$defs/Address` are resolved against the document itself. Remote refs are not fetched — nothing leaves the browser — so a schema that depends on one reports it as an error instead of silently guessing.',
+      },
+      {
+        q: 'What about `oneOf`, `anyOf`, and `allOf`?',
+        a: '`oneOf` and `anyOf` take the first option, which is a valid choice by definition. `allOf` merges its branches when they all produce objects, the same way a validator intersects them.',
+      },
+      {
+        q: 'Why does my `pattern` or `minLength` string not match?',
+        a: 'Synthesising a string that satisfies an arbitrary regular expression is a problem of its own, and this tool does not attempt it — the sample uses plain placeholders. Treat the output as a structural skeleton and fill in constrained fields where the exact value matters.',
+      },
+      {
+        q: 'What happens with a recursive schema?',
+        a: 'The cycle is detected and the recursive branch comes out as `null` rather than looping forever. A linked-list schema, for example, produces a node whose `next` is null — one level of the structure, which is usually what a fixture needs.',
+      },
+    ],
+  },
 };
 
 /**

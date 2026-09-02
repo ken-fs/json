@@ -19,6 +19,7 @@ import {
   yamlToJSON,
 } from './formats';
 import { LANGUAGE_TARGETS } from './generators';
+import { jsonSchemaToJson, jsonToJsonSchema } from './schema';
 
 export interface ConvertOptions {
   /** Name for the generated root type, used by the code generators. */
@@ -38,6 +39,8 @@ const FORMAT_CONVERTERS: Record<string, Converter> = {
   'csv-to-json': (input, options) => csvToJSON(input, { delimiter: options?.delimiter }),
   'json-to-toml': (input) => jsonToTOML(input),
   'toml-to-json': (input) => tomlToJSON(input),
+  'json-to-json-schema': (input) => jsonToJsonSchema(input),
+  'json-schema-to-json': (input) => jsonSchemaToJson(input),
 };
 
 const CODE_CONVERTERS: Record<string, Converter> = Object.fromEntries(

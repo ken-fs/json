@@ -20,10 +20,10 @@ shares the `en` URL); `og:image` present; every `img` has `alt`; all JSON-LD par
 with exactly one `WebApplication` and a `BreadcrumbList` everywhere but `/`. Then,
 site-wide: every sitemap URL ends in `/`, and every referenced asset returns 200.
 """
-import json, re, sys, urllib.request, xml.etree.ElementTree as ET
+import json, os, re, subprocess, sys, urllib.request, xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 
-BASE = "http://localhost:4321"
+BASE = os.environ.get("BASE", "http://localhost:4321")
 
 def get(path):
     with urllib.request.urlopen(BASE + path) as r:
@@ -217,11 +217,15 @@ for p, declared in sorted(page_modified.items()):
 # the original reason for this block: 20 of them were declared in `metadata` and
 # had never been rendered, so every tool page pointed `og:image` at a 404 and a
 # shared link showed a bare URL. Nothing in a build catches that.
-assets = ["/og-image.png", "/og/tools.png", "/logo.png", "/icon-192.png",
-          "/icon-512.png", "/favicon.ico", "/icon.svg",
-          "/robots.txt", "/llms.txt", "/manifest.json"]
-tool_ids = [p.strip("/") for p in paths if p.count("/") == 2 and p.strip("/") not in ("tools", "about", "wiki")]
-assets += [f"/og/{t}.png" for t in tool_ids]
+# The card list comes from the OG generator's own manifest rather than a path
+# heuristic: guessing "every top-level route is a tool" flagged /privacy and
+# friends for cards they never declared.
+cards = json.loads(subprocess.run(
+    ["npx", "tsx", "scripts/og-manifest.ts"], capture_output=True, text=True, check=True,
+).stdout)
+assets = [f"/{card['out']}" for card in cards]
+assets += ["/logo.png", "/icon-192.png", "/icon-512.png", "/favicon.ico",
+           "/icon.svg", "/robots.txt", "/llms.txt", "/manifest.json"]
 for a in assets:
     st = head_status(BASE + a)
     if st != 200:

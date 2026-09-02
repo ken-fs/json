@@ -6,6 +6,10 @@
  * missing from later records looks required. This module walks every element
  * and every record instead, producing one `JsonType` tree that all language
  * generators render. Inference happens once; generators only format.
+ *
+ * The tail of the module converts to and from JSON Schema: `jsonToJsonSchema`
+ * renders the same `JsonType` tree as a draft 2020-12 schema, and
+ * `jsonSchemaToJson` walks a schema the other way to emit one valid instance.
  */
 
 export type JsonPrimitive = 'string' | 'integer' | 'double' | 'boolean' | 'null';
@@ -311,4 +315,193 @@ export function collectObjects(
     objects,
     nameOf: (type: JsonType) => assigned.get(type),
   };
+}
+
+/* -------------------------------------------------------------------------
+ * JSON Schema rendering (JSON document → schema).
+ * ----------------------------------------------------------------------- */
+
+type JsonSchemaObject = Record<string, unknown>;
+
+const SCHEMA_TYPE: Record<JsonPrimitive, string> = {
+  string: 'string',
+  integer: 'integer',
+  double: 'number',
+  boolean: 'boolean',
+  null: 'null',
+};
+
+function baseSchema(type: JsonType): JsonSchemaObject {
+  switch (type.kind) {
+    case 'primitive':
+      return { type: SCHEMA_TYPE[type.type] };
+    case 'unknown':
+      // No usable sample (empty array, key seen only as null) — anything goes.
+      return {};
+    case 'array':
+      return { type: 'array', items: schemaOf(type.element) };
+    case 'object': {
+      const properties: Record<string, JsonSchemaObject> = {};
+      const required: string[] = [];
+      for (const field of type.fields) {
+        properties[field.key] = schemaOf(field.type);
+        if (field.required) required.push(field.key);
+      }
+      const schema: JsonSchemaObject = { type: 'object', properties };
+      if (required.length > 0) schema.required = required;
+      return schema;
+    }
+    case 'union':
+      return { anyOf: type.options.map(schemaOf) };
+  }
+}
+
+/** Render a type tree as a JSON Schema fragment. */
+function schemaOf(type: JsonType): JsonSchemaObject {
+  const { type: unwrapped, nullable } = unwrapNullable(type);
+  const base = baseSchema(unwrapped);
+  // An empty schema already allows null, so wrapping it would be noise.
+  if (!nullable || Object.keys(base).length === 0) return base;
+  // A scalar `type` folds null into the list; anything else needs a branch.
+  if (typeof base.type === 'string') return { ...base, type: [base.type, 'null'] };
+  return { anyOf: [base, { type: 'null' }] };
+}
+
+/**
+ * Infer a draft 2020-12 JSON Schema from a JSON document.
+ *
+ * @throws {SyntaxError} when `text` is not valid JSON.
+ */
+export function jsonToJsonSchema(text: string): string {
+  const { root } = inferFromText(text);
+  return JSON.stringify(
+    { $schema: 'https://json-schema.org/draft/2020-12/schema', ...schemaOf(root) },
+    null,
+    2
+  );
+}
+
+/* -------------------------------------------------------------------------
+ * JSON Schema sampling (schema → one valid JSON document).
+ * ----------------------------------------------------------------------- */
+
+/** Placeholder for a string with a recognised `format`. */
+const FORMAT_SAMPLES: Record<string, string> = {
+  'date-time': '2024-01-01T00:00:00Z',
+  date: '2024-01-01',
+  time: '00:00:00',
+  email: 'user@example.com',
+  uri: 'https://example.com',
+  uuid: '00000000-0000-4000-8000-000000000000',
+};
+
+/** Resolve a local `#/...` JSON pointer against the root schema. */
+function resolveRef(ref: string, root: unknown): unknown {
+  if (ref === '#' || ref === '#/') return root;
+  return ref
+    .slice(2)
+    .split('/')
+    .reduce<unknown>(
+      (node, part) =>
+        node !== null && typeof node === 'object'
+          ? (node as Record<string, unknown>)[part.replace(/~1/g, '/').replace(/~0/g, '~')]
+          : undefined,
+      root
+    );
+}
+
+function sampleFromSchema(node: unknown, root: unknown, resolving: Set<string>): unknown {
+  // Boolean schemas: `true` admits anything, `false` nothing.
+  if (node === true) return null;
+  if (node === null || typeof node !== 'object' || Array.isArray(node)) return null;
+  const schema = node as Record<string, unknown>;
+
+  const ref = schema.$ref;
+  if (typeof ref === 'string') {
+    if (!ref.startsWith('#/') && ref !== '#') {
+      throw new Error(`Only local $ref pointers are supported, got "${ref}".`);
+    }
+    if (resolving.has(ref)) return null; // cyclic schema — stop instead of looping
+    const target = resolveRef(ref, root);
+    if (target === undefined) throw new Error(`Cannot resolve $ref "${ref}".`);
+    resolving.add(ref);
+    const value = sampleFromSchema(target, root, resolving);
+    resolving.delete(ref);
+    return value;
+  }
+
+  if ('const' in schema) return schema.const;
+  if (Array.isArray(schema.enum) && schema.enum.length > 0) return schema.enum[0];
+  if ('default' in schema) return schema.default;
+  if (Array.isArray(schema.examples) && schema.examples.length > 0) return schema.examples[0];
+
+  // allOf merges its branches; the other combinators take the first option.
+  if (Array.isArray(schema.allOf) && schema.allOf.length > 0) {
+    const merged = schema.allOf.map((branch) => sampleFromSchema(branch, root, resolving));
+    if (merged.every((v) => v !== null && typeof v === 'object' && !Array.isArray(v))) {
+      return Object.assign({}, ...merged);
+    }
+    return merged[0];
+  }
+  for (const combiner of ['oneOf', 'anyOf'] as const) {
+    const options = schema[combiner];
+    if (Array.isArray(options) && options.length > 0) {
+      return sampleFromSchema(options[0], root, resolving);
+    }
+  }
+
+  const declared = Array.isArray(schema.type)
+    ? (schema.type.find((t) => t !== 'null') ?? 'null')
+    : schema.type;
+  const kind =
+    typeof declared === 'string'
+      ? declared
+      : schema.properties
+        ? 'object'
+        : schema.items
+          ? 'array'
+          : undefined;
+
+  switch (kind) {
+    case 'object': {
+      const properties =
+        schema.properties !== null && typeof schema.properties === 'object'
+          ? (schema.properties as Record<string, unknown>)
+          : {};
+      return Object.fromEntries(
+        Object.keys(properties).map((key) => [
+          key,
+          sampleFromSchema(properties[key], root, resolving),
+        ])
+      );
+    }
+    case 'array':
+      return schema.items ? [sampleFromSchema(schema.items, root, resolving)] : [];
+    case 'string': {
+      const format = typeof schema.format === 'string' ? schema.format : '';
+      return FORMAT_SAMPLES[format] ?? 'string';
+    }
+    case 'integer':
+    case 'number':
+      return typeof schema.minimum === 'number' ? schema.minimum : 0;
+    case 'boolean':
+      return true;
+    default:
+      // `null`, and the empty schema `{}` which validates anything.
+      return null;
+  }
+}
+
+/**
+ * Generate one sample JSON document from a JSON Schema.
+ *
+ * @throws {SyntaxError} when `text` is not valid JSON.
+ * @throws {Error} when the schema is not an object or a $ref cannot resolve.
+ */
+export function jsonSchemaToJson(text: string): string {
+  const parsed: unknown = JSON.parse(text);
+  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error('A JSON Schema must be a JSON object.');
+  }
+  return JSON.stringify(sampleFromSchema(parsed, parsed, new Set()), null, 2);
 }

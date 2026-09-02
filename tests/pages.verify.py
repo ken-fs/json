@@ -4,7 +4,7 @@ import os
 import sys
 from playwright.sync_api import sync_playwright
 
-BASE = "http://localhost:4321"  # serve the static export: (cd out && python3 -m http.server 4321)
+BASE = os.environ.get("BASE", "http://localhost:4321")  # serve the static export: (cd out && python3 -m http.server 4321)
 
 
 def find_chrome():
@@ -32,6 +32,8 @@ CASES = [
     ("/csv-to-json/", "a,b\n1,2", '"a": 1'),
     ("/json-to-toml/", '{"a":1}', "a = 1"),
     ("/toml-to-json/", "a = 1", '"a": 1'),
+    ("/json-to-json-schema/", '{"a":1,"b":[1,null]}', '"$schema"'),
+    ("/json-schema-to-json/", '{"type":"object","properties":{"a":{"type":"integer"}}}', '"a": 0'),
     ("/json-to-typescript/", '{"id":1,"tag":null}', "interface Root"),
     ("/json-to-go/", '{"id":1}', "type Root struct"),
     ("/json-to-python/", '{"id":1}', "@dataclass"),

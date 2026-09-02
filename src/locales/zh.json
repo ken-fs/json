@@ -186,6 +186,23 @@
         "JSON 没有日期类型，因此 TOML 的日期时间会保留为字符串。"
       ]
     },
+    "json-to-json-schema": {
+      "label": "JSON 转 JSON Schema",
+      "short": "JSON → Schema",
+      "description": "从 JSON 样本生成 JSON Schema。会检查数组中的每一条记录，可选与可空字段都能正确识别，而不是只凭第一条记录猜测。",
+      "notes": [
+        "Schema 从样本推断而来，样本未体现的约束（字符串长度、数值范围、format）会保持开放，不做臆测。"
+      ]
+    },
+    "json-schema-to-json": {
+      "label": "JSON Schema 转 JSON",
+      "short": "Schema → JSON",
+      "description": "根据 JSON Schema 生成示例 JSON 文档。支持枚举、默认值和 format，并解析本地 $ref 引用。",
+      "notes": [
+        "本地 $ref 引用（#/…）会被解析；不会抓取远程引用。",
+        "pattern、minLength 等校验约束不会被合成——示例使用普通占位值。"
+      ]
+    },
     "json-to-typescript": {
       "label": "JSON 转 TypeScript",
       "short": "JSON → TypeScript",
@@ -470,6 +487,54 @@
         {
           "q": "点号键怎么转换？",
           "a": "会变成嵌套：`owner.name = \"Ada\"` 会生成一个 `owner` 对象，里面有 `name`，结果和写 `[owner]` 段是一样的。"
+        }
+      ]
+    },
+    "json-to-json-schema": {
+      "paragraphs": [
+        "JSON Schema 用来描述一份 JSON 文档允许长什么样——有哪些键、各自是什么类型、哪些必填。Ajv 这类校验器用它检查数据，OpenAPI 内嵌它，代码生成器也消费它。照着真实 payload 手写一份很繁琐，所以这个工具帮你推断：粘贴样本，得到一份该样本能直接通过校验的 schema。",
+        "推断会遍历数组的每一个元素，而不只是第一条记录。在某些记录中缺失的字段不会进入 `required`，偶尔为 `null` 的值会放宽为类型联合，整数推断为 `integer`、小数为 `number`——这些正是 schema 的意义所在。"
+      ],
+      "questions": [
+        {
+          "q": "输出遵循哪个草案版本？",
+          "a": "在 `$schema` 行声明的是 draft 2020-12。但只用到结构化关键字——`type`、`properties`、`required`、`items`、`anyOf`——这些自 draft-04 起就没变过，所以旧工具也能用；如果校验器不认这个声明，删掉 `$schema` 行即可。"
+        },
+        {
+          "q": "为什么某个字段不在 `required` 里？",
+          "a": "因为它在样本的至少一条记录中缺席。要求它的 schema 会拒绝掉用于推断的那份数据本身——这正是只读第一条数组元素的生成器会犯的错。"
+        },
+        {
+          "q": "为什么恒为 null 的字段接受任意类型？",
+          "a": "`null` 样本不携带任何类型信息，无从推断——schema 选择保持开放，而不是假装知道类型。在样本里补一个真实值，该字段就会有明确的类型。"
+        },
+        {
+          "q": "会包含字符串长度和数值范围吗？",
+          "a": "不会。样本从未触发的约束——`minLength`、`minimum`、`pattern`、`format`——会保持开放而不是靠猜，因为猜出来的约束会拒绝合法数据。结构就位后再手动收紧这些约束。"
+        }
+      ]
+    },
+    "json-schema-to-json": {
+      "paragraphs": [
+        "反方向：给定一份 JSON Schema，生成一份能通过它校验的文档。用途是做夹具和 mock——文档里的具体示例、灌进测试的 payload，或者快速确认你写的 schema 确实接纳你想表达的数据。",
+        "取值是确定性的：`const` 优先，然后是 `enum` 第一项、`default`、`examples` 第一项；都没有时按类型给占位值——字符串会识别 `date-time`、`email` 等 `format`，数字取 `minimum`（如已设置），对象填满每个属性，数组放一个元素。"
+      ],
+      "questions": [
+        {
+          "q": "`$ref` 引用怎么处理？",
+          "a": "形如 `#/definitions/Address`、`#/$defs/Address` 的本地指针会基于文档自身解析。远程引用不会被抓取——没有任何数据会离开浏览器——所以依赖远程引用的 schema 会明确报错，而不是静默乱猜。"
+        },
+        {
+          "q": "`oneOf`、`anyOf`、`allOf` 呢？",
+          "a": "`oneOf` 和 `anyOf` 取第一个选项，按定义这就是合法选择。`allOf` 在各分支都产生对象时会合并它们，与校验器求交集的方式一致。"
+        },
+        {
+          "q": "为什么我的 `pattern` 或 `minLength` 字符串不匹配？",
+          "a": "合成一个满足任意正则的字符串本身是另一个问题，本工具不做尝试——示例使用普通占位值。把输出当作结构骨架，在取值有讲究的地方自行填充受约束的字段。"
+        },
+        {
+          "q": "递归 schema 会怎样？",
+          "a": "循环会被检测到，递归分支输出 `null`，不会无限循环。比如链表 schema 会生成一个 `next` 为 null 的节点——展开一层结构，通常正是夹具所需要的。"
         }
       ]
     },

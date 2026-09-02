@@ -18,7 +18,7 @@ import { SITE_URL, breadcrumbStructuredData } from "@/components/StructuredData"
 export const metadata: Metadata = {
   title: { absolute: "Privacy Policy — JSON1" },
   description:
-    "What JSON1 collects (nothing you paste), which third-party scripts set cookies — Google AdSense, Analytics, Microsoft Clarity, and an ad partner on wiki pages — and how to opt out of personalised ads.",
+    "What JSON1 collects (nothing you paste), which scripts set cookies (Google AdSense, Analytics, Microsoft Clarity), and how to opt out of personalised ads.",
   keywords: [
     "json1 privacy policy",
     "adsense privacy",

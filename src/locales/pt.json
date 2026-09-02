@@ -186,6 +186,23 @@
         "JSON não tem tipo de data, então datas e horas do TOML são mantidas como strings."
       ]
     },
+    "json-to-json-schema": {
+      "label": "JSON para JSON Schema",
+      "short": "JSON → Schema",
+      "description": "Gera um JSON Schema a partir de uma amostra JSON. Cada elemento do array é inspecionado, então campos opcionais e nulos são detectados em vez de adivinhados a partir do primeiro registro.",
+      "notes": [
+        "O schema é inferido da amostra, então restrições que a amostra nunca exerce — comprimentos de string, faixas numéricas, formatos — ficam abertas em vez de adivinhadas."
+      ]
+    },
+    "json-schema-to-json": {
+      "label": "JSON Schema para JSON",
+      "short": "Schema → JSON",
+      "description": "Gera um documento JSON de exemplo a partir de um JSON Schema. Enums, valores padrão e formatos produzem valores realistas, e referências $ref locais são resolvidas.",
+      "notes": [
+        "Referências $ref locais (#/…) são resolvidas; refs remotas não são buscadas.",
+        "Restrições de validação como pattern ou minLength não são sintetizadas — o exemplo usa placeholders simples."
+      ]
+    },
     "json-to-typescript": {
       "label": "JSON para TypeScript",
       "short": "JSON → TypeScript",
@@ -470,6 +487,54 @@
         {
           "q": "Como uma chave com ponto é convertida?",
           "a": "Ela se torna aninhamento: `owner.name = \"Ada\"` produz um objeto `owner` com um `name` dentro, o mesmo resultado de escrever uma seção `[owner]`."
+        }
+      ]
+    },
+    "json-to-json-schema": {
+      "paragraphs": [
+        "JSON Schema descreve como um documento JSON pode ser: quais chaves existem, de que tipo cada uma é e quais são obrigatórias. Validadores como Ajv conferem payloads contra ele, OpenAPI o incorpora e geradores de código o consomem. Escrever um à mão a partir de um payload real é tedioso, então esta ferramenta o infere: cole uma amostra e receba um schema que essa amostra já valida.",
+        "A inferência percorre cada elemento de cada array, não apenas o primeiro registro. Um campo ausente em alguns registros fica fora do `required`, um valor às vezes `null` é ampliado para uma união de tipos, e inteiros saem como `integer` enquanto decimais saem como `number` — as distinções para as quais um schema existe."
+      ],
+      "questions": [
+        {
+          "q": "Qual rascunho a saída segue?",
+          "a": "Ela declara o rascunho 2020-12 na linha `$schema`. Apenas as palavras-chave estruturais são emitidas —`type`, `properties`, `required`, `items`, `anyOf`— estáveis desde o rascunho 04, então o schema funciona também com ferramentas antigas; apague a linha `$schema` se o seu validador for anterior à declaração."
+        },
+        {
+          "q": "Por que um campo ficou de fora do `required`?",
+          "a": "Porque ele estava ausente em pelo menos um registro da amostra. Um schema que o exigisse rejeitaria parte dos próprios dados dos quais foi inferido, que é a falha dos geradores que leem apenas o primeiro elemento do array."
+        },
+        {
+          "q": "Por que um campo sempre nulo aceita qualquer tipo?",
+          "a": "Uma amostra `null` não carrega informação de tipo, então não há o que inferir: o schema deixa o campo aberto em vez de fingir que o tipo é conhecido. Adicione um valor real à amostra e o campo ganha um tipo próprio."
+        },
+        {
+          "q": "Comprimentos de string e faixas numéricas são incluídos?",
+          "a": "Não. Restrições que a amostra nunca exerce —`minLength`, `minimum`, `pattern`, `format`— ficam abertas em vez de adivinhadas, porque um palpite rejeitaria dados válidos. Aperte essas restrições à mão depois que a estrutura estiver pronta."
+        }
+      ]
+    },
+    "json-schema-to-json": {
+      "paragraphs": [
+        "A direção inversa: dado um JSON Schema, produzir um documento que valide contra ele. Serve para fixtures e mocks — um exemplo concreto para a documentação, um payload para alimentar um teste, ou uma verificação rápida de que um schema que você escreveu admite o que você queria admitir.",
+        "Os valores são escolhidos deterministicamente. `const` vence, depois a primeira entrada de `enum`, depois `default`, depois o primeiro de `examples`; na falta de tudo isso, um placeholder segue o tipo — strings respeitam um `format` reconhecido como `date-time` ou `email`, números tomam o `minimum` se houver, objetos preenchem todas as propriedades e arrays contêm um único item."
+      ],
+      "questions": [
+        {
+          "q": "Como as referências `$ref` são tratadas?",
+          "a": "Ponteiros locais como `#/definitions/Address` e `#/$defs/Address` são resolvidos contra o próprio documento. Refs remotas não são buscadas — nada sai do navegador — então um schema que depende de uma é sinalizado como erro em vez de adivinhado em silêncio."
+        },
+        {
+          "q": "E `oneOf`, `anyOf` e `allOf`?",
+          "a": "`oneOf` e `anyOf` tomam a primeira opção, que é válida por definição. `allOf` mescla seus ramos quando todos produzem objetos, do mesmo modo que um validador os intersecta."
+        },
+        {
+          "q": "Por que minha string com `pattern` ou `minLength` não corresponde?",
+          "a": "Sintetizar uma string que satisfaça uma expressão regular arbitrária é um problema à parte, e esta ferramenta não tenta: o exemplo usa placeholders simples. Trate a saída como um esqueleto estrutural e preencha os campos restritos onde o valor exato importa."
+        },
+        {
+          "q": "O que acontece com um schema recursivo?",
+          "a": "O ciclo é detectado e o ramo recursivo sai como `null` em vez de repetir para sempre. Um schema de lista encadeada, por exemplo, produz um nó cujo `next` é null — um nível da estrutura, que é geralmente o que um fixture precisa."
         }
       ]
     },

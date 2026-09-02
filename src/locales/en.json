@@ -186,6 +186,23 @@
         "JSON has no date type, so TOML datetimes are kept as strings."
       ]
     },
+    "json-to-json-schema": {
+      "label": "JSON to JSON Schema",
+      "short": "JSON → Schema",
+      "description": "Generate a JSON Schema from a JSON sample. Every array element is inspected, so optional and nullable fields are detected, not guessed.",
+      "notes": [
+        "The schema is inferred from the sample, so constraints the sample never exercises — string lengths, numeric ranges, formats — are left open rather than guessed."
+      ]
+    },
+    "json-schema-to-json": {
+      "label": "JSON Schema to JSON",
+      "short": "Schema → JSON",
+      "description": "Generate a sample JSON document from a JSON Schema. Enums, defaults, and formats produce realistic values, and local $ref pointers are resolved.",
+      "notes": [
+        "Local $ref pointers (#/…) are resolved; remote refs are not fetched.",
+        "Validation constraints such as pattern or minLength are not synthesised — the sample uses plain placeholders."
+      ]
+    },
     "json-to-typescript": {
       "label": "JSON to TypeScript",
       "short": "JSON → TypeScript",

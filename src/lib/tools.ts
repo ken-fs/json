@@ -99,6 +99,32 @@ const CSV_EXAMPLE = `id,name,role,active
 1,Ada Lovelace,engineer,true
 2,"Turing, Alan",analyst,false`;
 
+const SCHEMA_EXAMPLE = JSON.stringify(
+  {
+    $schema: 'https://json-schema.org/draft/2020-12/schema',
+    type: 'object',
+    properties: {
+      id: { type: 'integer' },
+      name: { type: 'string' },
+      email: { type: 'string', format: 'email' },
+      role: { enum: ['engineer', 'analyst'] },
+      score: { type: 'number', default: 9.5 },
+      tags: { type: 'array', items: { type: 'string' } },
+      address: {
+        type: 'object',
+        properties: {
+          street: { type: 'string' },
+          zipCode: { type: 'string' },
+        },
+        required: ['street'],
+      },
+    },
+    required: ['id', 'name'],
+  },
+  null,
+  2
+);
+
 const TOML_EXAMPLE = `title = "demo"
 count = 42
 enabled = true
@@ -324,6 +350,39 @@ const FORMAT_TOOLS: ToolDefinition[] = [
     keywords: ['toml to json', 'toml parser', 'convert toml'],
     example: TOML_EXAMPLE,
     notes: ['JSON has no date type, so TOML datetimes are kept as strings.'],
+  },
+  {
+    id: 'json-to-json-schema',
+    category: 'format',
+    label: 'JSON to JSON Schema',
+    description:
+      'Generate a JSON Schema from a JSON sample. Every array element is inspected, so optional and nullable fields are detected, not guessed.',
+    inputLabel: 'JSON',
+    outputLabel: 'JSON Schema',
+    outputMode: 'json',
+    extension: 'json',
+    keywords: ['json to json schema', 'json schema generator', 'generate schema from json'],
+    example: OBJECT_EXAMPLE,
+    notes: [
+      'The schema is inferred from the sample, so constraints the sample never exercises — string lengths, numeric ranges, formats — are left open rather than guessed.',
+    ],
+  },
+  {
+    id: 'json-schema-to-json',
+    category: 'format',
+    label: 'JSON Schema to JSON',
+    description:
+      'Generate a sample JSON document from a JSON Schema. Enums, defaults, and formats produce realistic values, and local $ref pointers are resolved.',
+    inputLabel: 'JSON Schema',
+    outputLabel: 'JSON',
+    outputMode: 'json',
+    extension: 'json',
+    keywords: ['json schema to json', 'json sample generator', 'mock json from schema'],
+    example: SCHEMA_EXAMPLE,
+    notes: [
+      'Local $ref pointers (#/…) are resolved; remote refs are not fetched.',
+      'Validation constraints such as pattern or minLength are not synthesised — the sample uses plain placeholders.',
+    ],
   },
 ];
 

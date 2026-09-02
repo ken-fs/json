@@ -186,6 +186,23 @@
         "JSON no tiene tipo fecha, así que las fechas y horas de TOML se conservan como cadenas."
       ]
     },
+    "json-to-json-schema": {
+      "label": "JSON a JSON Schema",
+      "short": "JSON → Schema",
+      "description": "Genera un JSON Schema a partir de una muestra JSON. Se inspecciona cada elemento del array, de modo que los campos opcionales y nulos se detectan en lugar de adivinarse a partir del primer registro.",
+      "notes": [
+        "El esquema se infiere de la muestra, por lo que las restricciones que la muestra nunca ejercita —longitudes de cadena, rangos numéricos, formatos— se dejan abiertas en lugar de adivinarse."
+      ]
+    },
+    "json-schema-to-json": {
+      "label": "JSON Schema a JSON",
+      "short": "Schema → JSON",
+      "description": "Genera un documento JSON de ejemplo a partir de un JSON Schema. Los enums, valores por defecto y formatos producen valores realistas, y las referencias $ref locales se resuelven.",
+      "notes": [
+        "Se resuelven las referencias $ref locales (#/…); las remotas no se descargan.",
+        "Las restricciones de validación como pattern o minLength no se sintetizan: el ejemplo usa marcadores de posición."
+      ]
+    },
     "json-to-typescript": {
       "label": "JSON a TypeScript",
       "short": "JSON → TypeScript",
@@ -470,6 +487,54 @@
         {
           "q": "¿Cómo se convierte una clave con puntos?",
           "a": "Se convierte en anidamiento: `owner.name = \"Ada\"` produce un objeto `owner` con un `name` dentro, que es el mismo resultado que escribir una sección `[owner]`."
+        }
+      ]
+    },
+    "json-to-json-schema": {
+      "paragraphs": [
+        "JSON Schema describe cómo puede ser un documento JSON: qué claves existen, de qué tipo es cada una y cuáles son obligatorias. Validadores como Ajv comprueban cargas contra él, OpenAPI lo incrusta y los generadores de código lo consumen. Escribir uno a mano a partir de un payload real es tedioso, así que esta herramienta lo infiere: pega una muestra y obtén un esquema que esa muestra ya valida.",
+        "La inferencia recorre cada elemento de cada array, no solo el primer registro. Un campo que falta en algunos registros queda fuera de `required`, un valor a veces `null` se amplía a una unión de tipos, y los enteros salen como `integer` mientras que los decimales salen como `number` — las distinciones para las que existe un esquema."
+      ],
+      "questions": [
+        {
+          "q": "¿Qué borrador sigue la salida?",
+          "a": "Declara el borrador 2020-12 en la línea `$schema`. Solo se emiten las palabras clave estructurales —`type`, `properties`, `required`, `items`, `anyOf`— estables desde el borrador 04, así que el esquema funciona también con herramientas antiguas; borra la línea `$schema` si tu validador es anterior a la declaración."
+        },
+        {
+          "q": "¿Por qué falta un campo en `required`?",
+          "a": "Porque estaba ausente en al menos un registro de la muestra. Un esquema que lo exigiera rechazaría parte de los mismos datos de los que se infirió, que es el fallo de los generadores que solo leen el primer elemento del array."
+        },
+        {
+          "q": "¿Por qué un campo siempre nulo acepta cualquier tipo?",
+          "a": "Una muestra `null` no contiene información de tipo, así que no hay nada que inferir: el esquema deja ese campo abierto en lugar de fingir que se conoce el tipo. Añade un valor real a la muestra y el campo tendrá un tipo propio."
+        },
+        {
+          "q": "¿Se incluyen longitudes de cadena y rangos numéricos?",
+          "a": "No. Las restricciones que la muestra nunca ejercita —`minLength`, `minimum`, `pattern`, `format`— se dejan abiertas en lugar de adivinarse, porque una suposición rechazaría datos válidos. Endurece esas restricciones a mano una vez que la estructura esté en su sitio."
+        }
+      ]
+    },
+    "json-schema-to-json": {
+      "paragraphs": [
+        "La dirección inversa: dado un JSON Schema, producir un documento que valide contra él. Sirve para fixtures y mocks —un ejemplo concreto para la documentación, una carga para sembrar un test, o una comprobación rápida de que un esquema que escribiste admite lo que querías admitir.",
+        "Los valores se eligen de forma determinista. Gana `const`, luego la primera entrada de `enum`, luego `default`, luego el primero de `examples`; a falta de todo eso, un marcador sigue el tipo —las cadenas respetan un `format` reconocido como `date-time` o `email`, los números toman el `minimum` si existe, los objetos rellenan cada propiedad y los arrays contienen un solo elemento."
+      ],
+      "questions": [
+        {
+          "q": "¿Cómo se tratan las referencias `$ref`?",
+          "a": "Los punteros locales como `#/definitions/Address` y `#/$defs/Address` se resuelven contra el propio documento. Las referencias remotas no se descargan —nada sale del navegador— así que un esquema que depende de una lo señala como error en lugar de adivinar en silencio."
+        },
+        {
+          "q": "¿Qué pasa con `oneOf`, `anyOf` y `allOf`?",
+          "a": "`oneOf` y `anyOf` toman la primera opción, que es válida por definición. `allOf` fusiona sus ramas cuando todas producen objetos, del mismo modo que un validador las intersecta."
+        },
+        {
+          "q": "¿Por qué mi cadena con `pattern` o `minLength` no coincide?",
+          "a": "Sintetizar una cadena que satisfaga una expresión regular arbitraria es un problema aparte, y esta herramienta no lo intenta: el ejemplo usa marcadores simples. Trata la salida como un esqueleto estructural y rellena los campos restringidos donde el valor exacto importe."
+        },
+        {
+          "q": "¿Qué pasa con un esquema recursivo?",
+          "a": "El ciclo se detecta y la rama recursiva sale como `null` en lugar de repetirse para siempre. Un esquema de lista enlazada, por ejemplo, produce un nodo cuyo `next` es null: un nivel de la estructura, que suele ser lo que necesita un fixture."
         }
       ]
     },
