@@ -120,7 +120,7 @@ export const metadata: Metadata = {
   // claimed in Search Console / Bing Webmaster Tools.
 };
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-6FX1CYKSLV";
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-N37YFN49Z3";
 const IS_PROD = process.env.NODE_ENV === "production";
 
 export default function RootLayout({
