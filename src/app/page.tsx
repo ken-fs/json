@@ -8,10 +8,10 @@ import { faqStructuredData } from "@/lib/intros";
 
 // The root layout no longer sets a canonical (it leaked to every page that did
 // not override it), so the homepage declares its own. `title.absolute` skips
-// the "| JSON1" template, which would otherwise double the brand name.
+// the "| JSON.how" template, which would otherwise double the brand name.
 export const metadata: Metadata = {
   title: {
-    absolute: "JSON1 — Free Online JSON Formatter, Validator & Converter",
+    absolute: "JSON.how: Free Online JSON Formatter, Validator & Converter",
   },
   alternates: { canonical: "/" },
 };
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 const webApplication = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "JSON1 Formatter and Validator",
+  name: "JSON.how Formatter and Validator",
   url: `${SITE_URL}/`,
   description:
     "Format, minify, validate, escape, and inspect JSON in a collapsible tree. Runs entirely in the browser — nothing is uploaded.",

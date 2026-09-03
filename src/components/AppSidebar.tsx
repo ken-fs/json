@@ -33,10 +33,10 @@ export default function AppSidebar() {
     <aside className="hidden w-[208px] shrink-0 flex-col border-r border-[#dedede] bg-[#fbfbf8] lg:flex">
       <Link
         href="/"
-        className="flex h-24 shrink-0 items-center px-7 text-[28px] font-black tracking-[-0.06em] text-[#141414]"
-        aria-label="JSON1 home"
+        className="flex h-24 shrink-0 items-center px-7 text-[26px] font-extrabold tracking-[-0.045em] text-[#141414]"
+        aria-label="JSON.how home"
       >
-        JSON<span className="text-[#95ee1c]">1</span>
+        json<span className="text-[#1261ff]">.how</span>
       </Link>
 
       {/* The catalogue is longer than the viewport on short screens, so the
@@ -98,7 +98,7 @@ export default function AppSidebar() {
           className="flex items-center gap-2.5 rounded-md px-3 py-2 text-[13px] text-[#5d6067] hover:bg-[#f0f0ec] hover:text-[#141414]"
         >
           <InformationCircleIcon className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
-          {t("aboutJSON1", { defaultValue: "About" })}
+          {t("aboutBrand", { defaultValue: "About" })}
         </Link>
       </div>
     </aside>

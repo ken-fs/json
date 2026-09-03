@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
  *    from the root layout and told Google that the homepage was their canonical
  *    URL — asking to be dropped from the index.
  * 2. **Doubled brand suffix.** Each title already ended in `| JSON Tools`, and
- *    the root layout's `template: "%s | JSON1"` appended a second suffix. Titles
+ *    the root layout's `template: "%s | JSON.how"` appended a second suffix. Titles
  *    here are absolute, so no template applies.
  * 3. **hreflang.** Unlike the tool pages, `/wiki/{en,cn,es,pt}/<slug>/` really
  *    are four distinct URLs for the same article, so hreflang belongs here and
@@ -186,7 +186,7 @@ export function wikiMetadata({
       title: socialTitle ?? title,
       description,
       url: `${SITE_URL}${path}`,
-      siteName: 'JSON1',
+      siteName: 'JSON.how',
       type: isArticle ? 'article' : 'website',
       images: [{ url: '/og-image.png', width: 1200, height: 630, alt: title }],
     },
@@ -199,7 +199,7 @@ export function wikiMetadata({
     ...(isArticle
       ? {
           other: {
-            'article:author': 'JSON1',
+            'article:author': 'JSON.how',
             ...(publishedTime ? { 'article:published_time': publishedTime } : {}),
             ...(modifiedTime ? { 'article:modified_time': modifiedTime } : {}),
             ...(section ? { 'article:section': section } : {}),

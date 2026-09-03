@@ -44,11 +44,11 @@ export default function ToolsIndex() {
       <div className="mx-auto max-w-[1480px]">
         <header className="mb-9 max-w-2xl">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
-            JSON1 / {t("allTools", { defaultValue: "All tools" })}
+            JSON.how / {t("allTools", { defaultValue: "All tools" })}
           </p>
           {/* The count is interpolated rather than baked into the string so the
               headline stays correct as tools are added, in every locale. */}
-          <h1 className="text-[38px] font-black leading-none tracking-[-0.055em] text-[#111] sm:text-[52px]">
+          <h1 className="text-[38px] font-extrabold leading-none tracking-[-0.055em] text-[#111] sm:text-[52px]">
             {t("toolsIndex.heading", {
               count,
               defaultValue: "{{count}} tools, no uploads",
@@ -66,7 +66,7 @@ export default function ToolsIndex() {
           <p className="mb-2 text-xs font-bold uppercase tracking-[0.12em] text-[#6f7279]">
             {t("toolsIndex.startHere", { defaultValue: "Start here" })}
           </p>
-          <h2 className="mb-2 text-2xl font-black tracking-[-0.03em] text-[#111]">
+          <h2 className="mb-2 text-2xl font-extrabold tracking-[-0.03em] text-[#111]">
             <Link href="/" className="hover:text-[#1261ff]">
               {t("toolsIndex.formatterTitle", {
                 defaultValue: "JSON Formatter and Validator",
@@ -89,7 +89,7 @@ export default function ToolsIndex() {
           return (
             <section key={category} className="mb-12">
               <div className="mb-4 border-b border-[#dedede] pb-3">
-                <h2 className="text-xl font-black tracking-[-0.03em] text-[#111]">
+                <h2 className="text-xl font-extrabold tracking-[-0.03em] text-[#111]">
                   {t(`toolsIndex.categories.${category}.title`, {
                     defaultValue: copy.title,
                   })}
@@ -113,7 +113,7 @@ export default function ToolsIndex() {
                         <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8a8d93]">
                           {tool.inputLabel}
                         </span>
-                        <span aria-hidden="true" className="text-[#95ee1c]">
+                        <span aria-hidden="true" className="font-semibold text-[#1261ff]">
                           →
                         </span>
                         <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8a8d93]">
@@ -137,7 +137,7 @@ export default function ToolsIndex() {
         })}
 
         <footer className="flex flex-col gap-2 border-t border-[#dedede] py-5 text-xs text-[#6f7279] sm:flex-row sm:items-center sm:justify-between">
-          <span>JSON1 — {t("footerTagline")}</span>
+          <span>JSON.how: {t("footerTagline")}</span>
           {/* `-my-2 py-2` lifts the tap target from 16px to 48px without moving
               the text: at 12px type the link was well under the 24px minimum. */}
           <Link

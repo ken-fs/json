@@ -32,7 +32,7 @@ const WIKI = [
 ];
 
 const lines: string[] = [
-  '# JSON1',
+  '# JSON.how',
   '',
   `> ${TOOLS.length + 1} browser-based tools for reading, validating, and converting JSON.`,
   '> Every conversion runs as JavaScript in the visitor\'s own tab: there is no',

@@ -20,11 +20,11 @@ export function toolMetadata(id: string): Metadata {
 
   const canonical = `${SITE_URL}/${tool.id}/`;
 
-  // `title.absolute`, so the "| JSON1" template does not apply. Bare labels
-  // like "JSON to YAML | JSON1" came to 25 characters and wasted most of the
+  // `title.absolute`, so the "| JSON.how" template does not apply. Bare labels
+  // like "JSON to YAML | JSON.how" came to 25 characters and wasted most of the
   // ~60 characters a SERP will show; this lands in the 45-58 range and still
   // leads with the phrase people search for.
-  const title = `${tool.label} Converter — Free & Private | JSON1`;
+  const title = `${tool.label} Converter — Free & Private | JSON.how`;
   const socialTitle = `${tool.label} — free online converter`;
 
   return {
@@ -36,14 +36,14 @@ export function toolMetadata(id: string): Metadata {
       title: socialTitle,
       description: tool.description,
       url: canonical,
-      siteName: "JSON1",
+      siteName: "JSON.how",
       type: "website",
       images: [
         {
           url: `/og/${tool.id}.png`,
           width: 1200,
           height: 630,
-          alt: `${tool.inputLabel} to ${tool.outputLabel} converter on JSON1`,
+          alt: `${tool.inputLabel} to ${tool.outputLabel} converter on JSON.how`,
         },
       ],
     },
@@ -86,7 +86,7 @@ export default function ToolPage({ id }: ToolPageProps) {
 
   const structuredData = toolStructuredData(id);
   const faq = faqStructuredData(id);
-  // Matches the visible trail: JSON1 / <tool>, with /tools/ as the real
+  // Matches the visible trail: JSON.how / <tool>, with /tools/ as the real
   // intermediate level a crawler can follow.
   const breadcrumb = breadcrumbStructuredData([
     { name: "All tools", path: "/tools/" },

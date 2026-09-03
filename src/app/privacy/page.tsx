@@ -16,11 +16,11 @@ import { SITE_URL, breadcrumbStructuredData } from "@/components/StructuredData"
  * collection the static site does not do.
  */
 export const metadata: Metadata = {
-  title: { absolute: "Privacy Policy — JSON1" },
+  title: { absolute: "Privacy Policy | JSON.how" },
   description:
-    "What JSON1 collects (nothing you paste), which scripts set cookies (Google AdSense, Analytics, Microsoft Clarity), and how to opt out of personalised ads.",
+    "What JSON.how collects (nothing you paste), which scripts set cookies (Google AdSense, Analytics, Microsoft Clarity), and how to opt out of personalised ads.",
   keywords: [
-    "json1 privacy policy",
+    "json.how privacy policy",
     "adsense privacy",
     "cookies",
     "personalised ads opt out",
@@ -28,17 +28,17 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/privacy/" },
   openGraph: {
-    title: "Privacy Policy — JSON1",
+    title: "Privacy Policy | JSON.how",
     description:
       "What is collected, which scripts set cookies, and how to opt out of personalised ads.",
     url: `${SITE_URL}/privacy/`,
-    siteName: "JSON1",
+    siteName: "JSON.how",
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "JSON1 Privacy Policy" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "JSON.how Privacy Policy" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Privacy Policy — JSON1",
+    title: "Privacy Policy | JSON.how",
     description: "What is collected, which scripts set cookies, and how to opt out.",
     images: ["/og-image.png"],
   },
@@ -64,22 +64,22 @@ export default function PrivacyPage() {
         <main className="flex-1 px-4 py-10 sm:px-6 lg:px-9 lg:py-14">
           <div className="mx-auto max-w-3xl">
             <p className="mb-2 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
-              JSON1 / Privacy
+              JSON.how / Privacy
             </p>
-            <h1 className="text-[38px] font-black leading-[0.95] tracking-[-0.055em] sm:text-[48px]">
+            <h1 className="text-[38px] font-extrabold leading-[0.95] tracking-[-0.055em] sm:text-[48px]">
               Privacy Policy
             </h1>
             <p className="mt-4 text-sm text-[#8a8d93]">Effective {EFFECTIVE}</p>
 
             <p className="mt-6 text-base leading-7 text-[#4a4d54] sm:text-lg sm:leading-8">
-              JSON1 is a set of static files that run in your browser. There is no server to
+              JSON.how is a set of static files that run in your browser. There is no server to
               upload your data to, no account, and no database of users. This page says what
               that means in practice, and — because the site shows ads to pay for the
               domain — exactly which third-party scripts run and what they can see.
             </p>
 
             <section className="mt-12">
-              <h2 className="text-xl font-black tracking-[-0.03em]">The JSON you paste</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">The JSON you paste</h2>
               <p className="mt-4 text-sm leading-7 text-[#4a4d54] sm:text-base">
                 Every tool — formatting, validation, and each converter — runs in JavaScript
                 on your machine. The content you paste into an editor is never transmitted to
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mt-12">
-              <h2 className="text-xl font-black tracking-[-0.03em]">Cookies and third-party scripts</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">Cookies and third-party scripts</h2>
               <p className="mt-4 text-sm leading-7 text-[#4a4d54] sm:text-base">
                 The site loads four third-party scripts. Each is listed below with what it
                 does and the data it sees. None of them receives the contents of your editor.
@@ -197,7 +197,7 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mt-12">
-              <h2 className="text-xl font-black tracking-[-0.03em]">Your choices</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">Your choices</h2>
               <p className="mt-4 text-sm leading-7 text-[#4a4d54] sm:text-base">
                 You can clear or block cookies in your browser settings, opt out of
                 personalised ads through the links above, or block the third-party scripts
@@ -208,15 +208,15 @@ export default function PrivacyPage() {
             </section>
 
             <section className="mt-12">
-              <h2 className="text-xl font-black tracking-[-0.03em]">Children</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">Children</h2>
               <p className="mt-4 text-sm leading-7 text-[#4a4d54] sm:text-base">
-                JSON1 is a developer tool with no audience among children and does not
+                JSON.how is a developer tool with no audience among children and does not
                 knowingly collect information from anyone under 13.
               </p>
             </section>
 
             <section className="mt-12">
-              <h2 className="text-xl font-black tracking-[-0.03em]">Changes and contact</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">Changes and contact</h2>
               <p className="mt-4 text-sm leading-7 text-[#4a4d54] sm:text-base">
                 If this policy changes, the effective date at the top changes with it. Any
                 question about it can go to{" "}

@@ -54,7 +54,7 @@ export default function WikiTranslations({ locale, slug }: WikiTranslationsProps
     <section aria-labelledby="wiki-translations" className="mt-11 border-t border-[#dedede] pt-7">
       <h2
         id="wiki-translations"
-        className="mb-4 text-[22px] font-black tracking-[-0.035em] text-[#111]"
+        className="mb-4 text-[22px] font-extrabold tracking-[-0.035em] text-[#111]"
       >
         {HEADING[locale]}
       </h2>

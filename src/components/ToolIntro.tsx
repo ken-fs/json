@@ -31,7 +31,7 @@ export default function ToolIntro({ id }: ToolIntroProps) {
     <section className="mt-8 border-t border-[#dedede] pt-8" aria-labelledby={`intro-${id}`}>
       <h2
         id={`intro-${id}`}
-        className="mb-4 text-xl font-black tracking-[-0.03em] text-[#111]"
+        className="mb-4 text-xl font-extrabold tracking-[-0.03em] text-[#111]"
       >
         {t("aboutThisTool", { defaultValue: "About this tool" })}
       </h2>

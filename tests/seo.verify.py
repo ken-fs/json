@@ -130,7 +130,7 @@ for p in sorted(set(paths)):
         fails.append(f"{p}: title {len(title)} chars: {title!r}")
     if "| JSON Tools" in title:
         fails.append(f"{p}: stale '| JSON Tools' brand suffix")
-    if title.count("| JSON1") > 1:
+    if title.count("| JSON.how") > 1:
         fails.append(f"{p}: doubled brand suffix")
     d = (m.desc or "")
     if not d:

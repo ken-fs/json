@@ -9,7 +9,7 @@ import { TOOLS } from "@/lib/tools";
 const TOOL_COUNT = TOOLS.length + 1;
 
 export const metadata: Metadata = {
-  title: { absolute: `All ${TOOL_COUNT} JSON Tools — Free & Private | JSON1` },
+  title: { absolute: `All ${TOOL_COUNT} JSON Tools — Free & Private | JSON.how` },
   // Kept under 160 characters so the whole line survives in the SERP.
   description: `All ${TOOL_COUNT} JSON tools: format and validate JSON, convert to YAML, XML, CSV, and TOML, and generate types for nine languages. Runs in your browser.`,
   keywords: [
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     title: `All ${TOOL_COUNT} JSON tools, no uploads`,
     description: `Format, validate, and convert JSON in your browser. ${TOOL_COUNT} tools, nothing leaves the page.`,
     url: `${SITE_URL}/tools/`,
-    siteName: "JSON1",
+    siteName: "JSON.how",
     type: "website",
-    images: [{ url: "/og/tools.png", width: 1200, height: 630, alt: `All ${TOOL_COUNT} JSON1 tools` }],
+    images: [{ url: "/og/tools.png", width: 1200, height: 630, alt: `All ${TOOL_COUNT} JSON.how tools` }],
   },
   twitter: {
     card: "summary_large_image",
@@ -42,7 +42,7 @@ export default function ToolsIndexPage() {
   const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    name: "JSON1 Tools",
+    name: "JSON.how Tools",
     numberOfItems: TOOL_COUNT,
     itemListElement: [
       {

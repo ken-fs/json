@@ -130,8 +130,7 @@ Defined in `src/app/globals.css`; the redesigned surfaces use the hex values dir
 | --- | --- | --- |
 | surface | `#f7f7f4` | Warm page background |
 | ink | `#141414` | Body text |
-| cobalt | `#1261ff` | Primary accent, focus rings, inline code |
-| lime | `#95ee1c` | Secondary accent, used sparingly |
+| cobalt | `#1261ff` | The one accent: links, focus rings, inline code, list markers |
 | borders | `#dedede` `#d9d9d5` `#e4e4df` | Hairlines, in descending contrast |
 
 Type is Geist + Geist Mono. Radius stays low — `rounded` / `rounded-lg`, never pill

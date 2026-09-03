@@ -1,4 +1,4 @@
-# JSON1 - Robots.txt
+# JSON.how - Robots.txt
 # https://www.json.how
 
 User-agent: *

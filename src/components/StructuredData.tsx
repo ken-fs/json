@@ -68,17 +68,17 @@ export default function StructuredData() {
   const websiteData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "JSON1",
+    name: "JSON.how",
     url: `${SITE_URL}/`,
     description: "Free online JSON formatter, validator, and converter tools",
     inLanguage: ["en-US", "zh-CN", "es-ES", "pt-BR"],
-    publisher: { "@type": "Organization", name: "JSON1" },
+    publisher: { "@type": "Organization", name: "JSON.how" },
   };
 
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "JSON1",
+    name: "JSON.how",
     url: `${SITE_URL}/`,
     description: "Browser-based JSON processing tools for developers",
     logo: `${SITE_URL}/logo.png`,

@@ -35,9 +35,9 @@ export default function Header() {
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-[#dedede] bg-white px-5 lg:absolute lg:right-0 lg:top-0 lg:z-20 lg:h-[72px] lg:border-b-0 lg:bg-transparent lg:px-9">
       <Link
         href="/"
-        className="text-xl font-black tracking-[-0.05em] text-[#141414] lg:hidden"
+        className="text-xl font-extrabold tracking-[-0.04em] text-[#141414] lg:hidden"
       >
-        JSON<span className="text-[#95ee1c]">1</span>
+        json<span className="text-[#1261ff]">.how</span>
       </Link>
 
           {/* Navigation */}

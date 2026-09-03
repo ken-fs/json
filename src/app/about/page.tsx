@@ -21,11 +21,11 @@ const TOOL_COUNT = TOOLS.length + 1;
  * in the JSON-LD has a page describing it.
  */
 export const metadata: Metadata = {
-  title: { absolute: "About JSON1 — How It Works & Why Nothing Uploads" },
+  title: { absolute: "About JSON.how: How It Works & Why Nothing Uploads" },
   description:
-    "What JSON1 is, who maintains it, and why your data never leaves the browser — including which third-party scripts load and how to check for yourself.",
+    "What JSON.how is, who maintains it, and why your data never leaves the browser — including which third-party scripts load and how to check for yourself.",
   keywords: [
-    "about json1",
+    "about json.how",
     "json tools privacy",
     "client-side json",
     "offline json formatter",
@@ -33,17 +33,17 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/about/" },
   openGraph: {
-    title: "About JSON1",
+    title: "About JSON.how",
     description:
       "Why nothing you paste leaves the browser, and how to check that for yourself.",
     url: `${SITE_URL}/about/`,
-    siteName: "JSON1",
+    siteName: "JSON.how",
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "About JSON1" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "About JSON.how" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "About JSON1",
+    title: "About JSON.how",
     description: "Why nothing you paste leaves the browser.",
     images: ["/og-image.png"],
   },
@@ -123,21 +123,21 @@ export default function AboutPage() {
         <main className="flex-1 px-4 py-10 sm:px-6 lg:px-9 lg:py-14">
           <div className="mx-auto max-w-3xl">
             <p className="mb-2 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
-              JSON1 / About
+              JSON.how / About
             </p>
-            <h1 className="text-[38px] font-black leading-[0.95] tracking-[-0.055em] sm:text-[52px]">
+            <h1 className="text-[38px] font-extrabold leading-[0.95] tracking-[-0.055em] sm:text-[52px]">
               Your JSON stays
               <br />
               on your machine.
             </h1>
             <p className="mt-5 text-base leading-7 text-[#4a4d54] sm:text-lg sm:leading-8">
-              JSON1 is {TOOL_COUNT} tools for reading, checking, and converting JSON. All of
+              JSON.how is {TOOL_COUNT} tools for reading, checking, and converting JSON. All of
               them run in the browser tab you are reading this in. That is not a policy
               decision anyone has to honour — there is no server to upload to.
             </p>
 
             <section className="mt-14">
-              <h2 className="text-xl font-black tracking-[-0.03em]">
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">
                 What actually crosses the network
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#666a72]">
@@ -153,7 +153,7 @@ export default function AboutPage() {
                       <span
                         className={
                           row.zero
-                            ? "rounded bg-[#95ee1c] px-1.5 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-[#141414]"
+                            ? "rounded bg-[#1261ff] px-1.5 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-white"
                             : "font-mono text-[11px] uppercase tracking-wider text-[#8a8d93]"
                         }
                       >
@@ -174,11 +174,11 @@ export default function AboutPage() {
             </section>
 
             <section className="mt-14">
-              <h2 className="text-xl font-black tracking-[-0.03em]">By the numbers</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">By the numbers</h2>
               <dl className="mt-6 grid gap-6 sm:grid-cols-3">
                 {FACTS.map((fact) => (
                   <div key={fact.label} className="border-t-2 border-[#141414] pt-3">
-                    <dd className="text-4xl font-black tracking-[-0.05em]">{fact.value}</dd>
+                    <dd className="text-4xl font-extrabold tracking-[-0.05em]">{fact.value}</dd>
                     <dt className="mt-1 text-xs font-bold uppercase tracking-[0.1em] text-[#6f7279]">
                       {fact.label}
                     </dt>
@@ -189,7 +189,7 @@ export default function AboutPage() {
             </section>
 
             <section className="mt-14">
-              <h2 className="text-xl font-black tracking-[-0.03em]">Why build another one</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">Why build another one</h2>
               <div className="mt-4 space-y-4 text-sm leading-7 text-[#4a4d54] sm:text-base">
                 <p>
                   Most JSON converters generate types from the first record in an array. That
@@ -212,9 +212,9 @@ export default function AboutPage() {
             </section>
 
             <section className="mt-14">
-              <h2 className="text-xl font-black tracking-[-0.03em]">Who maintains it</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">Who maintains it</h2>
               <p className="mt-4 text-sm leading-7 text-[#4a4d54] sm:text-base">
-                JSON1 is a small independent project, not a company with a sales team. It is
+                JSON.how is a small independent project, not a company with a sales team. It is
                 free, needs no account, and stays that way. If a converter gets something
                 wrong, the fix is worth more to us than the compliment — the tool notes exist
                 because someone checked.

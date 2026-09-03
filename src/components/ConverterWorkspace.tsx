@@ -124,9 +124,9 @@ export default function ConverterWorkspace({ tool }: ConverterWorkspaceProps) {
         <div className="mb-7 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
-              JSON1 / {label}
+              JSON.how / {label}
             </p>
-            <h1 className="text-[38px] font-black leading-none tracking-[-0.055em] text-[#111] sm:text-[48px]">
+            <h1 className="text-[38px] font-extrabold leading-none tracking-[-0.055em] text-[#111] sm:text-[48px]">
               {label}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-[#666a72] sm:text-base">
@@ -151,7 +151,7 @@ export default function ConverterWorkspace({ tool }: ConverterWorkspaceProps) {
             <button
               type="button"
               onClick={() => setInput(tool.example)}
-              className="inline-flex h-11 items-center gap-2 rounded-md bg-[#1261ff] px-5 text-sm font-semibold text-white shadow-[0_5px_18px_rgba(18,97,255,0.22)] transition-transform hover:-translate-y-0.5 hover:bg-[#064fdc] active:translate-y-0"
+              className="inline-flex h-11 items-center gap-2 rounded-md bg-[#1261ff] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#064fdc] active:translate-y-px"
             >
               <PlusIcon className="h-5 w-5" aria-hidden="true" />
               {t("addExample")}
@@ -304,8 +304,8 @@ export default function ConverterWorkspace({ tool }: ConverterWorkspaceProps) {
             <ul className="space-y-1.5">
               {tool.notes.map((note, index) => (
                 <li key={index} className="flex gap-2 text-sm leading-6 text-[#4c5057]">
-                  <span aria-hidden="true" className="text-[#95ee1c]">
-                    —
+                  <span aria-hidden="true" className="font-semibold text-[#1261ff]">
+                    →
                   </span>
                   <span>{t(`tools.${tool.id}.notes.${index}`, { defaultValue: note })}</span>
                 </li>

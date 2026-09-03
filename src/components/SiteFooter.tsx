@@ -44,7 +44,7 @@ export default function SiteFooter() {
           ))}
         </nav>
         <p className="text-[12px] text-[#8a8d93]">
-          © JSON1 · Nothing you paste leaves your browser.
+          © JSON.how · Nothing you paste leaves your browser.
         </p>
       </div>
     </footer>

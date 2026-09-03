@@ -422,9 +422,9 @@ export default function JSONFormatter() {
         <div className="mb-7 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
-              JSON1 / {t("tools.jsonFormatter.label")}
+              JSON.how / {t("tools.jsonFormatter.label")}
             </p>
-            <h1 className="text-[42px] font-black leading-none tracking-[-0.055em] text-[#111] sm:text-[54px]">
+            <h1 className="text-[42px] font-extrabold leading-none tracking-[-0.055em] text-[#111] sm:text-[54px]">
               {t("workspaceTitle")}
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-[#666a72] sm:text-base">
@@ -454,7 +454,7 @@ export default function JSONFormatter() {
             <button
               type="button"
               onClick={handleFormat}
-              className="inline-flex h-11 items-center gap-2 rounded-md bg-[#1261ff] px-5 text-sm font-semibold text-white shadow-[0_5px_18px_rgba(18,97,255,0.22)] transition-transform hover:-translate-y-0.5 hover:bg-[#064fdc] active:translate-y-0"
+              className="inline-flex h-11 items-center gap-2 rounded-md bg-[#1261ff] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#064fdc] active:translate-y-px"
             >
               <SparklesIcon className="h-5 w-5" aria-hidden="true" />
               {t("format")} JSON

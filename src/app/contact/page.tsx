@@ -20,22 +20,22 @@ import { SITE_URL, breadcrumbStructuredData } from "@/components/StructuredData"
 const CONTACT_EMAIL = "17688973632ljw@gmail.com";
 
 export const metadata: Metadata = {
-  title: { absolute: "Contact — JSON1" },
+  title: { absolute: "Contact | JSON.how" },
   description:
-    "How to reach the people behind JSON1: report a converter bug, suggest a tool, or ask about privacy and the ads.",
-  keywords: ["contact json1", "json1 support", "report bug", "json tool feedback"],
+    "How to reach the people behind JSON.how: report a converter bug, suggest a tool, or ask about privacy and the ads.",
+  keywords: ["contact json.how", "json.how support", "report bug", "json tool feedback"],
   alternates: { canonical: "/contact/" },
   openGraph: {
-    title: "Contact — JSON1",
+    title: "Contact | JSON.how",
     description: "Report a bug, suggest a tool, or ask a question.",
     url: `${SITE_URL}/contact/`,
-    siteName: "JSON1",
+    siteName: "JSON.how",
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Contact JSON1" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Contact JSON.how" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Contact — JSON1",
+    title: "Contact | JSON.how",
     description: "Report a bug, suggest a tool, or ask a question.",
     images: ["/og-image.png"],
   },
@@ -47,11 +47,11 @@ export default function ContactPage() {
   const contactSchema = {
     "@context": "https://schema.org",
     "@type": "ContactPage",
-    name: "Contact JSON1",
+    name: "Contact JSON.how",
     url: `${SITE_URL}/contact/`,
     mainEntity: {
       "@type": "Organization",
-      name: "JSON1",
+      name: "JSON.how",
       url: `${SITE_URL}/`,
       email: CONTACT_EMAIL,
     },
@@ -75,13 +75,13 @@ export default function ContactPage() {
         <main className="flex-1 px-4 py-10 sm:px-6 lg:px-9 lg:py-14">
           <div className="mx-auto max-w-3xl">
             <p className="mb-2 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
-              JSON1 / Contact
+              JSON.how / Contact
             </p>
-            <h1 className="text-[38px] font-black leading-[0.95] tracking-[-0.055em] sm:text-[48px]">
+            <h1 className="text-[38px] font-extrabold leading-[0.95] tracking-[-0.055em] sm:text-[48px]">
               Get in touch
             </h1>
             <p className="mt-5 text-base leading-7 text-[#4a4d54] sm:text-lg sm:leading-8">
-              JSON1 is a small independent project. There is no support queue and no ticket
+              JSON.how is a small independent project. There is no support queue and no ticket
               form — one address reaches the person who maintains the tools.
             </p>
 
@@ -89,17 +89,17 @@ export default function ContactPage() {
               <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#8a8d93]">Email</p>
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="mt-2 inline-block text-2xl font-black tracking-[-0.03em] text-[#1261ff] hover:underline"
+                className="mt-2 inline-block text-2xl font-extrabold tracking-[-0.03em] text-[#1261ff] hover:underline"
               >
                 {CONTACT_EMAIL}
               </a>
             </div>
 
             <section className="mt-12">
-              <h2 className="text-xl font-black tracking-[-0.03em]">What is worth an email</h2>
+              <h2 className="text-xl font-extrabold tracking-[-0.03em]">What is worth an email</h2>
               <ul className="mt-4 space-y-3 text-sm leading-7 text-[#4a4d54] sm:text-base">
                 <li className="flex gap-3">
-                  <span aria-hidden="true" className="text-[#95ee1c]">—</span>
+                  <span aria-hidden="true" className="font-semibold text-[#1261ff]">→</span>
                   <span>
                     <strong>A converter got something wrong.</strong> A payload and the output
                     you expected is the most useful thing you can send; the tool notes exist
@@ -107,14 +107,14 @@ export default function ContactPage() {
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span aria-hidden="true" className="text-[#95ee1c]">—</span>
+                  <span aria-hidden="true" className="font-semibold text-[#1261ff]">→</span>
                   <span>
                     <strong>A tool you wish existed.</strong> The catalogue grows from what
                     people actually reach for.
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span aria-hidden="true" className="text-[#95ee1c]">—</span>
+                  <span aria-hidden="true" className="font-semibold text-[#1261ff]">→</span>
                   <span>
                     <strong>Anything about privacy or the ads.</strong> The{" "}
                     <Link href="/privacy/" className="font-semibold text-[#1261ff] hover:underline">

@@ -1,6 +1,6 @@
-# JSON1
+# JSON.how
 
-> 18 browser-based tools for reading, validating, and converting JSON.
+> 20 browser-based tools for reading, validating, and converting JSON.
 > Every conversion runs as JavaScript in the visitor's own tab: there is no
 > upload step and no server-side processing, so pasting a production payload
 > does not send it anywhere.
@@ -20,6 +20,8 @@ Spanish, and Portuguese.
 - [XML to JSON](https://www.json.how/xml-to-json/): Convert XML to formatted JSON. Attributes become @name keys, repeated elements collapse into arrays, and mixed text lands under #text.
 - [JSON to TOML](https://www.json.how/json-to-toml/): Convert JSON to TOML. Nested objects become tables, arrays of objects become table arrays, and everything else inlines.
 - [TOML to JSON](https://www.json.how/toml-to-json/): Convert TOML to formatted JSON. Tables, table arrays, dotted keys, inline tables, and multi-line arrays are all supported.
+- [JSON to JSON Schema](https://www.json.how/json-to-json-schema/): Generate a JSON Schema from a JSON sample. Every array element is inspected, so optional and nullable fields are detected, not guessed.
+- [JSON Schema to JSON](https://www.json.how/json-schema-to-json/): Generate a sample JSON document from a JSON Schema. Enums, defaults, and formats produce realistic values, and local $ref pointers are resolved.
 
 ## Tabular data
 

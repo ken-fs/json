@@ -58,7 +58,7 @@ export default function WikiArticle({ meta, content }: WikiArticleProps) {
             <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
               {content.eyebrow}
             </p>
-            <h1 className="text-[36px] font-black leading-[1.05] tracking-[-0.05em] text-[#111] sm:text-[46px]">
+            <h1 className="text-[36px] font-extrabold leading-[1.05] tracking-[-0.05em] text-[#111] sm:text-[46px]">
               {content.heading}
             </h1>
             <p className="mt-4 text-base leading-7 text-[#4c5057]">
@@ -100,7 +100,7 @@ export default function WikiArticle({ meta, content }: WikiArticleProps) {
                   id={section.id}
                   className="mb-11 scroll-mt-8 border-t border-[#dedede] pt-7"
                 >
-                  <h2 className="mb-4 text-[22px] font-black tracking-[-0.035em] text-[#111]">
+                  <h2 className="mb-4 text-[22px] font-extrabold tracking-[-0.035em] text-[#111]">
                     {section.heading}
                   </h2>
 
@@ -117,8 +117,8 @@ export default function WikiArticle({ meta, content }: WikiArticleProps) {
                           key={index}
                           className="flex gap-3 text-[15px] leading-7 text-[#4c5057]"
                         >
-                          <span aria-hidden="true" className="shrink-0 text-[#95ee1c]">
-                            —
+                          <span aria-hidden="true" className="shrink-0 font-semibold text-[#1261ff]">
+                            →
                           </span>
                           <span>{withInlineCode(point)}</span>
                         </li>
@@ -137,7 +137,7 @@ export default function WikiArticle({ meta, content }: WikiArticleProps) {
               >
                 <h2
                   id="wiki-related"
-                  className="mb-4 text-[22px] font-black tracking-[-0.035em] text-[#111]"
+                  className="mb-4 text-[22px] font-extrabold tracking-[-0.035em] text-[#111]"
                 >
                   {content.relatedLabel}
                 </h2>

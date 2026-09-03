@@ -1,7 +1,7 @@
 {
-  "name": "JSON1 — JSON Formatter, Validator & Converter",
-  "short_name": "JSON1",
-  "description": "Format, validate, and convert JSON in your browser. 18 tools, nothing uploads.",
+  "name": "JSON.how: JSON Formatter, Validator & Converter",
+  "short_name": "JSON.how",
+  "description": "Format, validate, and convert JSON in your browser. 20 tools, nothing uploads.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f7f7f4",

@@ -72,10 +72,10 @@ export default function WikiJsonLd({
         inLanguage: LANGUAGE[locale],
         mainEntityOfPage: { '@type': 'WebPage', '@id': `${SITE_URL}${path}` },
         image: `${SITE_URL}/og-image.png`,
-        author: { '@type': 'Organization', name: 'JSON1', url: `${SITE_URL}/about/` },
+        author: { '@type': 'Organization', name: 'JSON.how', url: `${SITE_URL}/about/` },
         publisher: {
           '@type': 'Organization',
-          name: 'JSON1',
+          name: 'JSON.how',
           logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.png` },
         },
         ...(publishedTime ? { datePublished: publishedTime } : {}),

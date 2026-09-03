@@ -39,7 +39,7 @@ export default function RelatedTools({ id }: RelatedToolsProps) {
     <section className="mt-8 border-t border-[#dedede] pt-8" aria-labelledby={`related-${id}`}>
       <h2
         id={`related-${id}`}
-        className="mb-4 text-xl font-black tracking-[-0.03em] text-[#111]"
+        className="mb-4 text-xl font-extrabold tracking-[-0.03em] text-[#111]"
       >
         {t("relatedTools", { defaultValue: "Related tools" })}
       </h2>

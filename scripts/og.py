@@ -29,7 +29,7 @@ APP = ROOT / "src" / "app"
 SURFACE = "#f7f7f4"
 INK = "#141414"
 COBALT = "#1261ff"
-LIME = "#95ee1c"
+ACCENT = "#1261ff"
 BORDER = "#d9d9d5"
 MUTED = "#6f7279"
 
@@ -110,7 +110,7 @@ def card_html(card):
     position: relative; display: flex; align-items: center; gap: 16px;
     font-size: 20px; color: {MUTED};
   }}
-  .dot {{ width: 13px; height: 13px; background: {LIME}; border-radius: 2px; }}
+  .dot {{ width: 13px; height: 13px; background: {ACCENT}; border-radius: 2px; }}
   .foot strong {{ color: {INK}; font-weight: 700; letter-spacing: -.02em; }}
 </style></head>
 <body>
@@ -123,14 +123,15 @@ def card_html(card):
   <div class="foot">
     <span class="brace close">}}</span>
     <span class="dot"></span>
-    <strong>JSON1</strong>
+    <strong>JSON.how</strong>
     <span>runs in your browser</span>
   </div>
 </body></html>"""
 
 
 def logo_html(size):
-    """Square mark: a lime `{}` around the digit 1.
+    """Square mark: white braces around a cobalt dot — `{.}`, the domain read
+    as a JSON token.
 
     Used for `Organization.logo` and both PWA icons. `background` is opaque
     because a maskable icon on Android is composited onto the launcher.
@@ -147,14 +148,14 @@ def logo_html(size):
     display: flex; align-items: baseline;
     font-size: {int(size * 0.46)}px; font-weight: 700; letter-spacing: -.04em;
   }}
-  .b {{ color: {LIME}; }}
-  .n {{ color: #fff; padding: 0 {max(1, int(size * 0.012))}px; }}
+  .b {{ color: #fff; }}
+  .n {{ color: {ACCENT}; padding: 0 {max(1, int(size * 0.012))}px; }}
 </style></head>
-<body><div class="mark"><span class="b">{{</span><span class="n">1</span><span class="b">}}</span></div></body></html>"""
+<body><div class="mark"><span class="b">{{</span><span class="n">.</span><span class="b">}}</span></div></body></html>"""
 
 
 def favicon_svg():
-    """The favicon, as the same `{1}` mark the PNGs use.
+    """The favicon, as the same `{.}` mark the PNGs use.
 
     It replaces a blue-gradient brace-and-dots drawing left over from the
     pre-redesign palette (#3B82F6 → #1D4ED8), which was the last place those
@@ -171,9 +172,9 @@ def favicon_svg():
         f'  <rect width="32" height="32" rx="5" fill="{INK}"/>\n'
         '  <text x="16" y="23" text-anchor="middle" font-size="19" font-weight="700"\n'
         '        font-family="ui-monospace, SFMono-Regular, Menlo, monospace">'
-        f'<tspan fill="{LIME}">{{</tspan>'
-        '<tspan fill="#ffffff">1</tspan>'
-        f'<tspan fill="{LIME}">}}</tspan></text>\n'
+        f'<tspan fill="#ffffff">{{</tspan>'
+        f'<tspan fill="{ACCENT}">.</tspan>'
+        f'<tspan fill="#ffffff">}}</tspan></text>\n'
         '</svg>\n'
     )
 

@@ -95,9 +95,9 @@ export const metadata: Metadata = {
     title: 'JSON Knowledge Base',
     description: 'Ten JSON guides in four languages.',
     url: `${SITE_URL}/wiki/`,
-    siteName: 'JSON1',
+    siteName: 'JSON.how',
     type: 'website',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'JSON1 knowledge base' }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'JSON.how knowledge base' }],
   },
   twitter: {
     card: 'summary_large_image',
