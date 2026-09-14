@@ -236,6 +236,24 @@ const CODE_TOOLS: ToolDefinition[] = CODE_TARGETS.map((target) => ({
 
 const FORMAT_TOOLS: ToolDefinition[] = [
   {
+    id: 'json-repair',
+    category: 'format',
+    label: 'JSON Repair',
+    description:
+      'Repair broken JSON online. Trailing commas, single quotes, unquoted keys, comments and missing quotes are fixed automatically - runs in your browser, nothing is uploaded.',
+    inputLabel: 'Broken JSON',
+    outputLabel: 'Repaired JSON',
+    outputMode: 'json',
+    extension: 'json',
+    keywords: ['json repair', 'fix json', 'json fixer', 'repair broken json', 'fix invalid json'],
+    example:
+      "{\n  // trailing comma + single quotes + unquoted key\n  id: 1042,\n  name: 'Ada Lovelace',\n  active: true,\n  tags: ['engineer', 'analyst',],\n}",
+    notes: [
+      'Repair is heuristic: the fixer restores valid syntax, but it cannot invent data you never had.',
+      'Everything runs in your browser - the payload never leaves your machine.',
+    ],
+  },
+  {
     id: 'json-to-yaml',
     category: 'format',
     label: 'JSON to YAML',

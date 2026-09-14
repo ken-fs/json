@@ -93,7 +93,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Intent pages — the same formatter workspace aimed at its three big
   // standalone intents. Not in TOOL_IDS (they have no converter).
-  for (const slug of ['json-validator', 'json-minifier', 'json-viewer']) {
+  for (const slug of ['json-validator', 'json-minifier', 'json-viewer', 'jsonpath', 'json-diff']) {
     routes.push({
       url: `${baseUrl}/${slug}/`,
       lastModified: '2026-09-13',

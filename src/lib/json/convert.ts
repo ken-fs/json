@@ -7,6 +7,7 @@
  * client workspace imports this module.
  */
 
+import { jsonrepair } from 'jsonrepair';
 import { CODE_TARGET_IDS } from '@/lib/tools';
 import {
   csvToJSON,
@@ -31,6 +32,13 @@ export interface ConvertOptions {
 export type Converter = (input: string, options?: ConvertOptions) => string;
 
 const FORMAT_CONVERTERS: Record<string, Converter> = {
+  // jsonrepair throws on unrecoverable input; let the error surface to the
+  // workspace's error pane like any other converter failure.
+  'json-repair': (input) => {
+    const repaired = jsonrepair(input);
+    // Normalise to the same pretty-printed shape the other JSON outputs use.
+    return JSON.stringify(JSON.parse(repaired), null, 2);
+  },
   'json-to-yaml': (input) => jsonToYAML(input),
   'yaml-to-json': (input) => yamlToJSON(input),
   'json-to-xml': (input) => jsonToXML(input),

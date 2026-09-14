@@ -155,6 +155,91 @@ const JSON_VIEWER: ToolIntro = {
   ],
 };
 
+/** `/json-repair/` — the "just fix it" intent (pairs with the validator). */
+const JSON_REPAIR: ToolIntro = {
+  paragraphs: [
+    'Paste broken JSON and this tool repairs it automatically: trailing commas are removed, single quotes become double quotes, unquoted keys get quoted, comments are stripped, and missing quotes are closed. The result is valid JSON you can parse anywhere.',
+    'The repair engine is jsonrepair (the open-source library behind JSON Editor Online) running entirely in your browser — the payload never leaves your machine.',
+  ],
+  questions: [
+    {
+      q: 'What kinds of errors can it fix?',
+      a: "The common syntax mistakes: trailing commas, single-quoted strings, unquoted or missing-quoted keys, JavaScript-style comments, and Python-style True/False/None values. It repairs syntax, not semantics — a value you never had can't be invented.",
+    },
+    {
+      q: 'Should I repair or find the error myself?',
+      a: "If you need the payload to work right now, repair it. If you're hunting a bug in the system that produced it, use the JSON validator first — the exact error position tells you what the producer got wrong, which repair alone won't teach you.",
+    },
+    {
+      q: 'Will repair change my data?',
+      a: 'Values are preserved as-is; only syntax is normalized. One caveat: a heuristic repair can occasionally close a string or bracket in a different place than you intended, so give the output a quick scan before shipping it.',
+    },
+    {
+      q: 'Is my data uploaded anywhere?',
+      a: 'No. Repair runs in JavaScript on your machine — there is no server to upload to.',
+    },
+  ],
+};
+
+/** `/jsonpath/` — the "query this JSON" intent. */
+const JSONPATH_INTRO: ToolIntro = {
+  paragraphs: [
+    'JSONPath is a query language for JSON: instead of scrolling through a payload, you write an expression like `$.store.book[*].author` and get just the matching values back. This evaluator runs your query live as you type, against JSON you paste or drop in.',
+    'Queries run in your browser via jsonpath-plus (the most-used JSONPath library on npm) — nothing is uploaded, so you can test against a real production response.',
+  ],
+  bullets: [
+    { code: '$', text: 'The root object or array — every expression starts here.' },
+    { code: '.name', text: 'A child key: `$.user.name` reads `name` inside `user`.' },
+    { code: '[*]', text: 'Every element of an array: `$.items[*].id` collects every `id`.' },
+    { code: '..author', text: 'Recursive descent: every `author` anywhere in the document.' },
+    { code: '[?(@.price < 10)]', text: 'A filter: only elements whose `price` is under 10.' },
+  ],
+  questions: [
+    {
+      q: 'Why does my expression return nothing?',
+      a: 'The three usual causes: a leading `$` is missing, a key name is case-mismatched (JSONPath is case-sensitive), or the path crosses an array without `[*]`. Check the error line and try the expression one segment at a time.',
+    },
+    {
+      q: 'How do I get all values of one key, anywhere in the document?',
+      a: 'Use recursive descent: `$..email` returns every `email` value no matter how deeply nested it is.',
+    },
+    {
+      q: 'Is this JSONPath or JMESPath?',
+      a: 'JSONPath (the jsonpath-plus dialect, which covers the common JSONPath features plus extras like filters). JMESPath is a different, AWS-flavored language — the expressions are not interchangeable.',
+    },
+    {
+      q: 'Is my data uploaded anywhere?',
+      a: 'No. Evaluation runs in JavaScript on your machine — there is no server to upload to.',
+    },
+  ],
+};
+
+/** `/json-diff/` — the "compare two payloads" intent. */
+const JSON_DIFF_INTRO: ToolIntro = {
+  paragraphs: [
+    'Paste two JSON documents and this diff shows exactly what changed: fields added, removed, or edited, with old and new values side by side. It compares the parsed structure, so key order and whitespace never produce noise.',
+    'The comparison runs in your browser via jsondiffpatch (the standard open-source JSON diff library) — both payloads stay on your machine, which makes it safe to diff production configs.',
+  ],
+  questions: [
+    {
+      q: 'Does key order matter in a JSON diff?',
+      a: 'No. JSON objects are unordered by definition, so this tool compares by key, not position — reordering keys produces an empty diff. Arrays are ordered, so reordering array elements does count as a change.',
+    },
+    {
+      q: 'What do the colors mean?',
+      a: 'Green marks additions, red marks removals, and a changed value shows the old value struck through next to the new one. Unchanged parts of the document are hidden so only the delta shows.',
+    },
+    {
+      q: 'Can I diff two API responses to spot a contract change?',
+      a: "That's the main use case: paste the old and new responses and the delta shows added fields, removed fields, and type changes at a glance. For an ongoing contract, consider generating a schema from the old response and validating the new one against it.",
+    },
+    {
+      q: 'Is my data uploaded anywhere?',
+      a: 'No. The diff runs in JavaScript on your machine — there is no server to upload to.',
+    },
+  ],
+};
+
 const FORMAT_INTROS: Record<string, ToolIntro> = {
   'json-to-yaml': {
     paragraphs: [
@@ -737,6 +822,9 @@ const INTROS: Record<string, ToolIntro> = {
   jsonValidator: JSON_VALIDATOR,
   jsonMinifier: JSON_MINIFIER,
   jsonViewer: JSON_VIEWER,
+  'json-repair': JSON_REPAIR,
+  jsonpath: JSONPATH_INTRO,
+  'json-diff': JSON_DIFF_INTRO,
   ...FORMAT_INTROS,
   ...CODE_INTROS,
 };
