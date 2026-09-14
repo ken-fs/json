@@ -119,7 +119,23 @@ interface ToolbarButton {
   disabled?: boolean;
 }
 
-export default function JSONFormatter() {
+interface JSONFormatterProps {
+  /** Intro block + FAQ id from `@/lib/intros` — each intent page passes its own. */
+  introId?: string;
+  /** H1 override for intent pages (defaults to the i18n workspaceTitle). */
+  title?: string;
+  /** Subtitle override for intent pages. */
+  subtitle?: string;
+  /** Eyebrow override (the `JSON.how / …` label). */
+  eyebrow?: string;
+}
+
+export default function JSONFormatter({
+  introId = "jsonFormatter",
+  title,
+  subtitle,
+  eyebrow,
+}: JSONFormatterProps = {}) {
   const { t } = useTranslation();
   const [input, setInput] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("formatted");
@@ -422,13 +438,13 @@ export default function JSONFormatter() {
         <div className="mb-7 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#1261ff]">
-              JSON.how / {t("tools.jsonFormatter.label")}
+              JSON.how / {eyebrow ?? t("tools.jsonFormatter.label")}
             </p>
             <h1 className="text-[42px] font-extrabold leading-none tracking-[-0.055em] text-[#111] sm:text-[54px]">
-              {t("workspaceTitle")}
+              {title ?? t("workspaceTitle")}
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-6 text-[#666a72] sm:text-base">
-              {t("workspaceSubtitle")}
+              {subtitle ?? t("workspaceSubtitle")}
             </p>
           </div>
 
@@ -577,7 +593,7 @@ export default function JSONFormatter() {
           </section>
         </div>
 
-        <ToolIntro id="jsonFormatter" />
+        <ToolIntro id={introId} />
       </div>
 
       {/* Fixed Alert at bottom */}

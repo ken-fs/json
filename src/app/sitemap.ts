@@ -91,6 +91,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   }
 
+  // Intent pages — the same formatter workspace aimed at its three big
+  // standalone intents. Not in TOOL_IDS (they have no converter).
+  for (const slug of ['json-validator', 'json-minifier', 'json-viewer']) {
+    routes.push({
+      url: `${baseUrl}/${slug}/`,
+      lastModified: '2026-09-13',
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    });
+  }
+
   // A locale index is only as fresh as the newest article it lists. `string`, not
   // inferred: `WIKI_ARTICLES` is `as const`, so the accumulator would otherwise
   // narrow to the first entry's literal date and fail to compile the moment two

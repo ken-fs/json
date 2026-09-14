@@ -77,6 +77,84 @@ const JSON_FORMATTER: ToolIntro = {
   ],
 };
 
+/** `/json-validator/` — the "find my error" intent. */
+const JSON_VALIDATOR: ToolIntro = {
+  paragraphs: [
+    'JSON fails in the same handful of ways, and the parser error position is the fastest way to find them. Paste a payload and this validator reports the exact line and column where parsing stopped — not just "invalid JSON".',
+    'Everything runs in your browser: nothing is uploaded, so a production payload is safe to paste. Once the JSON parses, the workspace switches straight to a formatted tree view, so validating and formatting are the same tool here.',
+  ],
+  questions: [
+    {
+      q: "What does 'Unexpected token' actually mean?",
+      a: "The parser hit a character that doesn't fit JSON grammar at that position — most often single quotes instead of double, a trailing comma, or an unquoted key. The line and column in the error message point at the exact character, which beats re-reading the whole payload.",
+    },
+    {
+      q: 'Why is my trailing comma an error?',
+      a: 'JSON does not allow a comma after the last element of an object or array, so {"a": 1,} is invalid. JavaScript, Python, and most editors tolerate it, which is how it survives into production payloads.',
+    },
+    {
+      q: 'Is valid JSON also correct data?',
+      a: 'No — validation here is syntax only. A payload can parse perfectly and still be missing a field your API expects. Checking the shape (required fields, types) is what JSON Schema is for; see the validation guide on the wiki.',
+    },
+    {
+      q: 'Is my data uploaded anywhere?',
+      a: 'No. Parsing happens in JavaScript on your machine — you can disconnect from the network and the validator keeps working.',
+    },
+  ],
+};
+
+/** `/json-minifier/` — the "shrink this payload" intent. */
+const JSON_MINIFIER: ToolIntro = {
+  paragraphs: [
+    'Minifying strips every space, tab, and line break that sits outside a string, turning a readable document into the smallest valid form of the same data. Paste formatted JSON and the minifier returns it as a single line.',
+    'The output is the same data — key order, values, and structure are untouched; only insignificant whitespace goes. And like every tool here it runs in your browser, so nothing is uploaded.',
+  ],
+  questions: [
+    {
+      q: 'How much smaller does JSON get?',
+      a: 'It depends on indentation and nesting depth: two-space-indented payloads carry two bytes of whitespace per indent level on every line, so deeply nested API responses shrink noticeably while a flat list of short records barely changes. Strings are never touched, so a payload that is mostly long string values will not shrink much.',
+    },
+    {
+      q: 'Does minifying change the data?',
+      a: 'No. Only whitespace outside string literals is removed — spaces inside a string value are preserved exactly. Parsing the minified output yields the identical structure.',
+    },
+    {
+      q: 'Minify or gzip — which do I need?',
+      a: 'They work at different layers. Minifying removes characters from the text; gzip compresses bytes on the wire. For an API response, gzip (or brotli) does most of the work, but minifying still helps anywhere the raw text is stored or logged.',
+    },
+    {
+      q: 'Can I get the readable version back?',
+      a: 'Yes — run it through the formatter on the homepage. Minifying is lossless for data, so formatting the same minified text always restores a readable document.',
+    },
+  ],
+};
+
+/** `/json-viewer/` — the "explore this structure" intent. */
+const JSON_VIEWER: ToolIntro = {
+  paragraphs: [
+    'Reading a large payload as flat text means scrolling past hundreds of lines to find one field. The viewer parses the JSON and renders it as a collapsible tree: expand the branch you care about, collapse the rest, and see keys, values, and types at a glance.',
+    'Paste text or drop a .json file — it all happens in your browser, so nothing leaves your machine. The same workspace also validates and formats, so a payload that fails to parse shows the exact error position instead of a blank tree.',
+  ],
+  questions: [
+    {
+      q: 'How do I explore a deeply nested response?',
+      a: 'Collapse everything first, then expand only the branch you need. That turns a wall of text into a path you can walk down — much faster than scanning raw text for one field.',
+    },
+    {
+      q: 'Viewer vs formatter — what is the difference?',
+      a: 'Same engine, two lenses: the formatter pretty-prints the text with indentation, the viewer renders the parsed structure as a tree you can fold. This workspace does both, so you never have to pick.',
+    },
+    {
+      q: 'Can I view invalid JSON?',
+      a: 'A tree requires parseable input, so invalid JSON shows the validator error with its line and column instead. Fix the character it points at and the tree appears.',
+    },
+    {
+      q: 'Is my data uploaded anywhere?',
+      a: 'No. Parsing and rendering run in JavaScript on your machine — there is no server to upload to.',
+    },
+  ],
+};
+
 const FORMAT_INTROS: Record<string, ToolIntro> = {
   'json-to-yaml': {
     paragraphs: [
@@ -656,6 +734,9 @@ const CODE_INTROS: Record<string, ToolIntro> = {
 
 const INTROS: Record<string, ToolIntro> = {
   jsonFormatter: JSON_FORMATTER,
+  jsonValidator: JSON_VALIDATOR,
+  jsonMinifier: JSON_MINIFIER,
+  jsonViewer: JSON_VIEWER,
   ...FORMAT_INTROS,
   ...CODE_INTROS,
 };
