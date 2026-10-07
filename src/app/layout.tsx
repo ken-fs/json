@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import HydrationFix from "@/components/HydrationFix";
@@ -17,14 +17,19 @@ const TOOL_COUNT = TOOLS.length + 1;
 // processing", which is what everyone says and tells a reader nothing.
 const SITE_DESCRIPTION = `Format, validate, minify, and convert JSON in your browser. ${TOOL_COUNT} tools including YAML, XML, CSV, and type generation. Nothing uploads.`;
 
-const geistSans = Geist({
+// Fonts are self-hosted (src/fonts, OFL). next/font/google downloads them during the build,
+// and when that download flakes on Cloudflare's builders the whole build fails
+// ("Can't resolve '@vercel/turbopack-next/internal/font/google/font'", 2026-10-06).
+const geistSans = localFont({
+  src: "../fonts/Geist-Variable.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  weight: "100 900",
 });
 
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "../fonts/GeistMono-Variable.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: "100 900",
 });
 
 export const metadata: Metadata = {
