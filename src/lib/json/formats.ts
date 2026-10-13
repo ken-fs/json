@@ -1028,3 +1028,59 @@ export function tomlToJSON(text: string): string {
 
   return JSON.stringify(result, null, 2);
 }
+
+/**
+ * Render JSON as a standalone HTML table.
+ *
+ * Same flattening rules as jsonToCSV — nested objects become dotted columns,
+ * arrays of scalars stay in one cell — so a payload converts to the same
+ * shape whether the target is CSV or a table. The output is a complete,
+ * paste-ready `<table>` fragment; dropped into a page it opens in Excel
+ * via copy/paste.
+ */
+export function jsonToHTMLTable(text: string): string {
+  const parsed = JSON.parse(text);
+
+  let rows: unknown[];
+  if (Array.isArray(parsed)) {
+    rows = parsed;
+  } else if (parsed && typeof parsed === 'object') {
+    const arrayValues = Object.values(parsed as Record<string, unknown>).filter(Array.isArray);
+    rows = arrayValues.length === 1 ? (arrayValues[0] as unknown[]) : [parsed];
+  } else {
+    rows = [parsed];
+  }
+
+  if (rows.length === 0) return '<table>\n</table>';
+
+  const flattened = rows.map((row) => flattenRecord(row));
+
+  const headers: string[] = [];
+  const seen = new Set<string>();
+  for (const row of flattened) {
+    for (const key of Object.keys(row)) {
+      if (seen.has(key)) continue;
+      seen.add(key);
+      headers.push(key);
+    }
+  }
+
+  const esc = (value: unknown) =>
+    String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+  const lines: string[] = ['<table>', '  <thead>', '    <tr>'];
+  for (const header of headers) lines.push(`      <th>${esc(header)}</th>`);
+  lines.push('    </tr>', '  </thead>', '  <tbody>');
+  for (const row of flattened) {
+    lines.push('    <tr>');
+    for (const header of headers) lines.push(`      <td>${esc(row[header])}</td>`);
+    lines.push('    </tr>');
+  }
+  lines.push('  </tbody>', '</table>');
+
+  return lines.join('\n');
+}

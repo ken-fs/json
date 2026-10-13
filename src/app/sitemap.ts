@@ -29,7 +29,7 @@ export const dynamic = 'force-static';
  * Wiki articles use their own `revised` date instead of this constant. Bump this
  * when a tool's behaviour or copy actually changes.
  */
-const TOOLS_REVISED = '2026-08-03';
+const TOOLS_REVISED = '2026-10-13';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.json.how';

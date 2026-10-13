@@ -12,6 +12,7 @@ import { CODE_TARGET_IDS } from '@/lib/tools';
 import {
   csvToJSON,
   jsonToCSV,
+  jsonToHTMLTable,
   jsonToTOML,
   jsonToXML,
   jsonToYAML,
@@ -45,6 +46,7 @@ const FORMAT_CONVERTERS: Record<string, Converter> = {
   'xml-to-json': (input) => xmlToJSON(input),
   'json-to-csv': (input, options) => jsonToCSV(input, { delimiter: options?.delimiter }),
   'csv-to-json': (input, options) => csvToJSON(input, { delimiter: options?.delimiter }),
+  'json-to-table': (input) => jsonToHTMLTable(input),
   'json-to-toml': (input) => jsonToTOML(input),
   'toml-to-json': (input) => tomlToJSON(input),
   'json-to-json-schema': (input) => jsonToJsonSchema(input),

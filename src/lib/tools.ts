@@ -313,6 +313,23 @@ const FORMAT_TOOLS: ToolDefinition[] = [
     ],
   },
   {
+    id: 'json-to-table',
+    category: 'data',
+    label: 'JSON to Table',
+    description:
+      'Render a JSON array as an HTML table. Nested objects become dotted columns, sparse records still line up, and the paste-ready <table> opens in Excel or any CMS.',
+    inputLabel: 'JSON',
+    outputLabel: 'HTML table',
+    outputMode: 'code',
+    extension: 'html',
+    keywords: ['json to table', 'json to excel', 'json table viewer', 'json to html table'],
+    example: TABLE_EXAMPLE,
+    notes: [
+      'Paste the table into a page, then copy it from the browser into Excel - the grid comes through as real cells.',
+      'Arrays of plain values share one cell, joined with "; ".',
+    ],
+  },
+  {
     id: 'json-to-csv',
     category: 'data',
     label: 'JSON to CSV',

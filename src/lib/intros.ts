@@ -365,6 +365,31 @@ const FORMAT_INTROS: Record<string, ToolIntro> = {
       },
     ],
   },
+  'json-to-table': {
+    paragraphs: [
+      'Sometimes the destination for a JSON payload is not another format but a grid a person can read — a report, a wiki page, a CMS post, or an Excel sheet that starts life as a pasted table. This converter renders the data as a real HTML `<table>`, with headers taken from the data itself.',
+      'The flattening rules match the CSV converter exactly, so a payload converts to the same shape either way: a nested object becomes dotted columns like `address.zipCode`, an array of plain values shares one cell joined with `; `, and records missing a field still line up under the right headers. A bare object or a wrapper like `{"items": [...]}` is accepted as-is — there is no need to reshape the payload first.',
+      'The output is a paste-ready HTML fragment. Dropped into a page it renders as a table; selected in the browser and copied, it pastes into Excel, Sheets, or Numbers as real cells. For a file you can hand to someone directly, the JSON to CSV converter is the better tool — a table is for showing, CSV is for sending.',
+    ],
+    questions: [
+      {
+        q: 'How do I get the table into Excel?',
+        a: 'Paste the output into an HTML file or any online HTML editor, open it in a browser, select the table, copy, and paste into Excel — the cells land in a proper grid. If you need a file instead of a paste, use the JSON to CSV converter and open the .csv in Excel.',
+      },
+      {
+        q: 'My JSON is a single object, not an array. What happens?',
+        a: 'It becomes a one-row table. And if your payload is a wrapper like `{"items": [...]}` with exactly one array inside, the converter uses that array automatically rather than forcing you to extract it.',
+      },
+      {
+        q: 'What happens to nested objects and arrays?',
+        a: 'Nested objects become dotted column headers (`user.name`), and an array of plain values joins into one cell with `; `. An array of objects is flattened by index — `items[0].id`, `items[1].id` — which stays readable up to a handful of entries.',
+      },
+      {
+        q: 'Is my data uploaded anywhere?',
+        a: 'No. The conversion runs entirely in your browser — the payload never leaves your machine, which is what makes it safe for API responses that contain keys or user data.',
+      },
+    ],
+  },
   'json-to-csv': {
     paragraphs: [
       'CSV is what spreadsheets and most analysis tools import, which makes this the conversion to reach for when an API response has to go to someone who works in Excel, Numbers, or Sheets. It is also the most lossy conversion on this site, because a tree does not fit in a grid without decisions being made for you.',
