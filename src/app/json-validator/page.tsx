@@ -7,9 +7,9 @@ import { SITE_URL } from "@/components/StructuredData";
 import { faqStructuredData } from "@/lib/intros";
 
 export const metadata: Metadata = {
-  title: "JSON Validator Online with Error Positions",
+  title: "JSON Validator & Checker Online with Error Positions",
   description:
-    "Validate JSON online and see the exact line and column of the first error. Browser-only — nothing is uploaded. Also formats and shows a tree view.",
+    "Free JSON checker and validator: see the exact line and column of the first error. Browser-only — nothing is uploaded. Also formats and shows a tree view.",
   alternates: { canonical: "/json-validator/" },
 };
 
