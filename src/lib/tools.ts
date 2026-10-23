@@ -292,7 +292,7 @@ const FORMAT_TOOLS: ToolDefinition[] = [
     outputLabel: 'XML',
     outputMode: 'code',
     extension: 'xml',
-    keywords: ['json to xml', 'xml converter', 'json xml'],
+    keywords: ['json to xml', 'xml converter', 'json xml', 'json to xml formatter', 'json to xml format'],
     example: OBJECT_EXAMPLE,
   },
   {
@@ -322,7 +322,16 @@ const FORMAT_TOOLS: ToolDefinition[] = [
     outputLabel: 'HTML table',
     outputMode: 'code',
     extension: 'html',
-    keywords: ['json to table', 'json to excel', 'json table viewer', 'json to html table'],
+    keywords: [
+      'json to table',
+      'json to excel',
+      'json table viewer',
+      'json to html table',
+      'json to table viewer',
+      'json to table view',
+      'json to table format',
+      'json to table formatter',
+    ],
     example: TABLE_EXAMPLE,
     notes: [
       'Paste the table into a page, then copy it from the browser into Excel - the grid comes through as real cells.',

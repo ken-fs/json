@@ -330,6 +330,10 @@ const FORMAT_INTROS: Record<string, ToolIntro> = {
         q: 'Are the values escaped?',
         a: 'Text is escaped for `&`, `<`, and `>`, so a value containing markup stays a value. Those three are the ones that would break the document; quotes are only special inside attributes, and nothing here writes attributes.',
       },
+      {
+        q: 'Is the output formatted, or one long line?',
+        a: 'Formatted. The XML comes out indented with one element per line, ready to paste into an editor, config file, or SOAP envelope as-is — no separate formatter pass needed.',
+      },
     ],
   },
   'xml-to-json': {
@@ -387,6 +391,10 @@ const FORMAT_INTROS: Record<string, ToolIntro> = {
       {
         q: 'Is my data uploaded anywhere?',
         a: 'No. The conversion runs entirely in your browser — the payload never leaves your machine, which is what makes it safe for API responses that contain keys or user data.',
+      },
+      {
+        q: 'Can I use this as a JSON table viewer?',
+        a: 'Yes — that is most of what people use it for. Paste the payload and the converter lays it out as a table: headers from the data, one row per record, nested fields as dotted columns. The output is that table as an HTML fragment, which any browser renders as a formatted grid to read through or copy into Excel and Sheets.',
       },
     ],
   },
