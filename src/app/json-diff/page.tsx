@@ -7,9 +7,9 @@ import { SITE_URL } from "@/components/StructuredData";
 import { faqStructuredData } from "@/lib/intros";
 
 export const metadata: Metadata = {
-  title: "JSON Diff Online — Compare Two JSON Documents",
+  title: "JSON Comparator Online — JSON Diff for Two Documents",
   description:
-    "Compare two JSON documents and see exactly what changed: fields added, removed or edited. Structural diff (key order never counts). Browser-only — nothing uploaded.",
+    "Free online JSON comparator. Compare two JSON documents and see what changed: fields added, removed or edited. Structural diff (key order never counts). Browser-only — nothing uploaded.",
   alternates: { canonical: "/json-diff/" },
 };
 
@@ -58,8 +58,9 @@ export default function JsonDiffPage() {
               Compare JSON
             </h1>
             <p className="mt-3 mb-7 max-w-xl text-sm leading-6 text-[#666a72] sm:text-base">
-              Paste two documents and see exactly what changed — structural diff, so key
-              order and whitespace never produce noise.
+              This JSON comparator shows what changed between two documents. Paste both
+              and it lists added, removed and edited fields. Key order and whitespace
+              are ignored, so you only see real differences.
             </p>
             <JsonDiffWorkspace />
           </div>
