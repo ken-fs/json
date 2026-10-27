@@ -276,7 +276,7 @@ const FORMAT_TOOLS: ToolDefinition[] = [
     outputLabel: 'JSON',
     outputMode: 'json',
     extension: 'json',
-    keywords: ['yaml to json', 'yaml parser', 'convert yaml'],
+    keywords: ['yaml to json', 'yaml parser', 'convert yaml', 'yaml checker'],
     example: YAML_EXAMPLE,
     notes: [
       'Anchors, aliases, and multi-document streams are not supported. Everything else in common data YAML is.',
@@ -421,7 +421,7 @@ const FORMAT_TOOLS: ToolDefinition[] = [
     outputLabel: 'JSON',
     outputMode: 'json',
     extension: 'json',
-    keywords: ['json schema to json', 'json sample generator', 'mock json from schema'],
+    keywords: ['json schema to json', 'json sample generator', 'mock json from schema', 'json schema to json object'],
     example: SCHEMA_EXAMPLE,
     notes: [
       'Local $ref pointers (#/…) are resolved; remote refs are not fetched.',

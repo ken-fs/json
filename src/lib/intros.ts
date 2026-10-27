@@ -282,6 +282,10 @@ const FORMAT_INTROS: Record<string, ToolIntro> = {
     ],
     questions: [
       {
+        q: 'Can I use this as a YAML checker?',
+        a: 'Yes, for syntax and the values your YAML parses to. Invalid input reports an error with a line number; valid input becomes formatted JSON, so unexpected booleans, numbers, and nulls are easy to spot. It does not validate against a schema or enforce style conventions.',
+      },
+      {
         q: 'Why is my tab-indented file rejected?',
         a: 'The YAML spec forbids tabs for indentation, and most editors render them identically to spaces — which makes this one of the harder bugs to find by reading. Converting is a fast way to locate it: the error names the line.',
       },
@@ -527,6 +531,10 @@ const FORMAT_INTROS: Record<string, ToolIntro> = {
       'Values are chosen deterministically. `const` wins, then the first `enum` entry, then `default`, then the first of `examples`; failing all of those, a placeholder follows the type — strings honour a recognised `format` like `date-time` or `email`, numbers take `minimum` if one is set, objects fill in every property, and arrays hold a single item.',
     ],
     questions: [
+      {
+        q: 'How do I convert JSON Schema to a JSON object?',
+        a: 'Paste the schema and run the converter. A schema with `type: "object"` produces a JSON object with its properties filled in; use `default`, `examples`, `enum`, or `const` to control the values. This creates an example from the schema — it cannot recover an original payload that the schema only describes.',
+      },
       {
         q: 'How are `$ref` pointers handled?',
         a: 'Local pointers like `#/definitions/Address` and `#/$defs/Address` are resolved against the document itself. Remote refs are not fetched — nothing leaves the browser — so a schema that depends on one reports it as an error instead of silently guessing.',
