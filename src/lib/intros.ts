@@ -371,6 +371,10 @@ const FORMAT_INTROS: Record<string, ToolIntro> = {
         q: 'What about namespaces?',
         a: 'Prefixes are kept as part of the key, so `<ns:name>` becomes `ns:name`. Nothing is resolved against the declaration, because JSON has no way to express a namespace — the prefix is preserved as a name rather than interpreted.',
       },
+      {
+        q: 'How do I convert XML to JSON in JavaScript?',
+        a: 'In browser JavaScript, start with `const doc = new DOMParser().parseFromString(xml, "application/xml")`, check for a `parsererror` element, then walk `doc.documentElement` to map elements and attributes into an object and call `JSON.stringify` on the result. Node.js does not include `DOMParser`, so use an XML parser package there. Or paste the XML into this page to convert it locally in your browser.',
+      },
     ],
   },
   'json-to-table': {
