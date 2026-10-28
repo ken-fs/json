@@ -145,6 +145,7 @@ export default function RootLayout({
         {/* Matches the cobalt token, not Tailwind's default blue. */}
         <meta name="theme-color" content="#1261ff" />
         {/* Google AdSense */}
+        <meta name="google-adsense-account" content="ca-pub-4969757168101127" />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4969757168101127"
