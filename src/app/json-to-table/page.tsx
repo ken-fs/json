@@ -9,6 +9,15 @@ export default function Page() {
       <section className="bg-[#f7f7f4] px-6 pb-12 text-[15px] leading-relaxed text-[#141414]">
         <div className="mx-auto max-w-3xl border-t border-[#dedede] pt-6">
           <h2 className="text-lg font-semibold">Quick answers: JSON to table</h2>
+          <h3 className="mt-4 font-semibold">How do I convert JSON to a table?</h3>
+          <p className="mt-1">
+            Paste the JSON into the input box and the table appears. It works best with an array of
+            objects, like a list of users. For rows and columns in a spreadsheet file, use the{" "}
+            <a className="text-[#1261ff] underline" href="/json-to-csv/">
+              JSON to CSV converter
+            </a>
+            .
+          </p>
           <h3 className="mt-4 font-semibold">How do I turn JSON into a table?</h3>
           <p className="mt-1">
             Paste your JSON array into the box. The tool builds an HTML table right away. Each key
