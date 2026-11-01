@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 /**
  * 广告位（Adsterra / highrevenueformat.com）。
  *
@@ -21,19 +25,43 @@ export type AdUnit = keyof typeof UNITS;
 export default function AdSlot({ unit }: { unit: AdUnit }) {
   const { key, width, height } = UNITS[unit];
   const options = JSON.stringify({ key, format: "iframe", height, width, params: {} });
+  const ref = useRef<HTMLIFrameElement>(null);
   const srcDoc =
     `<!doctype html><html><head><style>body{margin:0;padding:0;overflow:hidden}</style></head>` +
     `<body><script>atOptions = ${options};</script>` +
     `<script src="https://www.highrevenueformat.com/${key}/invoke.js"></script></body></html>`;
 
+  // Fill srcdoc only once the slot is on screen (or close), 2026-10-31. It used to be in the HTML, and
+  // srcdoc ignores loading="lazy", so the units hidden by breakpoint (leaderboard + box on phones,
+  // the 320x50 on desktop) loaded on every visit: impressions for ads nobody saw. display:none never intersects.
+  useEffect(() => {
+    const iframe = ref.current;
+    if (!iframe) return;
+    if (!("IntersectionObserver" in window)) {
+      if (iframe.offsetParent) iframe.srcdoc = srcDoc;
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          iframe.srcdoc = srcDoc;
+          io.disconnect();
+        }
+      },
+      { rootMargin: "600px 0px" },
+    );
+    io.observe(iframe);
+    return () => io.disconnect();
+  }, [srcDoc]);
   return (
     <iframe
+      ref={ref}
       title="advertisement"
-      srcDoc={srcDoc}
       width={width}
       height={height}
       loading="lazy"
-      sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
+      // No allow-same-origin: a srcdoc frame would inherit this page's origin and the ad script could read it.
+      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
       style={{ border: 0, overflow: "hidden", maxWidth: "100%" }}
     />
   );
