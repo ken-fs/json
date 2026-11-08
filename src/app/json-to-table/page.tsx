@@ -42,6 +42,11 @@ export default function Page() {
             </a>{" "}
             and open that file in Excel.
           </p>
+          <h3 className="mt-4 font-semibold">What JSON works best as a table?</h3>
+          <p className="mt-1">
+            A list of objects with the same keys, like <code>{'[{"id":1,"name":"Ann"},{"id":2,"name":"Bo"}]'}</code>.
+            That gives two rows and two columns: id and name. A single object gives a one-row table.
+          </p>
         </div>
       </section>
     </>

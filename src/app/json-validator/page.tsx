@@ -55,6 +55,24 @@ export default function JsonValidatorPage() {
           subtitle="Paste JSON and get the exact line and column of the first error — plus a tree view once it parses. Nothing leaves your browser."
           eyebrow="Validator"
         />
+        <section className="bg-[#f7f7f4] px-6 pb-12 text-[15px] leading-relaxed text-[#141414]">
+          <div className="mx-auto max-w-3xl border-t border-[#dedede] pt-6">
+            <h2 className="text-lg font-semibold">JSON syntax rules in 6 lines</h2>
+            <p className="mt-2">These are the rules the checker enforces. Break one and you get an error.</p>
+            <ul className="mt-2 list-disc pl-5">
+              <li>Keys are strings in double quotes. Unquoted keys like <code>{"{name: 1}"}</code> are an error.</li>
+              <li>Strings use double quotes only. Single quotes are an error.</li>
+              <li>No comma after the last item in an object or array.</li>
+              <li>Values can be a string, number, <code>true</code>, <code>false</code>, <code>null</code>, an object or an array.</li>
+              <li>No comments. Both <code>{"//"}</code> and <code>{"/* */"}</code> are errors.</li>
+              <li>Quotes and backslashes inside strings need a backslash in front.</li>
+            </ul>
+            <p className="mt-2">
+              Can&apos;t fix it by hand? Try the{" "}
+              <a className="text-[#1261ff] underline" href="/json-repair/">JSON repair tool</a>.
+            </p>
+          </div>
+        </section>
         <SiteFooter />
       </div>
     </div>
