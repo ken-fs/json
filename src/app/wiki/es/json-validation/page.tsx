@@ -94,6 +94,14 @@ export default function JSONValidationSpanishPage() {
                 </ul>
               </div>
 
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                ¿Solo quieres saber si tu JSON es válido? Pégalo en el{" "}
+                <Link href="/json-validator/" className="text-blue-600 dark:text-blue-400 hover:underline">validador JSON</Link>
+                {" "}y te dice si la sintaxis es correcta y dónde está el error. Si el JSON está roto, prueba el{" "}
+                <Link href="/json-repair/" className="text-blue-600 dark:text-blue-400 hover:underline">reparador JSON</Link>.
+                Esta guía va un paso más allá: validar la estructura con JSON Schema.
+              </p>
+
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
                   <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center">
