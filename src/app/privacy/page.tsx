@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 /** Kept a constant so the About table and this policy cannot drift apart. */
-const EFFECTIVE = "August 14, 2026";
+const EFFECTIVE = "November 20, 2026";
 
 export default function PrivacyPage() {
   const breadcrumb = breadcrumbStructuredData([{ name: "Privacy Policy", path: "/privacy/" }]);
@@ -100,38 +100,79 @@ export default function PrivacyPage() {
                 <div className="border-t border-[#e4e4df] pt-4">
                   <h3 className="text-base font-bold">Google AdSense</h3>
                   <p className="mt-2 text-sm leading-7 text-[#4a4d54]">
-                    Serves the ads. Google and its partners use cookies (including the DoubleClick
-                    DART cookie) to serve ads based on your prior visits to this and other
-                    sites, and report the URL of the page you are on. You can turn off
-                    personalised advertising in your{" "}
+                    Serves the ads and reports the URL of the page you are on. In line with
+                    Google&apos;s requirements:
+                  </p>
+                  <ul className="mt-2 list-disc space-y-2 pl-5 text-sm leading-7 text-[#4a4d54]">
+                    <li>
+                      Third-party vendors, including Google, use cookies to serve ads based on a
+                      user&apos;s prior visits to this website or other websites.
+                    </li>
+                    <li>
+                      Google&apos;s use of advertising cookies enables it and its partners to serve
+                      ads to users based on their visit to this site and/or other sites on the
+                      internet.
+                    </li>
+                    <li>
+                      You may opt out of personalised advertising by visiting{" "}
                     <a
-                      href="https://www.google.com/settings/ads"
+                      href="https://adssettings.google.com/"
                       className="font-semibold text-[#1261ff] hover:underline"
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="nofollow noopener noreferrer"
                     >
-                      Google Ad Settings
+                      Google Ads Settings
                     </a>
-                    , and opt out of third-party vendor cookies for personalised advertising at{" "}
+                      . You can also opt out of some third-party vendors&apos; use of cookies for
+                      personalised advertising at{" "}
                     <a
-                      href="https://www.aboutads.info"
+                      href="https://optout.aboutads.info/"
                       className="font-semibold text-[#1261ff] hover:underline"
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="nofollow noopener noreferrer"
                     >
                       aboutads.info
                     </a>
-                    . Google&apos;s own explanation of how it uses data from sites that show
-                    its ads is at{" "}
+                      , or in Europe at{" "}
+                    <a
+                      href="https://www.youronlinechoices.eu/"
+                      className="font-semibold text-[#1261ff] hover:underline"
+                      target="_blank"
+                      rel="nofollow noopener noreferrer"
+                    >
+                      youronlinechoices.eu
+                    </a>
+                      .
+                    </li>
+                    <li>
+                      Read{" "}
                     <a
                       href="https://policies.google.com/technologies/partner-sites"
                       className="font-semibold text-[#1261ff] hover:underline"
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="nofollow noopener noreferrer"
                     >
-                      policies.google.com/technologies/partner-sites
+                      how Google uses information from sites that use its services
+                    </a>{" "}
+                      and{" "}
+                    <a
+                      href="https://policies.google.com/technologies/ads"
+                      className="font-semibold text-[#1261ff] hover:underline"
+                      target="_blank"
+                      rel="nofollow noopener noreferrer"
+                    >
+                      how Google uses cookies in advertising
                     </a>
-                    .
+                      .
+                    </li>
+                  </ul>
+                  <p className="mt-2 text-sm leading-7 text-[#4a4d54]">
+                    Visitors in the European Economic Area, the UK and Switzerland will be asked
+                    for consent through a Google-certified consent message before Google uses
+                    cookies for personalised ads. If you don&apos;t consent, Google may still show
+                    non-personalised ads, which use cookies only for things like frequency
+                    capping, measurement and fraud prevention. We never put personal information
+                    into ad requests, and we don&apos;t target ads using sensitive information.
                   </p>
                 </div>
 
