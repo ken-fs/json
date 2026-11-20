@@ -17,7 +17,7 @@ import { SITE_URL, breadcrumbStructuredData } from "@/components/StructuredData"
  * `CONTACT_EMAIL` is the single source of truth. Change it here and the mailto,
  * the visible address, and the schema all move together.
  */
-const CONTACT_EMAIL = "17688973632ljw@gmail.com";
+const CONTACT_EMAIL = "hello@json.how";
 
 export const metadata: Metadata = {
   title: { absolute: "Contact | JSON.how" },
