@@ -57,6 +57,13 @@ const JSON_FORMATTER: ToolIntro = {
     { code: '""', text: 'Double quotes wrap every string, and every key.' },
     { code: ':', text: 'A colon separates a key from its value, which may itself be an object or an array.' },
   ],
+  paragraphsAfterBullets: [
+    'Values can be a string, a number, `true`, `false`, `null`, an object or an array. That is the whole format: there are no dates, no comments and no undefined. A date is usually sent as a string such as `"2026-11-20T10:00:00Z"`, and it is up to the code on each end to agree on that.',
+    'Paste JSON into the box above, or open a `.json` or `.txt` file, and it is parsed as you type. Valid input shows up formatted with two-space indentation in a tree you can fold, so a 2,000-line API response becomes something you can actually read one branch at a time. Invalid input shows the parser error instead, which in most browsers names the position, line and column where parsing stopped. For some common mistakes, such as a key without double quotes, you also get a plain-English hint.',
+    'The same workspace does the other everyday jobs. Compress turns formatted JSON back into one line for a request body or a log. Escape turns a document into a single string you can drop inside another JSON value or a code literal, and Unescape reverses it; if you paste something that is already escaped, the tool notices and offers to unescape it. Convert to XML gives you the same data as XML for older systems. Copy and Download (as `data.json`) work on whatever is in the output pane.',
+    'A typical session: an API returns an error, you copy the response body from your browser\'s network tab, paste it here, fold the parts you don\'t care about and find the field that is null when it shouldn\'t be. Or a config file won\'t load, you paste it, and the error points at the stray comma on line 48.',
+    'Need something more specific? There are separate pages for validating JSON, repairing broken JSON automatically, comparing two documents, querying with JSONPath, generating a JSON Schema, and converting JSON to CSV, YAML, TOML, XML, a table, or TypeScript, Python, Go and other languages. They are all listed on the tools page, and the wiki has longer guides on topics like JSON vs YAML, escaping, and why JSON has no comments.',
+  ],
   questions: [
     {
       q: "Why does {name:'json'} fail validation?",
@@ -73,6 +80,18 @@ const JSON_FORMATTER: ToolIntro = {
     {
       q: 'Is my data uploaded anywhere?',
       a: 'No. Every tool on this site runs in your browser. Nothing is sent to a server, so you can paste a production payload without it leaving your machine.',
+    },
+    {
+      q: 'How big a file can I format?',
+      a: 'There is no upload limit because nothing is uploaded; the limit is your browser\'s memory. Files of a few megabytes format in well under a second on a normal laptop. Very large files (tens of megabytes) can make the page slow, and for those a command-line tool like jq is the better choice.',
+    },
+    {
+      q: 'Does formatting change my data?',
+      a: 'It only changes whitespace. Keys, values and the order of keys stay as they were. One thing to know: JavaScript reads numbers as 64-bit floats, so a whole number longer than about 15 to 16 digits (some database IDs) can lose precision when it is re-printed. If your IDs are that long, send them as strings.',
+    },
+    {
+      q: 'What is the difference between JSON and a JavaScript object?',
+      a: 'JSON is a text format with stricter rules: double quotes only, no trailing commas, no comments, no functions and no undefined. A JavaScript object literal allows all of those. That is why code copied from a .js file often fails here until the quotes and commas are fixed.',
     },
   ],
 };
