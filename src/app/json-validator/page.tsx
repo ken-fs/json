@@ -70,6 +70,8 @@ export default function JsonValidatorPage() {
             <p className="mt-2">
               Can&apos;t fix it by hand? Try the{" "}
               <a className="text-[#1261ff] underline" href="/json-repair/">JSON repair tool</a>.
+              Need something to test with? Copy a sample from <a className="text-[#1261ff] underline" href="/json-example/">JSON examples</a>,
+              or read about <a className="text-[#1261ff] underline" href="/json-anidado/">JSON anidado</a> (nested JSON, in Spanish).
             </p>
           </div>
         </section>
